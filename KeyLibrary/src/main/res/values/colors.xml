@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="rect">#aae84e40</color>
+    <color name="alignment_marker_color">#b4b4b4</color>
+    <color name="gray1">#e7e4e4</color>
+    <color name="main">#ff7112</color>
+    <color name="app_deep_gray">#fd383838</color>
+    <color name="blue">#0D6BAE</color>
+    <color name="less_blue">#CC0B588F</color>
+    <color name="black">#000000</color>
+    <color name="divider">#f9f9f9</color>
+    <color name="trans_color">#01000000</color>
+    <color name="red">#C30D23</color>
+    <color name="background_white_f2">#f2f2f2</color>
+    <color name="background_white_f9">#f9f9f9</color>
+</resources>

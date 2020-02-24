@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:paddingLeft="10dp">
+
+    <TextView
+        android:id="@+id/tv_tab_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.flyco.tablayout.widget.MsgView
+        app:layout_constraintBottom_toTopOf="@+id/tv_tab_title"
+        app:layout_constraintRight_toRightOf="@+id/tv_tab_title"
+        android:id="@+id/rtv_msg_tip"
+        android:layout_marginLeft="1dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#FD481F"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:mv_backgroundColor="#FD481F"
+        app:mv_isRadiusHalfHeight="true"
+        app:mv_strokeColor="#ffffff"
+        app:mv_strokeWidth="1dp" />
+    <TextView
+        android:id="@+id/right_divider"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/rtv_msg_tip"
+        android:layout_marginLeft="10dp"
+        android:layout_width="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_height="20dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

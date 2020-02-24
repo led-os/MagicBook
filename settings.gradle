@@ -1,0 +1,2 @@
+include ':app',':KeyLibrary',':FlycoTabLayout',':library'
+rootProject.name='MagicBook'

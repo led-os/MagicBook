@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="StateView">
+        <attr name="emptyResource" format="reference" />
+        <attr name="retryResource" format="reference" />
+        <attr name="loadingResource" format="reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="Toolbar">
+        <attr name="back_icon" format="integer"/>
+        <attr name="left_title" format="string"/>
+        <attr name="center_title" format="string"/>
+        <attr name="left_title_show" format="boolean"/>
+        <attr name="center_title_show" format="boolean"/>
+        <attr name="right_view_show" format="boolean"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="EditTextView">
+        <attr name="edit_hint" format="string" />
+        <attr name="edit_clickable" format="boolean"/>
+        <attr name="edit_hint_size" format="integer"/>
+        <attr name="edit_type">
+              <flag name="phone" value="0"/>
+              <flag name="password" value="1"/>
+              <flag name="number" value="2"/>
+              <flag name="number_no_point" value="3"/>
+              <flag name="letter" value="4"/>
+              <flag name="card" value="5"/>
+        </attr>
+    </declare-styleable>
+</resources>
