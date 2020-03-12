@@ -4,7 +4,7 @@ import java.lang.ref.WeakReference
 /**
  * created by key  on 2019/1/31
  */
-open class BasePresenter<V> : IPresenter<V> {
+abstract class BasePresenter<V> : IPresenter<V> {
     /**
      *弱引用
      */
@@ -18,4 +18,6 @@ open class BasePresenter<V> : IPresenter<V> {
     override fun unRegister() {
         iView?.clear()
     }
+
+    abstract fun getView():V
 }

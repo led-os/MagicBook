@@ -195,7 +195,7 @@ class JumpOnTextView : FrameLayout {
                             pointF.x = 0f
                             pointF.y = stateHeight.toFloat()
                             mMoveImageView!!.setMPointF(pointF)
-                            mineLoop()
+ //                         mineLoop()
                         })
                     }
                 }
@@ -301,7 +301,7 @@ class JumpOnTextView : FrameLayout {
     }
 
 
-    public interface OnAnimationEndListener{
+    interface OnAnimationEndListener{
         fun animationEnd()
     }
 

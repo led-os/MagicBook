@@ -6,7 +6,10 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.gyf.immersionbar.ImmersionBar
@@ -26,15 +29,20 @@ import org.greenrobot.eventbus.ThreadMode
  */
 abstract class BaseActivity : AppCompatActivity() {
     private var unbinder: Unbinder? = null
-    protected var handler = Handler()
+    open var handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initSystemBar()
-        setContentView(setLayoutId())
-        unbinder = ButterKnife.bind(this)
-        registerEventBus(this)
-        initView()
-        initAuto()
+        AsyncLayoutInflater(this).inflate(setLayoutId(),null
+        ) { view, _, _ ->
+            initSystemBar()
+            unbinder = ButterKnife.bind(this)
+            setContentView(view)
+            handler.postDelayed({
+                registerEventBus(this)
+            },100)
+            initView()
+            initAuto()
+        }
     }
 
     override fun onResume() {
@@ -64,8 +72,6 @@ abstract class BaseActivity : AppCompatActivity() {
             override fun onAdaptAfter(target: Any, activity: Activity) {}
         }
     }
-
-
 
 
     override fun getResources(): Resources {
@@ -109,19 +115,35 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    abstract fun receiveMessage(busMessage: BusMessage<Any>)
+    open fun receiveMessage(busMessage: BusMessage<Any>){
+
+    }
     abstract fun setLayoutId(): Int
 
-    fun sendBusMessage(busMessage: BusMessage<Any>){
+    fun <T> sendBusMessage(busMessage: BusMessage<T>){
         EventBus.getDefault().postSticky(busMessage)
     }
     protected open fun initSystemBar() {
         ImmersionBar.with(this).navigationBarColor(R.color.white)
-                .autoDarkModeEnable(true)
                 .statusBarDarkFont(true, 0.7f)
                 .fitsSystemWindows(fitsSystemWindows()).init()
     }
     protected open fun fitsSystemWindows(): Boolean {
-        return true
+        return false
+    }
+    protected open fun setTitle(view :View){
+        ImmersionBar.with(this).titleBar(view).init()
+    }
+
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0,0)
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        overridePendingTransition(0,0)
     }
 }

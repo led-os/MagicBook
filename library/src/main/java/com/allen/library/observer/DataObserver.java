@@ -57,17 +57,6 @@ public abstract class DataObserver<T> extends BaseObserver<BaseData<T>> {
     @Override
     public void doOnNext(BaseData<T> data) {
         onSuccess(data.getData());
-        //可以根据需求对code统一处理
-//        switch (data.getCode()) {
-//            case 200:
-//                onSuccess(data.getData());
-//                break;
-//            case 300:
-//            case 500:
-//                onError(data.getMsg());
-//                break;
-//            default:
-//        }
     }
 
     @Override

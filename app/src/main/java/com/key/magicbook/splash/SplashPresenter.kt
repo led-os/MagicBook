@@ -11,8 +11,7 @@ class SplashPresenter : BasePresenter<Activity>(),SplashContract.OnPresenter {
 
 
 
-
-    fun getView() :SplashActivity{
+    override fun getView() :SplashActivity{
         return iView as SplashActivity
     }
 }

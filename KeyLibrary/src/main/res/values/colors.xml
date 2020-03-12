@@ -6,6 +6,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="rect">#aae84e40</color>
     <color name="alignment_marker_color">#b4b4b4</color>
+    <color name="dart_gray_color">#676565</color>
     <color name="gray1">#e7e4e4</color>
     <color name="main">#ff7112</color>
     <color name="app_deep_gray">#fd383838</color>

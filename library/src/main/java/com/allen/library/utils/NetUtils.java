@@ -1,7 +1,7 @@
 package com.allen.library.utils;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -29,6 +29,7 @@ public class NetUtils {
             if (mNetworkInfo != null) {
                 return mNetworkInfo.isAvailable();
             }
+
         }
         return false;
     }

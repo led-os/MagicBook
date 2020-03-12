@@ -562,12 +562,13 @@ public class FileUtils {
                 getSuffixFile(files, subFile, suffere);
             }else if(subFile.getName().endsWith(suffere)){
                 files.add(subFile);
-            } else{
-                //非指定目录文件 不做处理
             }
-//            Log.e("filename",subFile.getName());
         }
         return files;
     }
+
+
+
+
 
 }

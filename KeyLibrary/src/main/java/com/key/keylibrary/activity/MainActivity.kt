@@ -7,9 +7,6 @@ import com.key.keylibrary.bean.BusMessage
 import me.jessyan.autosize.internal.CustomAdapt
 
 class MainActivity : BaseActivity(), CustomAdapt {
-    override fun receiveMessage(busMessage: BusMessage<Any>) {
-
-    }
 
     override fun setLayoutId(): Int {
         return R.layout.activity_main
