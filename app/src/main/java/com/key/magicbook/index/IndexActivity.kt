@@ -35,7 +35,7 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
 
     override fun initView() {
         if(mFragments.size == 0){
-            mFragments.add(MineBookFragment())
+            mFragments.add(BookRackFragment())
             mFragments.add(BookCityFragment())
             mFragments.add(BookVideoFragment())
             mFragments.add(MineFragment())
@@ -82,8 +82,6 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
             override fun onPageScrollStateChanged(state: Int) {}
         })
     }
-
-
     private fun setTabSelect() {
         tabLayout.setOnTabSelectListener(object : OnTabSelectListener {
             override fun onTabSelect(position: Int) {
@@ -97,7 +95,6 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
     override fun setLayoutId(): Int {
         return R.layout.activity_index
     }
-
     override fun createPresenter(): IndexPresenter? {
         return IndexPresenter()
     }

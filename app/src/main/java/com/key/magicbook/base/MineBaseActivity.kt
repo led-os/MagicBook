@@ -6,6 +6,7 @@ import android.os.PersistableBundle
 import com.key.keylibrary.base.BaseActivity
 import com.key.keylibrary.base.BasePresenter
 import com.key.keylibrary.base.IView
+import me.jessyan.autosize.internal.CustomAdapt
 
 /**
  * created by key  on 2020/1/5

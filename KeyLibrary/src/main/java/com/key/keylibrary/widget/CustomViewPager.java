@@ -1,4 +1,4 @@
-package com.key.magicbook.widget;
+package com.key.keylibrary.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

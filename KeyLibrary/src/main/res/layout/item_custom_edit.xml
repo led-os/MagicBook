@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:fitsSystemWindows="true"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+        <TextView
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:id="@+id/custom_remind"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp" />
+
+
+
+
+            <EditText
+                app:layout_constraintTop_toBottomOf="@+id/custom_remind"
+                android:id="@+id/custom_edit"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:lines="1"
+                android:textSize="20sp"
+                android:inputType="text"
+                android:paddingRight="25dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:enabled="true"
+                android:windowSoftInputMode="adjustPan"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray"
+                android:textCursorDrawable="@drawable/edit_cursor_bg"
+                android:background="@drawable/edit_bg"/>
+
+
+
+            <ImageView
+                android:id="@+id/clear"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/custom_edit"
+                app:layout_constraintTop_toTopOf="@+id/custom_edit"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@mipmap/clear"/>
+
+    <LinearLayout
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:id="@+id/cant_clickable"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:background="@color/trans_color"
+        android:orientation="vertical">
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

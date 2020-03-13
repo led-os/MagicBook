@@ -24,10 +24,8 @@ class ShowImageActivity : BaseActivity() {
 
     override fun receiveMessage(busMessage: BusMessage<Any>) {
         val bitmap = busMessage.data as Bitmap
-        runOnUiThread {
-            if(scale_image != null){
-                scale_image.setImage(ImageSource.bitmap(bitmap))
-            }
+        if(scale_image != null){
+            scale_image.setImage(ImageSource.bitmap(bitmap))
         }
     }
 

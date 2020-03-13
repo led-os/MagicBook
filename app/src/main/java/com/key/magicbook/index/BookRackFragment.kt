@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_index_mine_book.*
 /**
  * created by key  on 2020/3/2
  */
-class MineBookFragment :BaseFragment(),SensorEventListener{
+class BookRackFragment :BaseFragment(),SensorEventListener{
     private var defaultSensor :Sensor ?= null
     private var systemService :SensorManager ?= null
 
@@ -51,9 +51,7 @@ class MineBookFragment :BaseFragment(),SensorEventListener{
         list.adapter = mineBookAdapter
 
         val arrayList = ArrayList<String>()
-        for(value in 1..2){
-            arrayList.add(value.toString())
-        }
+
         mineBookAdapter.setNewData(arrayList)
 
 
@@ -91,7 +89,7 @@ class MineBookFragment :BaseFragment(),SensorEventListener{
     override fun onSensorChanged(event: SensorEvent?) {
         val values = event!!.values
         if(event.sensor.type == Sensor.TYPE_LIGHT){
-            Log.e("light",values[0].toString())
+
         }
     }
 

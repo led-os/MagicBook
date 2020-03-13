@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
 
-    <com.key.magicbook.widget.CustomViewPager
+    <com.key.keylibrary.widget.CustomViewPager
         android:id="@+id/main_viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -1,13 +1,10 @@
 package com.key.keylibrary.base
 
 import android.app.Activity
-import android.app.UiAutomation
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import butterknife.ButterKnife
@@ -15,10 +12,10 @@ import butterknife.Unbinder
 import com.gyf.immersionbar.ImmersionBar
 import com.key.keylibrary.R
 import com.key.keylibrary.bean.BusMessage
-import com.key.keylibrary.utils.UiUtils
 import me.jessyan.autosize.AutoSize
 import me.jessyan.autosize.AutoSizeCompat
 import me.jessyan.autosize.AutoSizeConfig
+import me.jessyan.autosize.internal.CustomAdapt
 import me.jessyan.autosize.onAdaptListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -27,15 +24,15 @@ import org.greenrobot.eventbus.ThreadMode
 /**
  * created by key  on 2019/10/7
  */
-abstract class BaseActivity : AppCompatActivity() {
-    private var unbinder: Unbinder? = null
+abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
+    private var unBinder: Unbinder? = null
     open var handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AsyncLayoutInflater(this).inflate(setLayoutId(),null
         ) { view, _, _ ->
             initSystemBar()
-            unbinder = ButterKnife.bind(this)
+            unBinder = ButterKnife.bind(this)
             setContentView(view)
             handler.postDelayed({
                 registerEventBus(this)
@@ -52,7 +49,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         unregisterEventBus(this)
-        unbinder!!.unbind()
+        unBinder!!.unbind()
         super.onDestroy()
     }
 
@@ -110,8 +107,10 @@ abstract class BaseActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.ASYNC, sticky = true)
     fun onMessageReceive(busMessage: BusMessage<Any>) {
         if (busMessage.target == javaClass.simpleName) {
-            receiveMessage(busMessage)
-            removeEventBusMessage(busMessage)
+            handler.post {
+                receiveMessage(busMessage)
+                removeEventBusMessage(busMessage)
+            }
         }
     }
 
@@ -145,5 +144,14 @@ abstract class BaseActivity : AppCompatActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         overridePendingTransition(0,0)
+    }
+
+
+    override fun isBaseOnWidth(): Boolean {
+        return true
+    }
+
+    override fun getSizeInDp(): Float {
+        return 384f
     }
 }
