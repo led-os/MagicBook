@@ -25,7 +25,7 @@ class UiUtil {
          *
          * @param r
          */
-         fun runOnUIThread(r: Runnable) {
+        fun runOnUIThread(r: Runnable) {
             if (isRunOnUIThread()) {
                 r.run()
             } else {

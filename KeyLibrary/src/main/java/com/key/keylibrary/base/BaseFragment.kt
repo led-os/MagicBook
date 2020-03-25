@@ -1,6 +1,7 @@
 package com.key.keylibrary.base
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 abstract class BaseFragment : Fragment(), CustomAdapt {
 
+    open var handler = Handler()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,13 +76,31 @@ abstract class BaseFragment : Fragment(), CustomAdapt {
     open fun receiveMessage(busMessage: BusMessage<Any>){
 
     }
+    open fun receiveAllMessage(busMessage: BusMessage<Any>) :Boolean{
+
+        return false
+    }
 
     @Subscribe(threadMode = ThreadMode.ASYNC, sticky = true)
     fun onMessageReceive(busMessage: BusMessage<Any>) {
-        if (busMessage.target == javaClass.simpleName) {
-            receiveMessage(busMessage)
-            removeEventBusMessage(busMessage)
+        if(busMessage.target != null){
+            if (busMessage.target == javaClass.simpleName) {
+                handler.post {
+                    receiveMessage(busMessage)
+                }
+                removeEventBusMessage(busMessage)
+            }
+        }else{
+            handler.post {
+                val receiveAllMessage = receiveAllMessage(busMessage)
+                if(receiveAllMessage){
+                    removeEventBusMessage(busMessage)
+                }
+            }
+
+
         }
+
     }
 
 

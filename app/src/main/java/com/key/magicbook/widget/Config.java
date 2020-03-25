@@ -54,6 +54,11 @@ public class Config {
         sp = this.mContext.getSharedPreferences(SP_NAME,Context.MODE_PRIVATE);
     }
 
+
+    /**
+     * 懒汉式单例模式
+     * @return
+     */
     public static synchronized Config getInstance(){
         return config;
     }

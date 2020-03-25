@@ -5,21 +5,10 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController
-import com.gargoylesoftware.htmlunit.WebClient
-import com.gargoylesoftware.htmlunit.html.*
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLElement
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSpanElement
 import com.key.keylibrary.base.BaseFragment
-import com.key.keylibrary.bean.BusMessage
 import com.key.magicbook.R
 import kotlinx.android.synthetic.main.fragment_index_mine_book.*
 

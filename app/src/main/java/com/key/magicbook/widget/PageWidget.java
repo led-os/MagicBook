@@ -19,49 +19,115 @@ import com.key.magicbook.widget.animation.CoverAnimation;
 import com.key.magicbook.widget.animation.NoneAnimation;
 import com.key.magicbook.widget.animation.SimulationAnimation;
 import com.key.magicbook.widget.animation.SlideAnimation;
-
-
 /**
  * Created by Administrator on 2016/8/29 0029.
  */
 public class PageWidget extends View {
     private final static String TAG = "BookPageWidget";
-    private int mScreenWidth = 0; // 屏幕宽
-    private int mScreenHeight = 0; // 屏幕高
+
     private Context mContext;
 
-    //是否移动了
+
+    /**
+     * @params mScreenWidth 屏幕宽
+     * @params mScreenHeight 屏幕高
+     */
+    private int mScreenWidth = 0;
+    private int mScreenHeight = 0;
+
+
+    /**
+     *@params isMove 是否移动了
+     *@params isNext 是否翻到下一页
+     *@params cancelPage 是否取消翻页
+     *@params noNext  是否没下一页或者上一页
+     */
     private Boolean isMove = false;
-    //是否翻到下一页
     private Boolean isNext = false;
-    //是否取消翻页
     private Boolean cancelPage = false;
-    //是否没下一页或者上一页
     private Boolean noNext = false;
+
+    /**
+     *  手指按压点
+     * @params downX
+     * @params downY
+     */
     private int downX = 0;
     private int downY = 0;
 
+
+    /**
+     *  手指移动点
+     * @params moveX
+     * @params moveY
+     */
     private int moveX = 0;
     private int moveY = 0;
-    //翻页动画是否在执行
-    private Boolean isRuning =false;
 
-    Bitmap mCurPageBitmap = null; // 当前页
+
+    /**
+     *  动画是否执行
+     *  @params isRunning
+     */
+    private Boolean isRunning =false;
+
+
+    /**
+     *  @params mCurPageBitmap 当前页
+     *  @params mNextPageBitmap 下一页
+     */
+    Bitmap mCurPageBitmap = null;
     Bitmap mNextPageBitmap = null;
+
+
+    /**
+     * @params mAnimationProvider 动画提供者
+     */
     private AnimationProvider mAnimationProvider;
 
+
+    /**
+     *@params mScroller 界面滑动主体
+     *@params mBgColor 界面背景颜色
+     */
     Scroller mScroller;
     private int mBgColor = 0xFFCEC29C;
+
+
+    /**
+     * @params mTouchListener 触摸监听
+     */
     private TouchListener mTouchListener;
 
+
+    /**
+     * 构造方法
+     * @param context
+     */
     public PageWidget(Context context) {
         this(context,null);
     }
 
+
+    /**
+     * 构造方法
+     * @param context
+     * @param attrs
+     */
     public PageWidget(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
+
+    /**
+     * 构造方法
+     *   初始化上下文环境
+     *   初始化布局主体滑动Scroller
+     *   初始化布局动画提供者
+     * @param context
+     * @param attrs
+     * @param defStyleAttr
+     */
     public PageWidget(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContext = context;
@@ -70,21 +136,31 @@ public class PageWidget extends View {
         mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
     }
 
+
+    /**
+     * 初始化布局
+     *   获取窗口管理者 windowManager 并初始化窗口布局宽高
+     *   android:LargeHeap=true  use in  manifest application
+     *
+     *   新建两个Bitmap : mCurPageBitmap,mNextPageBitmap
+     */
     private void initPage(){
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metric = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metric);
         mScreenWidth = metric.widthPixels;
         mScreenHeight = metric.heightPixels;
-        mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);      //android:LargeHeap=true  use in  manifest application
+        mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
         mNextPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
     }
 
+
+    /**
+     * 根据 pageMode 生成相对应的 页面动画提供者
+     * @param pageMode
+     */
     public void setPageMode(int pageMode){
         switch (pageMode){
-            case Config.PAGE_MODE_SIMULATION:
-                mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
-                break;
             case Config.PAGE_MODE_COVER:
                 mAnimationProvider = new CoverAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
                 break;
@@ -94,35 +170,60 @@ public class PageWidget extends View {
             case Config.PAGE_MODE_NONE:
                 mAnimationProvider = new NoneAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
                 break;
+            case Config.PAGE_MODE_SIMULATION:
             default:
                 mAnimationProvider = new SimulationAnimation(mCurPageBitmap,mNextPageBitmap,mScreenWidth,mScreenHeight);
         }
     }
 
+
+    /**
+     *  获取当前页
+     * @return Bitmap
+     */
     public Bitmap getCurPage(){
         return mCurPageBitmap;
     }
 
+
+    /**
+     *  获取下一页或者上一页
+     * @return  Bitmap
+     */
     public Bitmap getNextPage(){
         return mNextPageBitmap;
     }
 
+
+    /**
+     *  设置背景颜色
+     * @param color
+     */
     public void setBgColor(int color){
         mBgColor = color;
     }
 
+
+    /**
+     * 绘制
+     * @param canvas 画板
+     */
     @Override
     protected void onDraw(Canvas canvas) {
-//        canvas.drawColor(0xFFAAAAAA);
         canvas.drawColor(mBgColor);
-        Log.e("onDraw","isNext:" + isNext + "          isRuning:" + isRuning);
-        if (isRuning) {
+        if (isRunning) {
             mAnimationProvider.drawMove(canvas);
         } else {
             mAnimationProvider.drawStatic(canvas);
         }
     }
 
+
+    /**
+     * 设置触摸监听
+     * @param event
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
@@ -143,7 +244,7 @@ public class PageWidget extends View {
 //            cancelPage = false;
             noNext = false;
             isNext = false;
-            isRuning = false;
+            isRunning = false;
             mAnimationProvider.setStartPoint(downX,downY);
             abortAnimation();
             Log.e(TAG,"ACTION_DOWN");
@@ -168,7 +269,6 @@ public class PageWidget extends View {
                     cancelPage = false;
                     if (isNext) {
                         Boolean isNext = mTouchListener.nextPage();
-//                        calcCornerXY(downX,mScreenHeight);
                         mAnimationProvider.setDirection(AnimationProvider.Direction.next);
 
                         if (!isNext) {
@@ -186,7 +286,6 @@ public class PageWidget extends View {
                     }
                     Log.e(TAG,"isNext:" + isNext);
                 }else{
-                    //判断是否取消翻页
                     if (isNext){
                         if (x - moveX > 0){
                             cancelPage = true;
@@ -209,23 +308,18 @@ public class PageWidget extends View {
 
                 moveX = x;
                 moveY = y;
-                isRuning = true;
+                isRunning = true;
                 this.postInvalidate();
             }
         }else if (event.getAction() == MotionEvent.ACTION_UP){
             Log.e(TAG,"ACTION_UP");
             if (!isMove){
                 cancelPage = false;
-                //是否点击了中间
                 if (downX > mScreenWidth / 5 && downX < mScreenWidth * 4 / 5 && downY > mScreenHeight / 3 && downY < mScreenHeight * 2 / 3){
                     if (mTouchListener != null){
                         mTouchListener.center();
                     }
                     Log.e(TAG,"center");
-//                    mCornerX = 1; // 拖拽点对应的页脚
-//                    mCornerY = 1;
-//                    mTouch.x = 0.1f;
-//                    mTouch.y = 0.1f;
                     return true;
                 }else if (x < mScreenWidth / 2){
                     isNext = false;
@@ -254,7 +348,7 @@ public class PageWidget extends View {
 
             Log.e(TAG,"isNext:" + isNext);
             if (!noNext) {
-                isRuning = true;
+                isRunning = true;
                 mAnimationProvider.startAnimation(mScroller);
                 this.postInvalidate();
             }
@@ -263,6 +357,10 @@ public class PageWidget extends View {
         return true;
     }
 
+
+    /**
+     * 滑动方法
+     */
     @Override
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
@@ -270,13 +368,17 @@ public class PageWidget extends View {
             float y = mScroller.getCurrY();
             mAnimationProvider.setTouchPoint(x,y);
             if (mScroller.getFinalX() == x && mScroller.getFinalY() == y){
-                isRuning = false;
+                isRunning = false;
             }
             postInvalidate();
         }
         super.computeScroll();
     }
 
+
+    /**
+     * 中止布局动画
+     */
     public void abortAnimation() {
         if (!mScroller.isFinished()) {
             mScroller.abortAnimation();
@@ -285,14 +387,26 @@ public class PageWidget extends View {
         }
     }
 
+
+    /**
+     * 动画是否进行中
+     * @return
+     */
     public boolean isRunning(){
-        return isRuning;
+        return isRunning;
     }
 
+    /**
+     * 设置触摸监听
+     * @param mTouchListener
+     */
     public void setTouchListener(TouchListener mTouchListener){
         this.mTouchListener = mTouchListener;
     }
 
+    /**
+     * 触摸监听接口
+     */
     public interface TouchListener{
         void center();
         Boolean prePage();

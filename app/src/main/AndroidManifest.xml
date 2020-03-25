@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.key.magicbook">
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,6 +26,7 @@
 
 
         <activity android:name=".index.IndexActivity"/>
+        <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>
     </application>

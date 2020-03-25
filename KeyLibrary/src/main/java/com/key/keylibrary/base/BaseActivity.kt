@@ -1,12 +1,16 @@
 package com.key.keylibrary.base
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.pm.ActivityInfo
 import android.content.res.Resources
+import android.content.res.TypedArray
+import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import butterknife.ButterKnife
 import butterknife.Unbinder
 import com.gyf.immersionbar.ImmersionBar
@@ -29,19 +33,64 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
     open var handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        AsyncLayoutInflater(this).inflate(setLayoutId(),null
-        ) { view, _, _ ->
-            initSystemBar()
-            unBinder = ButterKnife.bind(this)
-            setContentView(view)
-            handler.postDelayed({
-                registerEventBus(this)
-            },100)
-            initView()
-            initAuto()
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
+            fixOrientation()
         }
+        initSystemBar()
+        unBinder = ButterKnife.bind(this)
+        setContentView(setLayoutId())
+        handler.postDelayed({
+            registerEventBus(this)
+        },100)
+        initView()
+        initAuto()
     }
 
+
+    /**
+     * fix error Only fullscreen opaque activities can request orientation
+     * @return
+     */
+     open fun fixOrientation(): Boolean {
+        try {
+            val field =
+                Activity::class.java.getDeclaredField("mActivityInfo")
+            field.isAccessible = true
+            val o =
+                field[this] as ActivityInfo
+            o.screenOrientation = -1
+            field.isAccessible = false
+            return true
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
+
+    /**
+     * fix error Only fullscreen opaque activities can request orientation
+     * @return
+     */
+    @SuppressLint("PrivateApi")
+    open fun isTranslucentOrFloating(): Boolean {
+        var isTranslucentOrFloating = false
+        try {
+            val styleableRes =
+                Class.forName("com.android.internal.R\$styleable").getField("Window")[null] as IntArray
+            val ta = obtainStyledAttributes(styleableRes)
+            val m = ActivityInfo::class.java.getMethod(
+                "isTranslucentOrFloating",
+                TypedArray::class.java
+            )
+            m.isAccessible = true
+            isTranslucentOrFloating = m.invoke(null, ta) as Boolean
+            m.isAccessible = false
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return isTranslucentOrFloating
+    }
     override fun onResume() {
         super.onResume()
         registerEventBus(this)
@@ -106,16 +155,29 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
 
     @Subscribe(threadMode = ThreadMode.ASYNC, sticky = true)
     fun onMessageReceive(busMessage: BusMessage<Any>) {
-        if (busMessage.target == javaClass.simpleName) {
+        if(busMessage.target != null){
+            if (busMessage.target == javaClass.simpleName) {
+                handler.post {
+                    receiveMessage(busMessage)
+                    removeEventBusMessage(busMessage)
+                }
+            }
+        }else{
             handler.post {
-                receiveMessage(busMessage)
-                removeEventBusMessage(busMessage)
+                val receiveAllMessage = receiveAllMessage(busMessage)
+                if(receiveAllMessage){
+                    removeEventBusMessage(busMessage)
+                }
+
             }
         }
     }
 
     open fun receiveMessage(busMessage: BusMessage<Any>){
 
+    }
+    open fun receiveAllMessage(busMessage: BusMessage<Any>) :Boolean{
+        return false
     }
     abstract fun setLayoutId(): Int
 

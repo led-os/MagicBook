@@ -195,11 +195,7 @@ public class BookUtil {
             }
 
             String bufStr = new String(buf);
-//            bufStr = bufStr.replaceAll("\r\n","\r\n\u3000\u3000");
-//            bufStr = bufStr.replaceAll("\u3000\u3000+[ ]*","\u3000\u3000");
             bufStr = bufStr.replaceAll("\r\n+\\s*","\r\n\u3000\u3000");
-//            bufStr = bufStr.replaceAll("\r\n[ {0,}]","\r\n\u3000\u3000");
-//            bufStr = bufStr.replaceAll(" ","");
             bufStr = bufStr.replaceAll("\u0000","");
             buf = bufStr.toCharArray();
             bookLen += buf.length;
@@ -207,11 +203,7 @@ public class BookUtil {
             Cache cache = new Cache();
             cache.setSize(buf.length);
             cache.setData(new WeakReference<char[]>(buf));
-
-//            bookLen += result;
             myArray.add(cache);
-//            myArray.add(new WeakReference<char[]>(buf));
-//            myArray.set(index,);
             try {
                 File cacheBook = new File(fileName(index));
                 if (!cacheBook.exists()){
@@ -234,7 +226,9 @@ public class BookUtil {
         }.start();
     }
 
-    //获取章节
+    /**
+     * 获取章节
+     */
     public synchronized void getChapter(){
         try {
             long size = 0;

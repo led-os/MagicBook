@@ -1,5 +1,6 @@
 package com.key.magicbook.util;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,9 +11,16 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 
+import androidx.core.graphics.ColorUtils;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.request.target.SimpleTarget;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -94,6 +102,14 @@ public class BitmapUtil {
     }
 
 
+    public static Integer getColorRevert(int BlendColor,int colorBlend){
+        int color = ColorUtils.blendARGB(BlendColor,colorBlend, 0.8f);
+        int alpha = (color >> 24) & 0xff;
+        int red = 255 - ((color >> 16) & 0xff);
+        int green= 255 - ((color >> 8) & 0xff);
+        int blue = 255 - (color & 0xff);
+        return ((alpha & 0xff) << 24 | (red & 0xff) << 16 | (green & 0xff) << 8 | blue & 0xff);
+    }
     public static Bitmap GetLocalOrNetBitmap(String url)
     {
         Bitmap bitmap = null;
@@ -101,14 +117,8 @@ public class BitmapUtil {
         BufferedOutputStream out = null;
         try
         {
-            in = new BufferedInputStream(new URL(url).openStream(), 5*1024);
-            final ByteArrayOutputStream dataStream = new ByteArrayOutputStream();
-            out = new BufferedOutputStream(dataStream, 5*1024);
-            copy(in, out);
-            out.flush();
-            byte[] data = dataStream.toByteArray();
-            bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
-            data = null;
+            FileInputStream fis = new FileInputStream(url);
+            bitmap  = BitmapFactory.decodeStream(fis);
             return bitmap;
         }
         catch (IOException e)
@@ -138,5 +148,8 @@ public class BitmapUtil {
             return null;
         }
     }
+
+
+
 
 }

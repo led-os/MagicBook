@@ -5,6 +5,8 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.key.keylibrary.base.GlobalApplication;
+
 import static com.key.keylibrary.base.GlobalApplication.getContext;
 
 /**
@@ -24,6 +26,11 @@ public class UiUtils {
     }
 
 
+
+
+    public static Context getContext() {
+        return GlobalApplication.getContext();
+    }
 
     /**
      * 获取屏幕宽度

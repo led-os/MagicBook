@@ -22,9 +22,9 @@ class BezierTypeEvaluate : TypeEvaluator<PointF> {
     private fun getBezierPoint(start: PointF, end: PointF, control: PointF, t: Float): PointF {
         val bezierPoint = PointF()
         bezierPoint.x =
-            (1 - t) * (1 - t) * start.x + 2f * t * (1 - t) * control.x + t * t * end.x
+                (1 - t) * (1 - t) * start.x + 2f * t * (1 - t) * control.x + t * t * end.x
         bezierPoint.y =
-            (1 - t) * (1 - t) * start.y + 2f * t * (1 - t) * control.y + t * t * end.y
+                (1 - t) * (1 - t) * start.y + 2f * t * (1 - t) * control.y + t * t * end.y
         return bezierPoint
     }
 
@@ -33,9 +33,9 @@ class BezierTypeEvaluate : TypeEvaluator<PointF> {
         return if (n == 1) {
             (1 - t) * mPointList!![position].x + t * mPointList!![position + 1].x
         } else (1 - t) * getBezierPointX(n - 1, position, t) + t * getBezierPointX(
-            n - 1,
-            position + 1,
-            t
+                n - 1,
+                position + 1,
+                t
         )
     }
 
@@ -44,9 +44,9 @@ class BezierTypeEvaluate : TypeEvaluator<PointF> {
         return if (n == 1) {
             (1 - t) * mPointList!![position].y + t * mPointList!![position + 1].y
         } else (1 - t) * getBezierPointY(n - 1, position, t) + t * getBezierPointX(
-            n - 1,
-            position + 1,
-            t
+                n - 1,
+                position + 1,
+                t
         )
     }
 

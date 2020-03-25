@@ -2,9 +2,9 @@
 <resources>
 
 
-   <declare-styleable name="JumpOnTextView">
-       <attr name="jump_padding" format="dimension"/>
-       <attr name="jump_text" format="string"/>
-   </declare-styleable>
+    <declare-styleable name="JumpOnTextView">
+        <attr name="jump_padding" format="dimension"/>
+        <attr name="jump_text" format="string"/>
+    </declare-styleable>
 
 </resources>
