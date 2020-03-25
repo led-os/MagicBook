@@ -4,9 +4,14 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import com.bumptech.glide.Glide
@@ -20,6 +25,7 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.AppBarStateChangeListener
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.set.SetActivity
 import com.key.magicbook.util.BitmapUtil
 import com.key.magicbook.util.GlideUtils
 import kotlinx.android.synthetic.main.fragment_index_mine.*
@@ -29,12 +35,22 @@ import kotlinx.android.synthetic.main.fragment_index_mine.*
  */
 class MineFragment :BaseFragment(){
     private var finalColor = 0
+    private var appCompatActivity :AppCompatActivity ?= null
+    var functions = arrayOf("阅读历史", "我的收藏","书单","我的评论",
+        "阅读数据","关于我们", "相关法律","设置")
+    var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,R.mipmap.chat,
+        R.mipmap.data,R.mipmap.us,R.mipmap.law,R.mipmap.setting)
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_mine
     }
 
+
+
     override fun initView() {
+        initFunction();
         setTitle(toolbar)
+        appCompatActivity = activity as AppCompatActivity
+        appCompatActivity!!.setSupportActionBar(toolbar)
         setIconBackground("")
         icon.setOnClickListener {
             val busMessage = BusMessage<Bitmap>()
@@ -52,6 +68,7 @@ class MineFragment :BaseFragment(){
                      when(state){
                          State.EXPANDED->{
                             toolbar_right_icon.visibility = View.INVISIBLE
+
                          }
                          State.COLLAPSED->{
                              val colorRevert = ColorUtils.blendARGB(
@@ -70,6 +87,32 @@ class MineFragment :BaseFragment(){
     }
 
 
+    private fun initFunction(){
+        val inflater = LayoutInflater.from(activity)
+        for(value in functions){
+            inflater.inflate(R.layout.merge_mine_fragment_function, fun_root, true)
+        }
+
+        for(value in 0 until fun_root.childCount){
+             fun_root.getChildAt(value).findViewById<TextView>(R.id.name).text = functions[value]
+
+             Glide.with(activity!!).
+                 load(activity!!.getDrawable(icons[value])).
+                 into(fun_root.getChildAt(value).findViewById<ImageView>(R.id.icon))
+
+
+            when(value){
+                7->{
+                    fun_root.getChildAt(value).setOnClickListener {
+                        startActivity( Intent(activity,SetActivity::class.java))
+                    }
+
+                }
+            }
+
+        }
+
+    }
     @Suppress("DEPRECATION")
     private fun setIconBackground(url :String){
         if(url.isNotEmpty()){
@@ -139,4 +182,9 @@ class MineFragment :BaseFragment(){
         return true
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        appCompatActivity!!.supportActionBar!!.title = "谢泽凯"
+    }
 }

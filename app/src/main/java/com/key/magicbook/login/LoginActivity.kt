@@ -1,5 +1,6 @@
 package com.key.magicbook.login
 
+import com.key.magicbook.R
 import com.key.magicbook.base.MineBaseActivity
 
 /**
@@ -15,6 +16,6 @@ class LoginActivity :MineBaseActivity<LoginPresenter>() {
     }
 
     override fun setLayoutId(): Int {
-          return 0
+          return R.layout.activity_login
     }
 }
