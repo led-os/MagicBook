@@ -8,12 +8,14 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         app:title="设置"
-        app:navigationIcon="@mipmap/back_blue"
+        android:minHeight="?attr/actionBarSize"
+        app:navigationIcon="@mipmap/back_black"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
 
     <Button
+        android:layout_margin="13dp"
         android:id="@+id/quit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

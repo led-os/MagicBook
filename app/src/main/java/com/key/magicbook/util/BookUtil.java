@@ -3,7 +3,9 @@ package com.key.magicbook.util;
 import android.content.ContentValues;
 import android.os.Environment;
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.key.keylibrary.base.ConstantValues;
 import com.key.keylibrary.utils.FileUtils;
 import com.key.magicbook.bean.BookCatalogue;
 import com.key.magicbook.bean.BookList;
@@ -24,7 +26,7 @@ import java.util.List;
  * Created by Administrator on 2016/8/11 0011.
  */
 public class BookUtil {
-    private static final String cachedPath = Environment.getExternalStorageDirectory() + "/treader/";
+    private static final String cachedPath = ConstantValues.FILE_BOOK_CACHE;
     //存储的字符数
     public static final int cachedSize = 30000;
 //    protected final ArrayList<WeakReference<char[]>> myArray = new ArrayList<>();
@@ -49,7 +51,6 @@ public class BookUtil {
 
     public synchronized void openBook(BookList bookList) throws IOException {
         this.bookList = bookList;
-        //如果当前缓存不是要打开的书本就缓存书本同时删除缓存
 
         if (bookPath == null || !bookPath.equals(bookList.getBookpath())) {
             cleanCacheFile();
@@ -95,7 +96,7 @@ public class BookUtil {
                 break;
             }
             char wordChar = (char) word;
-            if ((wordChar + "").equals("\r") && (((char)next(true)) + "").equals("\n")){
+            if ((wordChar + "").equals("\r") || (((char)next(true)) + "").equals("\n")){
                 next(false);
                 break;
             }
@@ -115,9 +116,8 @@ public class BookUtil {
                 break;
             }
             char wordChar = (char) word;
-            if ((wordChar + "").equals("\n") && (((char)pre(true)) + "").equals("\r")){
+            if ((wordChar + "").equals("\n") || (((char)pre(true)) + "").equals("\r")){
                 pre(false);
-//                line = "\r\n" + line;
                 break;
             }
             line = wordChar + line;
@@ -125,9 +125,7 @@ public class BookUtil {
         return line.toCharArray();
     }
 
-    public char current(){
-//        int pos = (int) (position % cachedSize);
-//        int cachePos = (int) (position / cachedSize);
+    public char current(){;
         int cachePos = 0;
         int pos = 0;
         int len = 0;
@@ -162,7 +160,7 @@ public class BookUtil {
         return position;
     }
 
-    public void setPostition(long position){
+    public void setPosition(long position){
         this.position = position;
     }
 
@@ -175,48 +173,58 @@ public class BookUtil {
             }
             ContentValues values = new ContentValues();
             values.put("charset",m_strCharsetName);
-            LitePal.update(BookList.class,values,bookList.getId());
+            try {
+                LitePal.update(BookList.class,values,bookList.getId());
+            }catch (Exception e){
+            }
+
         }else{
             m_strCharsetName = bookList.getCharset();
         }
 
-        File file = new File(bookPath);
-        InputStreamReader reader = new InputStreamReader(new FileInputStream(file),m_strCharsetName);
-        int index = 0;
-        bookLen = 0;
-        directoryList.clear();
-        myArray.clear();
-        while (true){
-            char[] buf = new char[cachedSize];
-            int result = reader.read(buf);
-            if (result == -1){
-                reader.close();
-                break;
-            }
-
-            String bufStr = new String(buf);
-            bufStr = bufStr.replaceAll("\r\n+\\s*","\r\n\u3000\u3000");
-            bufStr = bufStr.replaceAll("\u0000","");
-            buf = bufStr.toCharArray();
-            bookLen += buf.length;
-
-            Cache cache = new Cache();
-            cache.setSize(buf.length);
-            cache.setData(new WeakReference<char[]>(buf));
-            myArray.add(cache);
-            try {
-                File cacheBook = new File(fileName(index));
-                if (!cacheBook.exists()){
-                    cacheBook.createNewFile();
+        try {
+            File file = new File(bookPath);
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(file),m_strCharsetName);
+            int index = 0;
+            bookLen = 0;
+            directoryList.clear();
+            myArray.clear();
+            while (true){
+                char[] buf = new char[cachedSize];
+                int result = reader.read(buf);
+                if (result == -1){
+                    reader.close();
+                    break;
                 }
-                final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName(index)), "UTF-16LE");
-                writer.write(buf);
-                writer.close();
-            } catch (IOException e) {
-                throw new RuntimeException("Error during writing " + fileName(index));
+
+
+                String bufStr = new String(buf);
+                bufStr = bufStr.replaceAll("\r|\n","\r\n");
+                bufStr = bufStr.replaceAll("\u0000","");
+                buf = bufStr.toCharArray();
+                bookLen += buf.length;
+
+                Cache cache = new Cache();
+                cache.setSize(buf.length);
+                cache.setData(new WeakReference<char[]>(buf));
+                myArray.add(cache);
+                try {
+                    File cacheBook = new File(fileName(index));
+                    if (!cacheBook.exists()){
+                        cacheBook.createNewFile();
+                    }
+                    final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName(index)), "UTF-16LE");
+                    writer.write(buf);
+                    writer.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error during writing " + fileName(index));
+                }
+                index ++;
             }
-            index ++;
+        }catch (Exception e){
+
         }
+
 
         new Thread(){
             @Override
@@ -298,7 +306,6 @@ public class BookUtil {
             }
             Cache cache = myArray.get(index);
             cache.setData(new WeakReference<char[]>(block));
-//            myArray.set(index, new WeakReference<char[]>(block));
         }
         return block;
     }

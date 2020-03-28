@@ -8,5 +8,7 @@ import com.key.keylibrary.utils.UiUtils;
 public class ConstantValues {
   public static final String DOWNLOAD = GlobalApplication.getContext().getExternalFilesDir("Download").getAbsolutePath();
   public static final String FILE_PHOTO = UiUtils.getContext().getExternalFilesDir("TEMP").getAbsolutePath();
+  public static final String FILE_BOOK= UiUtils.getContext().getExternalFilesDir("BOOK").getAbsolutePath();
+  public static final String FILE_BOOK_CACHE= UiUtils.getContext().getExternalFilesDir("CACHE").getAbsolutePath();
   public static final String TAKE_PHOTO = "take_photo_identification";
 }

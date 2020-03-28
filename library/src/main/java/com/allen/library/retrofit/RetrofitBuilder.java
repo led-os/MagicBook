@@ -38,6 +38,8 @@ public class RetrofitBuilder {
         return this;
     }
 
+
+
     public RetrofitBuilder setCallAdapterFactory(CallAdapter.Factory... callAdapterFactory) {
         this.callAdapterFactory = callAdapterFactory;
         return this;

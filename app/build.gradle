@@ -52,7 +52,8 @@ dependencies {
         classRename 'org.w3c.dom.**', 'my.org.w3c.dom.@1'
         classRename 'com.gargoylesoftware.css.dom.**','my.com.gargoylesoftware.css.dom.@1'
     }
-
+    implementation  'com.umeng.umsdk:analytics:8.0.0'
+    implementation  'com.umeng.umsdk:common:2.0.0'
     implementation project(path: ':KeyLibrary')
     implementation project(path: ':FlycoTabLayout')
     implementation project(path: ':library')

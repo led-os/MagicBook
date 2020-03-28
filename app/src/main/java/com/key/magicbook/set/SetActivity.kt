@@ -22,6 +22,7 @@ class SetActivity : MineBaseActivity<SetPresenter>() {
         }
         quit.setOnClickListener {
             startActivity(Intent(this,LoginActivity::class.java))
+            overridePendingTransition(0,0)
         }
     }
     override fun setLayoutId(): Int {

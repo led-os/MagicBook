@@ -46,7 +46,7 @@ public class CustomEditTextView extends ConstraintLayout {
     private String hint;
     private LinearLayout mNoClickView;
     private CheckListener checkListener;
-    private ImageView delete_all;
+    private ImageView clear;
     private boolean isCard = false;
     int lastContentLength = 0;
     boolean isDelete = false;
@@ -84,9 +84,9 @@ public class CustomEditTextView extends ConstraintLayout {
         mRoot = (ConstraintLayout) inflate(context, R.layout.item_custom_edit, this);
         mHint = mRoot.findViewById(R.id.custom_remind);
         mEd = mRoot.findViewById(R.id.custom_edit);
-        delete_all = mRoot.findViewById(R.id.delete_all);
+        clear = mRoot.findViewById(R.id.clear);
         mNoClickView = mRoot.findViewById(R.id.cant_clickable);
-        delete_all.setOnClickListener(v -> mEd.setText(""));
+        clear.setOnClickListener(v -> mEd.setText(""));
         mEd.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_UP:
@@ -129,9 +129,9 @@ public class CustomEditTextView extends ConstraintLayout {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().isEmpty()) {
-                    delete_all.setVisibility(View.GONE);
+                    clear.setVisibility(View.GONE);
                 } else {
-                    delete_all.setVisibility(View.VISIBLE);
+                    clear.setVisibility(View.VISIBLE);
                     mHint.setVisibility(View.VISIBLE);
                     mEd.setHint("");
                 }
@@ -162,7 +162,7 @@ public class CustomEditTextView extends ConstraintLayout {
             }
         });
 
-        String cg_hint = attrs.getAttributeValue(NAMESPACE, "cg_hint");
+        String cg_hint = attrs.getAttributeValue(NAMESPACE, "custom_hint");
         if (cg_hint != null) {
             if (!cg_hint.isEmpty()) {
                 if (cg_hint.contains("@")) {
@@ -181,14 +181,14 @@ public class CustomEditTextView extends ConstraintLayout {
             }
             if (hasFocus) {
                 if (!mEd.getText().toString().isEmpty()) {
-                    delete_all.setVisibility(View.VISIBLE);
+                    clear.setVisibility(View.VISIBLE);
                 } else {
-                    delete_all.setVisibility(View.GONE);
+                    clear.setVisibility(View.GONE);
                 }
                 mHint.setVisibility(View.VISIBLE);
                 mEd.setHint("");
             } else {
-                delete_all.setVisibility(View.GONE);
+                clear.setVisibility(View.GONE);
                 String string = ((TextView) v).getText().toString();
                 if (string.isEmpty()) {
                     illegal();
@@ -437,9 +437,9 @@ public class CustomEditTextView extends ConstraintLayout {
 
     public void setDeleteButtonShow(boolean show){
         if(show){
-            delete_all.setVisibility(View.VISIBLE);
+            clear.setVisibility(View.VISIBLE);
         }else{
-            delete_all.setVisibility(View.INVISIBLE);
+            clear.setVisibility(View.INVISIBLE);
         }
     }
 

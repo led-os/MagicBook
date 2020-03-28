@@ -6,15 +6,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
-        android:paddingTop="18dp"
+        android:paddingTop="20dp"
         android:paddingRight="16dp"
-        android:paddingBottom="18dp">
+        android:paddingBottom="20dp">
 
 
         <ImageView
+            android:layout_gravity="center"
             android:id="@+id/icon"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:scaleType="fitXY"
             android:src="@mipmap/history" />
 
@@ -23,11 +24,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="10dp"
+            android:paddingLeft="18dp"
             android:text="阅读历史"
             android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"/>
 
 
         <View

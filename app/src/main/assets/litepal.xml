@@ -5,8 +5,8 @@
     <version value="1" ></version>
 
     <list>
-        <mapping class="com.zijie.treader.db.BookCatalogue"></mapping>
-        <mapping class="com.zijie.treader.db.BookList"></mapping>
-        <mapping class="com.zijie.treader.db.BookMarks"></mapping>
+        <mapping class="com.key.magicbook.bean.BookCatalogue"></mapping>
+        <mapping class="com.key.magicbook.bean.BookList"></mapping>
+        <mapping class="com.key.magicbook.bean.BookMarks"></mapping>
     </list>
 </litepal>

@@ -105,6 +105,7 @@ class MineFragment :BaseFragment(){
                 7->{
                     fun_root.getChildAt(value).setOnClickListener {
                         startActivity( Intent(activity,SetActivity::class.java))
+                        activity!!.overridePendingTransition(0,0)
                     }
 
                 }
