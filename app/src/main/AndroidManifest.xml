@@ -31,6 +31,8 @@
         <activity android:name=".index.IndexActivity"/>
         <activity android:name=".set.SetActivity"/>
         <activity android:name=".login.LoginActivity"/>
+        <activity android:name=".read.ReadActivity"/>
+        <activity android:name=".search.SearchActivity"/>
         <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>

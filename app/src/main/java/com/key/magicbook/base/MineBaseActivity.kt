@@ -1,12 +1,17 @@
 package com.key.magicbook.base
 
 import android.app.Activity
+import android.graphics.Color
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.widget.ImageView
+import androidx.appcompat.widget.Toolbar
 import com.key.keylibrary.base.BaseActivity
 import com.key.keylibrary.base.BasePresenter
 import com.key.keylibrary.base.IView
-import me.jessyan.autosize.internal.CustomAdapt
+import com.key.magicbook.R
+import com.tamsiree.rxui.view.progressing.style.CubeGrid
+import com.umeng.analytics.MobclickAgent
 
 /**
  * created by key  on 2020/1/5
@@ -19,6 +24,15 @@ abstract class MineBaseActivity<P : BasePresenter<Activity>> : BaseActivity(),IV
     }
 
 
+    override fun onResume() {
+        super.onResume()
+        MobclickAgent.onResume(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        MobclickAgent.onPause(this)
+    }
     override fun onDestroy() {
         super.onDestroy()
         unBindView()
@@ -37,5 +51,15 @@ abstract class MineBaseActivity<P : BasePresenter<Activity>> : BaseActivity(),IV
     }
 
     abstract fun createPresenter(): P?
+
+
+    fun initToolbar(toolbar : Toolbar){
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+    }
+
+
 
 }

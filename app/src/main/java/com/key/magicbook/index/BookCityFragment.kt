@@ -1,7 +1,9 @@
 package com.key.magicbook.index
 
+import android.content.Intent
 import com.key.keylibrary.base.BaseFragment
 import com.key.magicbook.R
+import com.key.magicbook.search.SearchActivity
 import kotlinx.android.synthetic.main.fragment_index_book_city.*
 
 /**
@@ -15,5 +17,9 @@ class BookCityFragment :BaseFragment(){
 
     override fun initView() {
         setTitle(toolbar)
+        search.setOnClickListener {
+            startActivity(Intent(activity,SearchActivity::class.java))
+            activity!!.overridePendingTransition(0,0)
+        }
     }
 }

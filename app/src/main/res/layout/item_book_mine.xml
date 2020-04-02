@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/background_white_f2"
+    android:padding="13dp"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -10,10 +11,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/book_cover"
-        android:layout_width="80dp"
+        android:layout_width="95dp"
         android:scaleType="fitXY"
         android:src="@mipmap/bg"
-        android:layout_height="100dp"/>
+        android:layout_height="120dp"/>
 
 
     <TextView
@@ -21,8 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="13dp"
         android:textColor="@color/black"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="@+id/book_cover"
         app:layout_constraintRight_toRightOf="@+id/book_cover"

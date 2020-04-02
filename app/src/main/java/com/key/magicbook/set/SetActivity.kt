@@ -16,12 +16,9 @@ class SetActivity : MineBaseActivity<SetPresenter>() {
 
     override fun initView() {
         setTitle(toolbar)
-        setSupportActionBar(toolbar)
-        toolbar.setNavigationOnClickListener {
-            finish()
-        }
+        initToolbar(toolbar)
         quit.setOnClickListener {
-            startActivity(Intent(this,LoginActivity::class.java))
+            startActivity(Intent(this, LoginActivity::class.java))
             overridePendingTransition(0,0)
         }
     }

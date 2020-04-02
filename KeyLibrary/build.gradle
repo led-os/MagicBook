@@ -64,7 +64,10 @@ dependencies {
     api 'com.scwang.smartrefresh:SmartRefreshHeader:1.1.0-alpha-14'
     api 'jp.wasabeef:recyclerview-animators:2.2.7'
     api 'com.jakewharton:butterknife:10.1.0'
-    api 'com.github.tamsiree.RxTool:RxUI:2.4.3'
+    //基础工具库
+    api 'com.github.tamsiree.RxTool:RxKit:2.5.9'
+    //UI库
+    api 'com.github.tamsiree.RxTool:RxUI:2.5.9'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     api 'com.yanzhenjie:permission:2.0.3'

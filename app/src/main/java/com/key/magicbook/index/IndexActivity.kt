@@ -1,5 +1,6 @@
 package com.key.magicbook.index
 
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -7,9 +8,14 @@ import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.CustomTabEntity
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.key.magicbook.R
+import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.TabEntity
+import com.key.magicbook.jsoup.JsoupUtils
+import com.key.magicbook.jsoup.RxJsoup
 import kotlinx.android.synthetic.main.activity_index.*
+import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import java.util.ArrayList
 
 /**
