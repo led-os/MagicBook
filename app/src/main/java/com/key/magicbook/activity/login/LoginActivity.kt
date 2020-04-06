@@ -1,4 +1,4 @@
-package com.key.magicbook.login
+package com.key.magicbook.activity.login
 
 import com.key.magicbook.R
 import com.key.magicbook.base.MineBaseActivity

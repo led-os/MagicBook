@@ -6,4 +6,7 @@ package com.key.magicbook.url
 object FreeUrl {
     var FREE_KEY = "free"
     var FREE_URL = "https://blog.csdn.net/"
+
+    var DINGDIANN_KEY = "dingdainn"
+    var DINGDIANN_URL = "https://www.dingdiann.com/"
 }

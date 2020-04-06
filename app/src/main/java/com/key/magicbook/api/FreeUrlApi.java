@@ -12,4 +12,8 @@ public interface FreeUrlApi {
 
     @GET
     Observable<ResponseBody> freeUrl(@Url String fileUrl);
+
+
+    @GET
+    Observable<ResponseBody> freeSecondUrl(@Url String fileUrl);
 }

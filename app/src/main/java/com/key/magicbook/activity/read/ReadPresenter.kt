@@ -1,4 +1,4 @@
-package com.key.magicbook.read
+package com.key.magicbook.activity.read
 
 import android.app.Activity
 import com.key.keylibrary.base.BasePresenter

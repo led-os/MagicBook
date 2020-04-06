@@ -1,16 +1,14 @@
-package com.key.magicbook.index
+package com.key.magicbook.activity.index
 
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
@@ -25,7 +23,7 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.AppBarStateChangeListener
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
-import com.key.magicbook.set.SetActivity
+import com.key.magicbook.activity.set.SetActivity
 import com.key.magicbook.util.BitmapUtil
 import com.key.magicbook.util.GlideUtils
 import kotlinx.android.synthetic.main.fragment_index_mine.*

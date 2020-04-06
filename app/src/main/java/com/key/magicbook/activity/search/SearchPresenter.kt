@@ -1,4 +1,4 @@
-package com.key.magicbook.search
+package com.key.magicbook.activity.search
 
 import android.app.Activity
 import com.key.keylibrary.base.BasePresenter

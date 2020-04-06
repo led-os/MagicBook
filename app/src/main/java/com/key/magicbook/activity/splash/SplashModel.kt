@@ -1,4 +1,4 @@
-package com.key.magicbook.splash
+package com.key.magicbook.activity.splash
 
 /**
  * created by key  on 2020/1/5

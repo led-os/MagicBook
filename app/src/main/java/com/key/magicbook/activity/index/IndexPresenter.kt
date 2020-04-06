@@ -1,4 +1,4 @@
-package com.key.magicbook.index
+package com.key.magicbook.activity.index
 
 import android.app.Activity
 import com.key.keylibrary.base.BasePresenter

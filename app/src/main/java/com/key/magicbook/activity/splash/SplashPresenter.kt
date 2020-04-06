@@ -1,4 +1,4 @@
-package com.key.magicbook.splash
+package com.key.magicbook.activity.splash
 
 import android.app.Activity
 import com.key.keylibrary.base.BasePresenter

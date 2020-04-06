@@ -1,9 +1,9 @@
-package com.key.magicbook.set
+package com.key.magicbook.activity.set
 
 import android.content.Intent
 import com.key.magicbook.R
 import com.key.magicbook.base.MineBaseActivity
-import com.key.magicbook.login.LoginActivity
+import com.key.magicbook.activity.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_set.*
 
 /**

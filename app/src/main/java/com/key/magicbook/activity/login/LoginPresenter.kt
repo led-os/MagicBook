@@ -1,4 +1,4 @@
-package com.key.magicbook.login
+package com.key.magicbook.activity.login
 
 import android.app.Activity
 import com.key.keylibrary.base.BasePresenter

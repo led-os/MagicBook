@@ -4,6 +4,7 @@ import android.os.Handler
 import com.allen.library.RxHttpUtils
 import com.allen.library.config.OkHttpConfig
 import com.allen.library.cookie.store.SPCookieStore
+import com.allen.library.utils.AppUtils
 import com.key.keylibrary.base.GlobalApplication
 import com.umeng.analytics.MobclickAgent
 import com.umeng.commonsdk.UMConfigure
@@ -19,6 +20,7 @@ class App : GlobalApplication() {
         app = this
         initUmeng()
         initRxHttpUtil();
+        AppUtils.handleSSLHandshake()
     }
 
 
@@ -60,6 +62,9 @@ class App : GlobalApplication() {
     fun getMainThread():Int{
         return getMainThreadId()
     }
+
+
+
     companion object {
 
         private var app: App? = null
@@ -68,4 +73,5 @@ class App : GlobalApplication() {
             return app
         }
     }
+
 }

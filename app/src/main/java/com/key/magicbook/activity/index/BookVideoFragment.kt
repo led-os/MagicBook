@@ -1,4 +1,4 @@
-package com.key.magicbook.index
+package com.key.magicbook.activity.index
 
 import com.key.keylibrary.base.BaseFragment
 import com.key.magicbook.R

@@ -1,13 +1,9 @@
-package com.key.magicbook.splash
+package com.key.magicbook.activity.splash
 import android.content.Intent
 import android.os.Handler
-import com.key.keylibrary.bean.BusMessage
 import com.key.magicbook.R
-import com.key.magicbook.base.BaseContract
 import com.key.magicbook.base.MineBaseActivity
-import com.key.magicbook.index.IndexActivity
-import com.key.magicbook.widget.JumpOnTextView
-import kotlinx.android.synthetic.main.activity_main.*
+import com.key.magicbook.activity.index.IndexActivity
 
 class SplashActivity : MineBaseActivity<SplashPresenter>() {
     override fun initView() {

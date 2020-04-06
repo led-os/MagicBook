@@ -1,9 +1,9 @@
-package com.key.magicbook.index
+package com.key.magicbook.activity.index
 
 import android.content.Intent
 import com.key.keylibrary.base.BaseFragment
 import com.key.magicbook.R
-import com.key.magicbook.search.SearchActivity
+import com.key.magicbook.activity.search.SearchActivity
 import kotlinx.android.synthetic.main.fragment_index_book_city.*
 
 /**

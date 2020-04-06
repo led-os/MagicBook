@@ -31,7 +31,6 @@ public  abstract class CustomBaseObserver<T> extends BaseObserver<T>{
 
     @Override
     public void doOnError(String errorMsg) {
-        ToastUtils.showToast(errorMsg);
         if(iLoadingView != null){
             iLoadingView.hideLoadingView();
         }
@@ -47,7 +46,7 @@ public  abstract class CustomBaseObserver<T> extends BaseObserver<T>{
         if(iLoadingView != null){
             Handler handler = new Handler();
             handler.postDelayed(() ->
-                    iLoadingView.hideLoadingView(), 200);
+                    iLoadingView.hideLoadingView(), 50);
 
         }
     }

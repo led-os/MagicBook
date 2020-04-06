@@ -1,34 +1,17 @@
 package com.key.magicbook.jsoup;
 
-import android.content.Context;
-import android.util.Log;
-
 import com.allen.library.interceptor.Transformer;
-import com.allen.library.observer.StringObserver;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.key.keylibrary.utils.FileUtils;
 import com.key.magicbook.api.ApiHelper;
-import com.key.magicbook.bean.Area;
-import com.key.magicbook.util.CommonUtil;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
-import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**

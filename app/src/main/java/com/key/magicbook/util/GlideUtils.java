@@ -21,7 +21,7 @@ public class GlideUtils {
     }
 
     public static void load(Context context, String url, ImageView iv) {
-        RequestOptions options = new RequestOptions().placeholder(R.mipmap.load_img_cover);
+        RequestOptions options = new RequestOptions().placeholder(R.mipmap.bg);
         loadImage(context, url, options, iv);
     }
 

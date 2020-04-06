@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/content"
     android:background="@color/background_white_f2"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -17,21 +18,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="horizontal">
-            <EditText
-                android:id="@+id/name"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:hint="书名/作者"
-                android:paddingLeft="10dp"
-                android:paddingBottom="3dp"
-                android:lines="1"
-                android:paddingTop="3dp"
-                android:singleLine="true"
-                android:imeOptions="actionSearch"
-                android:layout_gravity="center"
-                android:background="@drawable/shape_bg_ed"
-                android:layout_height="wrap_content"/>
+                <EditText
+                    android:id="@+id/name"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:hint="书名/作者"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="3dp"
+                    android:lines="1"
+                    android:paddingTop="3dp"
+                    android:singleLine="true"
+                    android:imeOptions="actionSearch"
+                    android:layout_gravity="center"
+                    android:background="@drawable/shape_bg_ed"
+                    android:layout_height="wrap_content"/>
+
             <TextView
                 android:id="@+id/search"
                 android:layout_width="wrap_content"
@@ -45,48 +49,84 @@
     </androidx.appcompat.widget.Toolbar>
 
 
-    <TextView
-        android:id="@+id/history_des"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:text="搜索历史"/>
-
-    <ImageView
-        app:layout_constraintTop_toTopOf="@+id/history_des"
-        app:layout_constraintBottom_toBottomOf="@id/history_des"
-        app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/delete_history"
-        android:layout_margin="@dimen/dp_10"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@mipmap/delete_history"/>
-
-
-    <ScrollView
-        app:layout_constraintTop_toBottomOf="@+id/delete_history"
-        android:id="@+id/scroll"
-        android:layout_marginBottom="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="100dp">
-        <com.key.keylibrary.widget.FlowLayout
-            android:layout_margin="5dp"
-            android:id="@+id/flow"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"/>
-    </ScrollView>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
-        app:layout_constraintTop_toBottomOf="@+id/scroll"
+        android:paddingBottom="26dp"
+        android:background="@color/background_white_f9"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
         android:layout_width="match_parent"
         android:overScrollMode="never"
         android:layout_height="wrap_content"/>
+
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:id="@+id/history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            app:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/history_des"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:background="@color/background_white_f2"
+            android:textColor="@color/black"
+            android:text="搜索历史"/>
+
+        <ImageView
+            app:layout_constraintTop_toTopOf="@+id/history_des"
+            app:layout_constraintBottom_toBottomOf="@id/history_des"
+            app:layout_constraintRight_toRightOf="parent"
+            android:id="@+id/delete_history"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/delete_history"/>
+
+
+        <ScrollView
+            app:layout_constraintTop_toBottomOf="@+id/history_des"
+            android:id="@+id/scroll"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="25dp"
+            android:background="@drawable/bg_bottom_radius_f2"
+            android:layout_height="match_parent">
+
+            <com.key.keylibrary.widget.FlowLayout
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:id="@+id/flow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </ScrollView>
+
+
+        <LinearLayout
+            android:id="@+id/up"
+            app:layout_constraintTop_toBottomOf="@+id/scroll"
+            android:background="@color/background_white_f2"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+              <ImageView
+                  android:layout_width="25dp"
+                  android:layout_height="25dp"
+                  android:src="@mipmap/up"/>
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,8 @@ public class LoadingView implements ILoadingView {
 
 
 
+
+
     public LoadingView(Context context){
         View inflate = UiUtils.inflate(context, R.layout.item_loading);
         ImageView imageView = inflate.findViewById(R.id.image);
@@ -52,6 +54,8 @@ public class LoadingView implements ILoadingView {
                 .setWidth(WindowManager.LayoutParams.WRAP_CONTENT)
                 .setVerticalPadding(0)
                 .setHorizontalPadding(0)
+                .setTheme(R.style.NormalDialogNoBGTheme)
                 .build();
+        loadingDialog.setCancelable(false);
     }
 }

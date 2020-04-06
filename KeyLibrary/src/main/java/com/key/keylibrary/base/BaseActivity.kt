@@ -2,14 +2,15 @@ package com.key.keylibrary.base
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.content.res.TypedArray
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import butterknife.ButterKnife
 import butterknife.Unbinder
@@ -215,5 +216,14 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
 
     override fun getSizeInDp(): Float {
         return 384f
+    }
+
+    open fun hintKeyBoard() {
+        val view = this.currentFocus
+        if (view != null) {
+            val imm =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        }
     }
 }

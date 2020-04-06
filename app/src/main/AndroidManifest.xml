@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".splash.SplashActivity"
+        <activity android:name="com.key.magicbook.activity.splash.SplashActivity"
             android:theme="@style/MineSplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,11 +28,11 @@
         </activity>
 
 
-        <activity android:name=".index.IndexActivity"/>
-        <activity android:name=".set.SetActivity"/>
-        <activity android:name=".login.LoginActivity"/>
-        <activity android:name=".read.ReadActivity"/>
-        <activity android:name=".search.SearchActivity"/>
+        <activity android:name="com.key.magicbook.activity.index.IndexActivity"/>
+        <activity android:name="com.key.magicbook.activity.set.SetActivity"/>
+        <activity android:name="com.key.magicbook.activity.login.LoginActivity"/>
+        <activity android:name="com.key.magicbook.activity.read.ReadActivity"/>
+        <activity android:name="com.key.magicbook.activity.search.SearchActivity"/>
         <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>

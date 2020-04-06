@@ -1,21 +1,12 @@
-package com.key.magicbook.index
+package com.key.magicbook.activity.index
 
 import android.content.Intent
-import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.base.BaseFragment
-import com.key.keylibrary.base.ConstantValues
-import com.key.keylibrary.utils.FileUtils
 import com.key.magicbook.R
-import com.key.magicbook.bean.BookList
-import com.key.magicbook.bookpage.Config
-import com.key.magicbook.bookpage.PageFactory
-import com.key.magicbook.bookpage.PageWidget
-import com.key.magicbook.read.ReadActivity
-import com.yanzhenjie.permission.AndPermission
-import com.yanzhenjie.permission.runtime.Permission
+import com.key.magicbook.activity.read.ReadActivity
 import kotlinx.android.synthetic.main.fragment_index_mine_book.*
 
 

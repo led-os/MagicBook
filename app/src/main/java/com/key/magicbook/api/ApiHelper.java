@@ -16,4 +16,7 @@ public class ApiHelper {
     public static FreeUrlApi getFreeUrlApi(){
         return RxHttpUtils.createApi(FreeUrl.INSTANCE.getFREE_KEY(), FreeUrl.INSTANCE.getFREE_URL(), FreeUrlApi.class);
     }
+    public static FreeUrlApi getFreeSecondUrlApi(){
+        return RxHttpUtils.createApi(FreeUrl.INSTANCE.getDINGDIANN_KEY(), FreeUrl.INSTANCE.getDINGDIANN_URL(), FreeUrlApi.class);
+    }
 }
