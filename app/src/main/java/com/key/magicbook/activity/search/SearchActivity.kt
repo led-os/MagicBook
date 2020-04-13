@@ -50,6 +50,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
     private var localDocuments: ArrayList<Document> = ArrayList()
     private var adapter: Adapter? = null
     private var mInputMethodManager:InputMethodManager ?= null
+    private val freeSecondUrl = ApiHelper.getFreeSecondUrlApi()
     override fun createPresenter(): SearchPresenter {
         return SearchPresenter()
     }
@@ -58,6 +59,9 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         mInputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
         setTitle(toolbar)
         initToolbar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            controlBack()
+        }
         getLocalSearchHistory()
         up.setOnClickListener {
             val fade = Fade()
@@ -116,8 +120,6 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                 history.visibility = View.VISIBLE
             }
         }
-
-
     }
 
 
@@ -248,7 +250,8 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
     }
 
     private fun getDetail(value: String): Observable<Document> {
-        return ApiHelper.getFreeSecondUrlApi().freeSecondUrl(value)
+
+        return freeSecondUrl.freeSecondUrl(value)
             .compose(Transformer.switchSchedulers())
             .flatMap(Function<ResponseBody, ObservableSource<Document?>> { s: ResponseBody ->
                 val parse = Jsoup.parse(s.string())
@@ -302,6 +305,19 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         name.isFocusable = false
         if (mInputMethodManager!!.isActive) {
             mInputMethodManager!!.hideSoftInputFromWindow(name.windowToken, 0)
+        }
+    }
+
+    override fun onBackPressed() {
+        controlBack()
+    }
+    private fun controlBack(){
+        if(history.visibility  == View.GONE){
+            list.visibility = View.GONE
+            history.visibility  = View.VISIBLE
+        }else{
+            finish()
+            overridePendingTransition(0,0)
         }
     }
 }

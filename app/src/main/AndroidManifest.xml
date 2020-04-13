@@ -34,6 +34,7 @@
         <activity android:name="com.key.magicbook.activity.read.ReadActivity"/>
         <activity android:name="com.key.magicbook.activity.search.SearchActivity"/>
         <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
+        <activity android:name=".activity.bookdetail.BookDetailActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>
     </application>

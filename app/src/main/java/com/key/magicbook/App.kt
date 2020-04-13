@@ -34,7 +34,7 @@ class App : GlobalApplication() {
            .setCache(true)
             .setHasNetCacheTime(10)
             .setNoNetCacheTime(3600)
-            .setCookieType( SPCookieStore(this))
+//            .setCookieType( SPCookieStore(this))
             .setReadTimeout(10)
             .setWriteTimeout(10)
             .setConnectTimeout(10)
