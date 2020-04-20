@@ -18,6 +18,7 @@ import com.umeng.analytics.MobclickAgent
  */
 abstract class MineBaseActivity<P : BasePresenter<Activity>> : BaseActivity(),IView{
     private var presenter :P ?=null
+
     override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
         super.onCreate(savedInstanceState, persistentState)
         bindView()

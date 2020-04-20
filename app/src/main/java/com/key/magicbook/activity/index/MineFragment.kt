@@ -34,9 +34,9 @@ import kotlinx.android.synthetic.main.fragment_index_mine.*
 class MineFragment :BaseFragment(){
     private var finalColor = 0
     private var appCompatActivity :AppCompatActivity ?= null
-    var functions = arrayOf("阅读历史", "我的收藏","书单","我的评论",
+    private var functions = arrayOf("阅读历史", "我的收藏","书单","我的评论",
         "阅读数据","关于我们", "相关法律","设置")
-    var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,R.mipmap.chat,
+    private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,R.mipmap.chat,
         R.mipmap.data,R.mipmap.us,R.mipmap.law,R.mipmap.setting)
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_mine

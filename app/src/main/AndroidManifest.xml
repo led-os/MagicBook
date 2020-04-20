@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/m"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -34,6 +34,7 @@
         <activity android:name="com.key.magicbook.activity.read.ReadActivity"/>
         <activity android:name="com.key.magicbook.activity.search.SearchActivity"/>
         <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
+        <activity android:name=".activity.ranking.RankingListActivity"/>
         <activity android:name=".activity.bookdetail.BookDetailActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>

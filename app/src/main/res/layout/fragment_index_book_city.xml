@@ -2,18 +2,26 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:pile="http://schemas.android.com/tools"
     android:background="@color/background_white_f2"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
 
-    <androidx.appcompat.widget.Toolbar
+
+    <LinearLayout
+        android:id="@+id/pile"
         app:layout_constraintTop_toTopOf="parent"
-        android:id="@+id/toolbar"
+        android:layout_margin="@dimen/dp_10"
         android:layout_width="match_parent"
-        android:layout_height="20dp">
+        android:layout_height="wrap_content">
+        <com.stone.pile.libs.PileLayout
+            android:padding="@dimen/dp_10"
+            android:id="@+id/pile_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
-    </androidx.appcompat.widget.Toolbar>
 
 
 

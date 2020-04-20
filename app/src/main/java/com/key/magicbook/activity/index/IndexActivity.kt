@@ -52,7 +52,7 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
         }
 
 
-
+        main_viewpager.offscreenPageLimit = 4
         main_viewpager.adapter = TabAdapter(mFragments,supportFragmentManager)
 
         tabLayout.setTabData(tabEntities)

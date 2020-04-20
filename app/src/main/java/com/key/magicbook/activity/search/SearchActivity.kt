@@ -1,10 +1,13 @@
 package com.key.magicbook.activity.search
 
 import android.content.Context
+import android.content.Intent
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.allen.library.interceptor.Transformer
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.activity.bookdetail.BookDetailActivity
 import com.key.magicbook.api.ApiHelper
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.LoadingView
@@ -48,6 +53,7 @@ import org.litepal.LitePal
 class SearchActivity : MineBaseActivity<SearchPresenter>() {
     private val searchBaseUrl = "https://www.dingdiann.com/"
     private var localDocuments: ArrayList<Document> = ArrayList()
+    private var localUrls :ArrayList<String> = ArrayList()
     private var adapter: Adapter? = null
     private var mInputMethodManager:InputMethodManager ?= null
     private val freeSecondUrl = ApiHelper.getFreeSecondUrlApi()
@@ -78,10 +84,37 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
             search(searchName)
             clearFocus()
         }
+
+        name.setOnEditorActionListener { v, actionId, event ->
+            if (actionId === EditorInfo.IME_ACTION_SEARCH) {
+                val searchName = name.text.toString()
+                checkLocalHistory(searchName)
+                search(searchName)
+                clearFocus()
+                true
+            }
+           false
+
+        }
         val linearLayoutManager = LinearLayoutManager(this)
         list.layoutManager = linearLayoutManager as RecyclerView.LayoutManager?
         adapter = Adapter(R.layout.item_book_search)
+
         list.adapter = adapter
+        adapter!!.setOnItemClickListener { adapter,
+                                           view,
+                                           position ->
+            val url = localUrls[position]
+            val busMessage = BusMessage<Document>()
+            busMessage.target = BookDetailActivity::class.java.simpleName
+            busMessage.data = localDocuments[position]
+            val arrayList = adapter.data as ArrayList<BookSearchResult>
+            busMessage.specialMessage = arrayList[position].name
+            busMessage.message = url
+            sendBusMessage(busMessage = busMessage)
+            startActivity(Intent(this@SearchActivity,BookDetailActivity::class.java))
+            overridePendingTransition(0,0)
+        }
         list.layoutParams.height = UiUtils.getScreenHeight(this) - UiUtils.measureView(toolbar)[1]
         scroll.layoutParams.height = UiUtils.getScreenHeight(this) / 3
         delete_history.setOnClickListener {
@@ -150,13 +183,18 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
             .flatMap(Function<Document, ObservableSource<Observable<ArrayList<Document>>>> {
                 val select = it!!.select(" span:nth-child(2) > a:nth-child(1)")
                 var zipWith: Observable<ArrayList<Document>>? = null
-                localDocuments = ArrayList<Document>()
+                if(select.size > 0){
+                    localDocuments = ArrayList<Document>()
+                    localUrls = ArrayList()
+                }
                 if (select.size >= 2) {
                     val detail = getDetail(searchBaseUrl + select[0].attr("href"))
                     zipWith =
                         detail.zipWith(getDetail(searchBaseUrl + select[1].attr("href")),
                             BiFunction<Document, Document, ArrayList<Document>> { t1, t2 ->
                                 localDocuments.add(t1)
+                                localUrls.add(searchBaseUrl + select[0].attr("href"))
+                                localUrls.add(searchBaseUrl + select[1].attr("href"))
                                 localDocuments.add(t2)
                                 localDocuments
                             })
@@ -166,6 +204,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                             zipWith!!.zipWith(getDetail(searchBaseUrl + select[value].attr("href")),
                                 BiFunction<ArrayList<Document>, Document, ArrayList<Document>> { t1, t2 ->
                                     t1.add(t2)
+                                    localUrls.add(searchBaseUrl + select[value].attr("href"))
                                     t1
                                 })
                     }
@@ -173,6 +212,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                     val detail = getDetail(searchBaseUrl + select[0].attr("href"))
                     detail.flatMap(Function<Document, ObservableSource<ArrayList<Document>>> { document ->
                         localDocuments.add(document)
+                        localUrls.add(searchBaseUrl + select[0].attr("href"))
                         Observable.create { emitter ->
                             emitter.onNext(localDocuments)
                             emitter.onComplete()
@@ -207,6 +247,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
 
                 override fun onError(e: Throwable) {
                     super.onError(e)
+                    findViewById<EditText>(R.id.name).setText("")
                     Toast.makeText(this@SearchActivity, "暂无您搜索的书籍或作者", Toast.LENGTH_SHORT).show()
                 }
             })
@@ -284,6 +325,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
 
         if (dataList.size > 0) {
             history.visibility = View.GONE
+            list.visibility = View.VISIBLE
             adapter!!.setNewData(dataList)
         } else {
             history.visibility = View.VISIBLE
@@ -312,7 +354,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         controlBack()
     }
     private fun controlBack(){
-        if(history.visibility  == View.GONE){
+        if(history.visibility  == View.GONE && list.visibility == View.VISIBLE && adapter!!.data.size > 0){
             list.visibility = View.GONE
             history.visibility  = View.VISIBLE
         }else{

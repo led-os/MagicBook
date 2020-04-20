@@ -1,2 +1,2 @@
-include ':app',':KeyLibrary',':FlycoTabLayout',':library'
+include ':app',':KeyLibrary',':FlycoTabLayout',':library',':pileLibrary'
 rootProject.name='MagicBook'

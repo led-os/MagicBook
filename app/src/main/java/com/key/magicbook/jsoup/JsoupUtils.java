@@ -53,6 +53,19 @@ public class JsoupUtils {
     }
 
 
+    public static   Observable<Document> getFreeDocument(String url){
+        return ApiHelper.getFreeUrlApi().freeUrl(url)
+                .compose(Transformer.<ResponseBody>switchSchedulers())
+                .flatMap((Function<ResponseBody, ObservableSource<Document>>) s -> {
+                    Document parse = Jsoup.parse(s.string());
+                    return Observable.create((ObservableOnSubscribe<Document>) e -> {
+                        e.onNext(parse);
+                        e.onComplete();
+                    });
+                });
+    }
+
+
 
 
     public static Observable<Element> connectFreeUrl(String url,String expression){

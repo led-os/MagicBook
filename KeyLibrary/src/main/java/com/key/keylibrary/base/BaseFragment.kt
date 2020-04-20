@@ -19,6 +19,21 @@ import org.greenrobot.eventbus.ThreadMode
 abstract class BaseFragment : Fragment(), CustomAdapt {
 
     open var handler = Handler()
+    private var isCanShowing = true
+    private val isVisibleOnScreen: Boolean
+        get() {
+            if (isCanShowing && userVisibleHint && isVisible) {
+                if (parentFragment == null) {
+                    return true
+                }
+                return if (parentFragment is BaseFragment) {
+                    (parentFragment as BaseFragment).isVisibleOnScreen
+                } else {
+                    parentFragment!!.isVisible
+                }
+            }
+            return false
+        }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -44,6 +59,7 @@ abstract class BaseFragment : Fragment(), CustomAdapt {
     }
 
     override fun onResume() {
+        isCanShowing = isVisible
         super.onResume()
         registerEventBus(this)
     }
@@ -109,6 +125,23 @@ abstract class BaseFragment : Fragment(), CustomAdapt {
     }
 
 
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        isCanShowing = !hidden
+        onVisibleChanged(isVisibleOnScreen)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isCanShowing = false
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        isCanShowing = isVisibleToUser
+        onVisibleChanged(isVisibleOnScreen)
+    }
     abstract fun setLayoutId(): Int
     abstract fun initView()
+    protected open fun onVisibleChanged(isVisible: Boolean) {}
 }

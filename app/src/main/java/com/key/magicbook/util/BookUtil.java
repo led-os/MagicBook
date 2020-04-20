@@ -199,6 +199,7 @@ public class BookUtil {
 
 
                 String bufStr = new String(buf);
+                bufStr = bufStr.replaceAll(" 　　","\n"+" 　　");
                 bufStr = bufStr.replaceAll("\r|\n","\r\n");
                 bufStr = bufStr.replaceAll("\u0000","");
                 buf = bufStr.toCharArray();

@@ -494,7 +494,7 @@ public class PageFactory {
         if (currentPage.getBegin() <= 0) {
             Log.e(TAG,"当前是第一页");
             if (!m_isFirstPage){
-                Toast.makeText(mContext, "当前是第一页", Toast.LENGTH_SHORT).show();
+   //             Toast.makeText(mContext, "当前是第一页", Toast.LENGTH_SHORT).show();
             }
             m_isFirstPage = true;
             return;
@@ -516,7 +516,7 @@ public class PageFactory {
         if (currentPage.getEnd() >= mBookUtil.getBookLen()) {
             Log.e(TAG,"已经是最后一页了");
             if (!m_isLastPage){
-                Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
             }
             m_isLastPage = true;
             return;
@@ -578,7 +578,6 @@ public class PageFactory {
             if (isCancelled()){
                 return;
             }
-            Log.e("book","open book result :" + result);
             if (result) {
                 PageFactory.mStatus = PageFactory.Status.FINISH;
                 /**
@@ -614,7 +613,6 @@ public class PageFactory {
         protected Boolean doInBackground(Long... params) {
             begin = params[0];
             try {
-                Log.e("book","open book begin");
                 mBookUtil.openBook(bookList);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1052,4 +1050,8 @@ public class PageFactory {
         void changeProgress(float progress);
     }
 
+
+    public long getBookLength(){
+        return mBookUtil.getBookLen();
+    }
 }

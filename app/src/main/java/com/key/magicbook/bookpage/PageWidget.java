@@ -348,6 +348,9 @@ public class PageWidget extends View {
             }
 
             Log.e(TAG,"isNext:" + isNext);
+            if(mTouchListener != null){
+                mTouchListener.up(isNext);
+            }
             if (!noNext) {
                 isRunning = true;
                 mAnimationProvider.startAnimation(mScroller);
@@ -413,6 +416,7 @@ public class PageWidget extends View {
         Boolean prePage();
         Boolean nextPage();
         void cancel();
+        void up(boolean next);
     }
 
 }

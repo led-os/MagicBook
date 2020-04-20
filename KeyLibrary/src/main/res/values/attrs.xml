@@ -36,4 +36,5 @@
     <declare-styleable name="CustomEditTextView">
         <attr name="custom_hint" format="string" />
     </declare-styleable>
+
 </resources>

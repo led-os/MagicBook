@@ -5,4 +5,5 @@
     <string name="camera">照相</string>
     <string name="album">相册</string>
     <string name="cancel">取消</string>
+    <string name="scrollingBehavior">com.key.keylibrary.behavior.MarketScrollingBehavior</string>
 </resources>

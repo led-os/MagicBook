@@ -572,11 +572,6 @@ public class FileUtils {
 
 
 
-    /**
-     * 保存动作数据
-     * data 保存的内容
-     * time 时间作为txt文件名
-     */
     public static void saveString(String data, String name,String filePath) {
         File sdCardDir = new File(filePath);
         if (!sdCardDir.exists()) {
