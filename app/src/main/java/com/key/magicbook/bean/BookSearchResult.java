@@ -1,14 +1,25 @@
 package com.key.magicbook.bean;
 
+import org.jsoup.nodes.Document;
+
 /**
  * created by key  on 2020/4/4
  */
 public class BookSearchResult {
+    private String bookUrl;
     private String name;
     private String author;
     private String img;
     private String updateTime;
+    private Document data;
 
+    public Document getData() {
+        return data;
+    }
+
+    public void setData(Document data) {
+        this.data = data;
+    }
 
     public String getName() {
         return name;
@@ -40,5 +51,14 @@ public class BookSearchResult {
 
     public void setUpdateTime(String updateTime) {
         this.updateTime = updateTime;
+    }
+
+
+    public String getBookUrl() {
+        return bookUrl;
+    }
+
+    public void setBookUrl(String bookUrl) {
+        this.bookUrl = bookUrl;
     }
 }

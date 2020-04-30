@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.GradientDrawable
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,15 +35,30 @@ import kotlinx.android.synthetic.main.fragment_index_mine.*
 class MineFragment :BaseFragment(){
     private var finalColor = 0
     private var appCompatActivity :AppCompatActivity ?= null
-    private var functions = arrayOf("阅读历史", "我的收藏","书单","我的评论",
+    //"我的评论",
+    private var functions = arrayOf("阅读历史", "我的收藏","书单",
         "阅读数据","关于我们", "相关法律","设置")
-    private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,R.mipmap.chat,
+    //R.mipmap.chat,
+    private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,
         R.mipmap.data,R.mipmap.us,R.mipmap.law,R.mipmap.setting)
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_mine
     }
 
 
+     companion object {
+         fun  newInstance():MineFragment{
+             val mineFragment = MineFragment()
+             val bundle = Bundle()
+             mineFragment.arguments = bundle
+             return mineFragment
+         }
+     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments
+    }
 
     override fun initView() {
         initFunction();
@@ -100,7 +116,7 @@ class MineFragment :BaseFragment(){
 
 
             when(value){
-                7->{
+                6->{
                     fun_root.getChildAt(value).setOnClickListener {
                         startActivity( Intent(activity,SetActivity::class.java))
                         activity!!.overridePendingTransition(0,0)

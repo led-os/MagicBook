@@ -1,6 +1,7 @@
 package com.key.magicbook.activity.index
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -18,6 +19,14 @@ class BookRackFragment :BaseFragment(){
         return  R.layout.fragment_index_mine_book
     }
 
+    companion object {
+        fun  newInstance():BookRackFragment{
+            val bookRackFragment = BookRackFragment()
+            val bundle = Bundle()
+            bookRackFragment.arguments = bundle
+            return bookRackFragment
+        }
+    }
     override fun initView() {
         setTitle(refresh)
         refresh.setEnableRefresh(false)
@@ -56,7 +65,10 @@ class BookRackFragment :BaseFragment(){
         }
     }
 
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments
+    }
 }
 
 

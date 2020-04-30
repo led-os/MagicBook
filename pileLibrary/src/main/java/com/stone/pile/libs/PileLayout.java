@@ -30,8 +30,8 @@ public class PileLayout extends ViewGroup {
 
     // 以下三个参数，可通过属性定制
     private int interval = 70; // view之间的间隔
-    private float sizeRatio = 1.2f;
-    private float scaleStep = 0.36f;
+    private float sizeRatio = 1.2f;  //子View宽高比例
+    private float scaleStep = 0.36f; // ？
 
     private int everyWidth;
     private int everyHeight;
@@ -43,20 +43,61 @@ public class PileLayout extends ViewGroup {
     private static final int MODE_HORIZONTAL = 1;
     private static final int MODE_VERTICAL = 2;
     private static final int VELOCITY_THRESHOLD = 200;
-    private int scrollMode;
+    /**
+     * MODE_IDLE ：
+     * MODE_HORIZONTAL ：
+     * MODE_VERTICAL ：
+     * VELOCITY_THRESHOLD ：velocity threshold  加速度极限值
+     */
+    private int scrollMode;  //scroll  滑动状态
+    /**
+     * 按下的点的x,y值
+     */
     private int downX, downY;
+    /**
+     * 一系列手势操作的最后x坐标
+     */
     private float lastX;
     private final int mTouchSlop; // 判定为滑动的阈值，单位是像素
 
+    /**
+     * 动画结束之后的值x轴值
+     */
     private float animateValue;
+    /**
+     * 属性动画
+     */
     private ObjectAnimator animator;
+
+    /**
+     * 插值器
+     */
     private Interpolator interpolator = new DecelerateInterpolator(1.6f);
+    //将具体子View的实现以及子View 的点击事件 交给外部实现与响应
     public Adapter adapter;
+    /**
+     * 是否设置外部适配器
+     */
     private boolean hasSetAdapter = false;
+
+    /**
+     * 页面中展示的个数
+     */
     private float displayCount = 1.5f;
+    /**
+     * 用于动画效果被复用的View
+     */
     private FrameLayout animatingView;
+
+    /**
+     * 速度追踪器
+     */
     private VelocityTracker mVelocityTracker;
 
+    /**
+     * 构造方法
+     * @param context
+     */
     public PileLayout(Context context) {
         this(context, null);
     }
@@ -101,7 +142,6 @@ public class PileLayout extends ViewGroup {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Log.e("pile","viewTreeObserver");
                 if (getHeight() > 0 && null != adapter && !hasSetAdapter) {
                     setAdapter(adapter);
                 }
@@ -449,6 +489,7 @@ public class PileLayout extends ViewGroup {
 
         // ViewdoBindAdapter尚未渲染出来的时候，不做适配
         if (everyWidth > 0 && everyHeight > 0) {
+            Log.e("pile","doBindAdapter");
             doBindAdapter();
         }
     }

@@ -19,7 +19,7 @@ public class CoverAnimation extends AnimationProvider {
         super(mCurrentBitmap, mNextBitmap, width, height);
         mSrcRect = new Rect(0, 0, mScreenWidth, mScreenHeight);
         mDestRect = new Rect(0, 0, mScreenWidth, mScreenHeight);
-        int[] mBackShadowColors = new int[] { 0x66000000,0x00000000};
+        int[] mBackShadowColors = new int[] {0x66000000,0x00000000};
         mBackShadowDrawableLR = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT, mBackShadowColors);
         mBackShadowDrawableLR.setGradientType(GradientDrawable.LINEAR_GRADIENT);
@@ -86,7 +86,6 @@ public class CoverAnimation extends AnimationProvider {
         }
         //滑动速度保持一致
         int duration =  (400 * Math.abs(dx)) / mScreenWidth;
-        Log.e("duration",duration + "");
         scroller.startScroll((int) mTouch.x, 0, dx, 0, duration);
     }
 

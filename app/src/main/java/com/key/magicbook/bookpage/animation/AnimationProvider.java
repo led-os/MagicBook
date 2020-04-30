@@ -7,6 +7,8 @@ import android.widget.Scroller;
 
 /**
  * Created by Administrator on 2016/8/1 0001.
+ *
+ * 抽象类抽取公共方法与属性
  */
 public abstract class AnimationProvider {
 

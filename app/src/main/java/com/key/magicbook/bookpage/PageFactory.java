@@ -165,6 +165,10 @@ public class PageFactory {
     private PageEvent mPageEvent;
     ContentValues values = new ContentValues();
 
+
+    /**
+     * 书本状态
+     */
     private static Status mStatus = Status.OPENING;
 
 
@@ -301,7 +305,6 @@ public class PageFactory {
         float wordWidth =mPaint.measureText("\u3000");
         float width = mVisibleWidth % wordWidth;
         measureMarginWidth = marginWidth + width / 2;
-
     }
 
     /**
@@ -341,10 +344,10 @@ public class PageFactory {
         String status = "";
         switch (mStatus){
             case OPENING:
-                status = "正在打开书本...";
+                status = "";
                 break;
             case FAIL:
-                status = "打开书本失败！";
+                status = "fail";
                 break;
         }
 
@@ -352,13 +355,12 @@ public class PageFactory {
         c.drawBitmap(getBgBitmap(), 0, 0, null);
         waitPaint.setColor(getTextColor());
         waitPaint.setTextAlign(Paint.Align.CENTER);
-
         Rect targetRect = new Rect(0, 0, mWidth, mHeight);
         Paint.FontMetricsInt fontMetrics = waitPaint.getFontMetricsInt();
         // 转载请注明出处：http://blog.csdn.net/hursing
         int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
         // 下面这行是实现水平居中，drawText对应改为传入targetRect.centerX()
-        waitPaint.setTextAlign(Paint.Align.CENTER);
+//        waitPaint.setTextAlign(Paint.Align.CENTER);
         c.drawText(status, targetRect.centerX(), baseline, waitPaint);
         mBookPageWidget.postInvalidate();
     }
@@ -557,6 +559,8 @@ public class PageFactory {
         mStatus = Status.OPENING;
         drawStatus(mBookPageWidget.getCurPage());
         drawStatus(mBookPageWidget.getNextPage());
+
+
         /**
          *  重置打开书本的任务
          */

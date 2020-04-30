@@ -1,14 +1,11 @@
 package com.key.magicbook.activity.read
 
-import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import com.key.keylibrary.base.ConstantValues
 import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.FileUtils
 import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
-import com.key.magicbook.base.LoadingView
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.bean.BookList
@@ -85,12 +82,21 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
     private fun getChapter(b: Boolean) {
         var index :Int = 0
-        for(value in  book!!.chapterNames){
-            if(value == currentChapterName){
-                break
+        if(book != null){
+            if(book!!.chapterNames != null){
+                if(book!!.chapterNames.size > 0){
+                    for(value in  book!!.chapterNames){
+                        if(value == currentChapterName){
+                            break
+                        }
+                        index++
+                    }
+                }
             }
-            index++
+
+
         }
+
 
 
 
@@ -105,11 +111,17 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
         }else{
             //pre
-            if(book!!.chapterUrls.size-1 >= index +1){
-                loadBook(book!!,"",book!!.chapterNames[index+1],b)
-            }else{
-                Toast.makeText(this,"当前章节为第一章",Toast.LENGTH_SHORT).show()
+            if(book != null ){
+                if( book!!.chapterUrls != null){
+                    if(book!!.chapterUrls.size-1 >= index +1){
+                        loadBook(book!!,"",book!!.chapterNames[index+1],b)
+                    }else{
+                        Toast.makeText(this,"当前章节为第一章",Toast.LENGTH_SHORT).show()
+                    }
+                }
+
             }
+
         }
     }
 

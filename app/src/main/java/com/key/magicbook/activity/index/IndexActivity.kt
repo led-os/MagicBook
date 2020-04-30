@@ -17,28 +17,28 @@ import java.util.ArrayList
  */
 class IndexActivity : MineBaseActivity<IndexPresenter>() {
     private val mFragments = ArrayList<Fragment>()
-    private val mTitles = arrayOf("书架", "书角","视频", "我的")
+    private val mTitles = arrayOf("书架", "书角", "我的")
     private val tabEntities = ArrayList<CustomTabEntity>()
+    //R.mipmap.index_book_video_blue,
     private val iconSelectIds = intArrayOf(
         R.mipmap.index_book_blue,
         R.mipmap.index_book_city_blue,
-        R.mipmap.index_book_video_blue,
         R.mipmap.index_book_mine_blue
     )
+    // R.mipmap.index_book_video_gray,
     private val iconUnSelectIds = intArrayOf(
         R.mipmap.index_book_gray,
         R.mipmap.index_book_city_gray,
-        R.mipmap.index_book_video_gray,
         R.mipmap.index_book_mine_gray
     )
 
 
+    //mFragments.add(BookVideoFragment())
     override fun initView() {
         if(mFragments.size == 0){
-            mFragments.add(BookRackFragment())
-            mFragments.add(BookCityFragment())
-            mFragments.add(BookVideoFragment())
-            mFragments.add(MineFragment())
+            mFragments.add(BookRackFragment.newInstance())
+            mFragments.add(BookCityFragment.newInstance())
+            mFragments.add(MineFragment.newInstance())
         }
 
         for (i in this.iconSelectIds.indices) {

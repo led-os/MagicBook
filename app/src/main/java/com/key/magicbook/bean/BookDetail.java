@@ -14,6 +14,7 @@ public class BookDetail {
     private String lastUpdateTime;
     private String bookCover;
     private String bookUrl;
+    private String bookType;
     private List<String> chapterUrls;
     private List<String> chapterNames;
 
@@ -97,5 +98,14 @@ public class BookDetail {
 
     public void setBookCover(String bookCover) {
         this.bookCover = bookCover;
+    }
+
+
+    public String getBookType() {
+        return bookType;
+    }
+
+    public void setBookType(String bookType) {
+        this.bookType = bookType;
     }
 }

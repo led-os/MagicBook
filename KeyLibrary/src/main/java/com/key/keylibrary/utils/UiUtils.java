@@ -1,6 +1,7 @@
 package com.key.keylibrary.utils;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,28 +106,41 @@ public class UiUtils {
     }
 
 
-    public static void fadeIn(View view, float startAlpha, float endAlpha, long duration) {
-        if (view.getVisibility() == View.VISIBLE) return;
-
-        view.setVisibility(View.VISIBLE);
-        Animation animation = new AlphaAnimation(startAlpha, endAlpha);
-        animation.setDuration(duration);
-        view.startAnimation(animation);
+    /**
+     * 判断一个控件是否可见
+     */
+    public static boolean isShow(View view) {
+        Rect rect = new Rect();
+        if (view != null) {
+            boolean visibility = view.getLocalVisibleRect(rect);
+            if (!visibility) {
+                return false;
+            } else {
+                boolean isShowShown = view.isShown();
+                if (!isShowShown) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
     }
 
-    public static void fadeIn(View view) {
-        fadeIn(view, 0F, 1F, 400);
 
-        // We disabled the button in fadeOut(), so enable it here.
-        view.setEnabled(true);
+
+    /**
+     * 判断一个控件是否可见
+     */
+    public static int[] location(View view) {
+        int[] location =new int[2];
+        view.getLocationOnScreen(location);
+        return location;
     }
 
-    public static void fadeOut(View view) {
-        if (view.getVisibility() != View.VISIBLE) return;
-        view.setEnabled(false);
-        Animation animation = new AlphaAnimation(1F, 0F);
-        animation.setDuration(400);
-        view.startAnimation(animation);
-        view.setVisibility(View.GONE);
-    }
+
+
+
+
 }

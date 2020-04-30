@@ -10,7 +10,7 @@ import android.widget.Scroller;
 public class NoneAnimation extends AnimationProvider {
 
     public NoneAnimation(Bitmap mCurrentBitmap, Bitmap mNextBitmap, int width, int height) {
-        super(mCurrentBitmap, mNextBitmap, width, height);
+            super(mCurrentBitmap, mNextBitmap, width, height);
     }
 
     @Override

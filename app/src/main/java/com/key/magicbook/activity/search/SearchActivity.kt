@@ -2,6 +2,7 @@ package com.key.magicbook.activity.search
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.allen.library.interceptor.Transformer
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.bean.BusMessage
@@ -53,9 +55,9 @@ import org.litepal.LitePal
 class SearchActivity : MineBaseActivity<SearchPresenter>() {
     private val searchBaseUrl = "https://www.dingdiann.com/"
     private var localDocuments: ArrayList<Document> = ArrayList()
-    private var localUrls :ArrayList<String> = ArrayList()
+    private var localUrls: ArrayList<String> = ArrayList()
     private var adapter: Adapter? = null
-    private var mInputMethodManager:InputMethodManager ?= null
+    private var mInputMethodManager: InputMethodManager? = null
     private val freeSecondUrl = ApiHelper.getFreeSecondUrlApi()
     override fun createPresenter(): SearchPresenter {
         return SearchPresenter()
@@ -72,7 +74,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         up.setOnClickListener {
             val fade = Fade()
             fade.duration = 1200
-            TransitionManager.beginDelayedTransition(history,fade)
+            TransitionManager.beginDelayedTransition(history, fade)
             history.visibility = View.GONE
             clearFocus()
         }
@@ -93,7 +95,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                 clearFocus()
                 true
             }
-           false
+            false
 
         }
         val linearLayoutManager = LinearLayoutManager(this)
@@ -104,16 +106,15 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         adapter!!.setOnItemClickListener { adapter,
                                            view,
                                            position ->
-            val url = localUrls[position]
             val busMessage = BusMessage<Document>()
             busMessage.target = BookDetailActivity::class.java.simpleName
-            busMessage.data = localDocuments[position]
             val arrayList = adapter.data as ArrayList<BookSearchResult>
             busMessage.specialMessage = arrayList[position].name
-            busMessage.message = url
+            busMessage.message = arrayList[position].bookUrl
+            busMessage.data = arrayList[position].data
             sendBusMessage(busMessage = busMessage)
-            startActivity(Intent(this@SearchActivity,BookDetailActivity::class.java))
-            overridePendingTransition(0,0)
+            startActivity(Intent(this@SearchActivity, BookDetailActivity::class.java))
+            overridePendingTransition(0, 0)
         }
         list.layoutParams.height = UiUtils.getScreenHeight(this) - UiUtils.measureView(toolbar)[1]
         scroll.layoutParams.height = UiUtils.getScreenHeight(this) / 3
@@ -125,7 +126,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                     if (deleteAll > 0) {
                         remindDialog!!.dismiss()
                         getLocalSearchHistory()
-                        Toast.makeText(this,"删除成功",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show()
                         history.visibility = View.GONE
                     }
                 }
@@ -143,13 +144,13 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
             name.isFocusableInTouchMode = true
             name.requestFocus()
             name.findFocus()
-            if(mInputMethodManager!!.isActive){
+            if (mInputMethodManager!!.isActive) {
                 mInputMethodManager!!.showSoftInput(name, InputMethodManager.SHOW_FORCED)
             }
-            if(history.visibility != View.VISIBLE ){
+            if (history.visibility != View.VISIBLE) {
                 val fade = Fade()
                 fade.duration = 1000
-                TransitionManager.beginDelayedTransition(history,fade)
+                TransitionManager.beginDelayedTransition(history, fade)
                 history.visibility = View.VISIBLE
             }
         }
@@ -180,68 +181,43 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         hintKeyBoard()
         getLocalSearchHistory()
         JsoupUtils.getDingDianSearch(name)
-            .flatMap(Function<Document, ObservableSource<Observable<ArrayList<Document>>>> {
+            .flatMap(Function<Document, ObservableSource<ArrayList<BookSearchResult>>> {
                 val select = it!!.select(" span:nth-child(2) > a:nth-child(1)")
-                var zipWith: Observable<ArrayList<Document>>? = null
-                if(select.size > 0){
-                    localDocuments = ArrayList<Document>()
-                    localUrls = ArrayList()
-                }
-                if (select.size >= 2) {
-                    val detail = getDetail(searchBaseUrl + select[0].attr("href"))
-                    zipWith =
-                        detail.zipWith(getDetail(searchBaseUrl + select[1].attr("href")),
-                            BiFunction<Document, Document, ArrayList<Document>> { t1, t2 ->
-                                localDocuments.add(t1)
-                                localUrls.add(searchBaseUrl + select[0].attr("href"))
-                                localUrls.add(searchBaseUrl + select[1].attr("href"))
-                                localDocuments.add(t2)
-                                localDocuments
-                            })
+                val select1 = it!!.select(" span:nth-child(4)")
+                var zipWith:ArrayList<BookSearchResult>  = ArrayList()
 
-                    for (value in 2 until select.size) {
-                        zipWith =
-                            zipWith!!.zipWith(getDetail(searchBaseUrl + select[value].attr("href")),
-                                BiFunction<ArrayList<Document>, Document, ArrayList<Document>> { t1, t2 ->
-                                    t1.add(t2)
-                                    localUrls.add(searchBaseUrl + select[value].attr("href"))
-                                    t1
-                                })
-                    }
-                } else if (select.size == 1) {
-                    val detail = getDetail(searchBaseUrl + select[0].attr("href"))
-                    detail.flatMap(Function<Document, ObservableSource<ArrayList<Document>>> { document ->
-                        localDocuments.add(document)
-                        localUrls.add(searchBaseUrl + select[0].attr("href"))
-                        Observable.create { emitter ->
-                            emitter.onNext(localDocuments)
-                            emitter.onComplete()
-                        }
-                    })
+
+                for ((index, value) in select.withIndex()) {
+                    val bookSearchResult = BookSearchResult()
+                    bookSearchResult.name = value.text()
+                    bookSearchResult.author = select1[index + 1].text()
+                    bookSearchResult.bookUrl = value.attr("href")
+                    Log.e("pile",value.attr("href"))
+                    Log.e("pile",value.text())
+                    Log.e("pile", select1[index + 1].text())
+                    zipWith!!.add(bookSearchResult)
                 }
 
-                Observable.create { observableEmitterDocument ->
-                    observableEmitterDocument.onNext(zipWith)
-                    observableEmitterDocument.onComplete()
+
+
+                Observable.create { observableEmitter ->
+                    observableEmitter.onNext(zipWith)
+                    observableEmitter.onComplete()
                 }
+
 
             })
             .compose(Transformer.switchSchedulers())
             .subscribe(object :
-                CustomBaseObserver<Observable<ArrayList<Document>>>(LoadingView(this@SearchActivity)) {
-                override fun next(o: Observable<ArrayList<Document>>) {
-                    o.compose(Transformer.switchSchedulers())
-                        .subscribe(object :
-                            CustomBaseObserver<ArrayList<Document>>(LoadingView(this@SearchActivity)) {
-                            override fun next(o: ArrayList<Document>?) {
-                                loadView(o!!)
-                            }
-
-                            override fun onError(e: Throwable) {
-                                super.onError(e)
-                                loadView(localDocuments)
-                            }
-                        })
+                CustomBaseObserver<ArrayList<BookSearchResult>>(LoadingView(this@SearchActivity)) {
+                override fun next(o: ArrayList<BookSearchResult>) {
+                    if (o!!.size > 0) {
+                        history.visibility = View.GONE
+                        list.visibility = View.VISIBLE
+                        adapter!!.setNewData(o)
+                    } else {
+                        history.visibility = View.VISIBLE
+                    }
                 }
 
 
@@ -290,60 +266,44 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         }
     }
 
-    private fun getDetail(value: String): Observable<Document> {
-
-        return freeSecondUrl.freeSecondUrl(value)
-            .compose(Transformer.switchSchedulers())
-            .flatMap(Function<ResponseBody, ObservableSource<Document?>> { s: ResponseBody ->
-                val parse = Jsoup.parse(s.string())
-                Observable.create(ObservableOnSubscribe { e: ObservableEmitter<Document?> ->
-                    e.onNext(parse)
-                    e.onComplete()
-                })
-            })
-    }
-
-    private fun loadView(documents: ArrayList<Document>) {
-        var dataList: ArrayList<BookSearchResult> = ArrayList()
-        for (value in documents) {
-
-            val img = value.select("#fmimg > img:nth-child(1)")
-            val name = value.select("#info > h1:nth-child(1)")
-            val author = value.select("#info > p:nth-child(2)")
-            val update = value.select("#info > p:nth-child(4)")
 
 
-            val bookSearchResult = BookSearchResult()
-            bookSearchResult.img = searchBaseUrl + img.attr("src")
-            bookSearchResult.name = name.text()
-            bookSearchResult.author = author.text()
-            bookSearchResult.updateTime = update.text()
-
-            dataList.add(bookSearchResult)
-        }
-
-
-        if (dataList.size > 0) {
-            history.visibility = View.GONE
-            list.visibility = View.VISIBLE
-            adapter!!.setNewData(dataList)
-        } else {
-            history.visibility = View.VISIBLE
-        }
-    }
 
     inner class Adapter(res: Int) : BaseQuickAdapter<BookSearchResult, BaseViewHolder>(res) {
         override fun convert(helper: BaseViewHolder, item: BookSearchResult) {
             helper.setText(R.id.name, item.name)
             helper.setText(R.id.author, item.author)
-            helper.setText(R.id.time, item.updateTime)
-            val img = helper.getView<ImageView>(R.id.img)
-            GlideUtils.load(this@SearchActivity, item.img, img)
+
+            GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.img))
+            helper.setImageDrawable(R.id.img,context.getDrawable(R.drawable.bg_f2))
+
+            if( item.img == null){
+                JsoupUtils.getFreeDocument("https://www.dingdiann.com/" + item.bookUrl)
+                    .subscribe {
+                        item.data = it
+                        item.img = "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src")
+                        GlideUtils.load(
+                            context,
+                            "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src") ,
+                            helper.getView<ImageView>(R.id.img)
+                        )
+                        item.updateTime = it.select("#info > p:nth-child(4)").text()
+                        helper.setText(R.id.time, item.updateTime)
+                    }
+            }else{
+                GlideUtils.load(
+                    context,
+                    item.img,
+                    helper.getView<ImageView>(R.id.img)
+                )
+                helper.setText(R.id.time, item.updateTime)
+            }
+
         }
     }
 
 
-    private fun clearFocus(){
+    private fun clearFocus() {
         name.isFocusable = false
         if (mInputMethodManager!!.isActive) {
             mInputMethodManager!!.hideSoftInputFromWindow(name.windowToken, 0)
@@ -353,13 +313,14 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
     override fun onBackPressed() {
         controlBack()
     }
-    private fun controlBack(){
-        if(history.visibility  == View.GONE && list.visibility == View.VISIBLE && adapter!!.data.size > 0){
+
+    private fun controlBack() {
+        if (history.visibility == View.GONE && list.visibility == View.VISIBLE && adapter!!.data.size > 0) {
             list.visibility = View.GONE
-            history.visibility  = View.VISIBLE
-        }else{
+            history.visibility = View.VISIBLE
+        } else {
             finish()
-            overridePendingTransition(0,0)
+            overridePendingTransition(0, 0)
         }
     }
 }

@@ -144,11 +144,17 @@ public class PageWidget extends View {
      *   新建两个Bitmap : mCurPageBitmap,mNextPageBitmap
      */
     private void initPage(){
+
+        /**
+         * 获取屏幕宽高
+         */
         WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metric = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(metric);
         mScreenWidth = metric.widthPixels;
         mScreenHeight = metric.heightPixels;
+
+
         mCurPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
         mNextPageBitmap = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
     }
