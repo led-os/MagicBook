@@ -185,22 +185,23 @@ class BookCityFragment : BaseFragment() {
 
 
     private fun loadPile() {
-        if(pile_layout.adapter == null){
-            pile_layout.setAdapter(object :PileLayout.Adapter(){
-                override fun getItemCount(): Int {
-                    return if(books.size > 0){
-                        books!!.size
-                    }else{
-                        0
+        if(pile_layout != null){
+            if(pile_layout.adapter == null){
+                pile_layout.setAdapter(object :PileLayout.Adapter(){
+                    override fun getItemCount(): Int {
+                        return if(books.size > 0){
+                            books!!.size
+                        }else{
+                            0
+                        }
+
                     }
 
-                }
+                    override fun getLayoutId(): Int {
+                        return R.layout.item_city_book_banner
+                    }
 
-                override fun getLayoutId(): Int {
-                    return R.layout.item_city_book_banner
-                }
-
-                override fun bindView(view: View?, index: Int) {
+                    override fun bindView(view: View?, index: Int) {
                         if (view != null){
                             var viewHolder: ViewHolder  ?= null
                             if(view!!.tag != null){
@@ -222,20 +223,21 @@ class BookCityFragment : BaseFragment() {
                             }
                         }
 
-                }
+                    }
 
 
-                override fun onItemClick(view: View?, position: Int) {
-                    super.onItemClick(view, position)
-                }
+                    override fun onItemClick(view: View?, position: Int) {
+                        super.onItemClick(view, position)
+                    }
 
-                override fun displaying(position: Int) {
-                    super.displaying(position)
-                    name.text = books!![position].bookName
-                    intro.text = books!![position].bookIntro
-                }
+                    override fun displaying(position: Int) {
+                        super.displaying(position)
+                        name.text = books!![position].bookName
+                        intro.text = books!![position].bookIntro
+                    }
 
-            })
+                })
+            }
         }
 
     }

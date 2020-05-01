@@ -37,7 +37,7 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
     override fun initView() {
         if(mFragments.size == 0){
             mFragments.add(BookRackFragment.newInstance())
-            mFragments.add(BookCityFragment.newInstance())
+            mFragments.add(SecondFragment.newInstance())
             mFragments.add(MineFragment.newInstance())
         }
 

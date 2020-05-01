@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -15,7 +16,6 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.Nullable;
 import androidx.viewpager.widget.ViewPager;
 
@@ -39,8 +39,9 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
      * 指示器（被选中的tab下的短横线）
      */
     private boolean indicatorWrapText = true;//true：indicator与文字等长；false：indicator与整个tab等长
-    private int indicatorColor = Color.parseColor("#ff666666");
-    private int indicatorHeight = 2;//dp
+    // #ff666666
+    private int indicatorColor = Color.parseColor("#1296db");
+    private int indicatorHeight = 3;//dp
 
     /*
      * 底线（指示器的背景滑轨）
@@ -60,17 +61,17 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
     /*
      * tab
      */
-    private int tabTextSize = 16;//tab字号,dp
+    private int tabTextSize = 18;//tab字号,dp
     private int tabTextColor = Color.parseColor("#ff999999");//tab字色
     private Typeface tabTypeface = null;//tab字体
     private int tabTypefaceStyle = Typeface.NORMAL;//tab字体样式
     private int tabBackgroundResId = 0;//每个tab的背景资源id
-    private int tabPadding = 24;//每个tab的左右内边距,dp
+    private int tabPadding = 22;//每个tab的左右内边距,dp
 
     /*
      * 被选中的tab
      */
-    private int selectedTabTextSize = 16;//dp
+    private int selectedTabTextSize = 20;//dp
     private int selectedTabTextColor = Color.parseColor("#ff666666");
     private Typeface selectedTabTypeface = null;
     private int selectedTabTypefaceStyle = Typeface.BOLD;
@@ -80,7 +81,7 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
      */
     private int scrollOffset = 100;
 
-//配置属性 End---------------------------------------------------------------------------------------
+    //配置属性 End---------------------------------------------------------------------------------------
 
     private LinearLayout.LayoutParams wrapTabLayoutParams;
     private LinearLayout.LayoutParams expandTabLayoutParams;
@@ -175,7 +176,8 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
          * 创建两个Tab的LayoutParams，一个为宽度包裹内容，一个为宽度等分父控件剩余空间
          */
         wrapTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);//宽度包裹内容
-        expandTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);//宽度等分
+        //  expandTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);//宽度等分
+        expandTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);//宽度等分
     }
 
     private void initView() {
@@ -310,26 +312,51 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
         /*
          * 绘制indicator
          */
-        if (indicatorWrapText) {//indicator与文字等长
+
+        if (indicatorWrapText) {
+            //indicator与文字等长
             rectPaint.setColor(indicatorColor);
-            getTextLocation(currentPosition);
+            getTextLocation(selectedPosition);
             float lineLeft = textLocation.left;
             float lineRight = textLocation.right;
-            if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
-                getTextLocation(currentPosition + 1);
+            if (currentPositionOffset > 0) {
+                int pre = 1;
+                if(currentPosition < selectedPosition){
+                    pre = -1;
+                }
+
+                if(pre > 0){
+                    if(selectedPosition < tabCount - 1){
+                        getTextLocation(selectedPosition + 1);
+                    }
+                }else{
+                    if(selectedPosition -1 >= 0){
+                        getTextLocation(selectedPosition - 1);
+                    }
+                }
+
+
                 final float nextLeft = textLocation.left;
                 final float nextRight = textLocation.right;
 
-                lineLeft = lineLeft + (nextLeft - lineLeft) * currentPositionOffset;
-                lineRight = lineRight + (nextRight - lineRight) * currentPositionOffset;
+
+                if(pre > 0){
+                    lineRight = lineRight + (nextRight - lineRight) * currentPositionOffset ;
+                }else{
+                    lineLeft = lineLeft - (lineLeft - nextLeft) * (1-currentPositionOffset);
+                }
+
             }
-            canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
-        } else {//indicator与tab等长
+            canvas.drawRoundRect(new RectF(lineLeft, height - indicatorHeight, lineRight, height), 10, 10, rectPaint);
+
+            //      canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
+        } else {
+            //indicator与tab等长
             rectPaint.setColor(indicatorColor);
             View currentTab = tabsContainer.getChildAt(currentPosition);
             float lineLeft = currentTab.getLeft();
             float lineRight = currentTab.getRight();
-            if (currentPositionOffset > 0f && currentPosition < tabCount - 1) {
+            if (currentPosition < tabCount - 1) {
                 View nextTab = tabsContainer.getChildAt(currentPosition + 1);
                 final float nextLeft = nextTab.getLeft();
                 final float nextRight = nextTab.getRight();
@@ -337,7 +364,8 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
                 lineLeft = lineLeft + (nextLeft - lineLeft) * currentPositionOffset;
                 lineRight = lineRight + (nextRight - lineRight) * currentPositionOffset;
             }
-            canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
+            canvas.drawRoundRect(new RectF(lineLeft, height - indicatorHeight, lineRight, height), 10, 10, rectPaint);
+   //         canvas.drawRect(lineLeft, height - indicatorHeight, lineRight, height, rectPaint);
         }
     }
 
@@ -379,7 +407,7 @@ public class SimpleViewpagerIndicator extends HorizontalScrollView {
         @Override
         public void onPageScrollStateChanged(int state) {
             if (state == ViewPager.SCROLL_STATE_IDLE) {
-                scrollToChild(viewPager.getCurrentItem(), 0);//scrollView滚动
+               scrollToChild(viewPager.getCurrentItem(), 0);//scrollView滚动
             }
 
             if (userPageListener != null) {
