@@ -1,7 +1,5 @@
 package com.key.magicbook.activity.index
 
-import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -17,15 +15,12 @@ import com.bigkoo.convenientbanner.holder.Holder
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.base.BaseFragment
-import com.key.keylibrary.base.GlobalApplication.context
-import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import kotlinx.android.synthetic.main.fragment_book_type.*
-import kotlinx.android.synthetic.main.iitem_book_type_header.*
 import org.jsoup.nodes.Document
 
 /**
@@ -65,22 +60,42 @@ class BookTypeFragment : BaseFragment() {
     }
 
 
-    public class Adapter() :BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_book_type_list){
+     class Adapter() :BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_book_type_list){
         override fun convert(helper: BaseViewHolder, item: BookDetail) {
-
+            GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.image))
+            helper.setText(R.id.name, item.bookName)
+            helper.setText(R.id.author, item.bookAuthor)
+            if(item.bookCover == null){
+                JsoupUtils.getFreeDocument("https://www.dingdiann.com/" + item.bookUrl)
+                    .subscribe {
+                        item.bookCover = "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src")
+                        GlideUtils.load(
+                            context,
+                            "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src") ,
+                            helper.getView<ImageView>(R.id.image)
+                        )
+                        item.bookIntro = it.select("#intro").text()
+                        helper.setText(R.id.intro, item.bookIntro)
+                    }
+            }else{
+                GlideUtils.load(
+                    context,
+                    item.bookCover ,
+                    helper.getView<ImageView>(R.id.image)
+                )
+                helper.setText(R.id.intro, item.bookIntro)
+            }
         }
     }
 
 
 
-    public class TypeHolder(itemView: View?,var activity : FragmentActivity) : Holder<BookDetail>(itemView) {
+     class TypeHolder(itemView: View?,var activity : FragmentActivity) : Holder<BookDetail>(itemView) {
         override fun updateUI(data: BookDetail?) {
             itemView.findViewById<TextView>(R.id.name).text = data!!.bookName
-//            itemView.findViewById<TextView>(R.id.author).text = data!!.bookAuthor
-//            itemView.findViewById<TextView>(R.id.intro).text = data!!.bookIntro
             GlideUtils.load(
                 activity,
-                data!!.bookCover ,
+                "https://www.dingdiann.com/"+data!!.bookCover,
                 itemView.findViewById<ImageView>(R.id.image)
             )
         }
@@ -109,7 +124,7 @@ class BookTypeFragment : BaseFragment() {
                     val select = o!!.select("#hotcontent > div > div")
                     for(value in select){
                         val bookDetail = BookDetail()
-                        val img = value.select(" div > div.image > img").attr("src")
+                        val img = value.select(" div > div.image  > a> img").attr("src")
                         val name = value.select(" div > dl > dt > a").text()
                         val url = value.select(" div > dl > dt > a").attr("href")
                         val intro = value.select("div > dl > dd").text()
@@ -149,7 +164,7 @@ class BookTypeFragment : BaseFragment() {
             layoutInflater.inflate(R.layout.iitem_book_type_header, null)
         headerView.layoutParams = ViewGroup.LayoutParams(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            UiUtils.dip2px(200f)
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         convenientBanner = headerView.findViewById(R.id.convenientBanner)
         convenientBanner!!.setPages(

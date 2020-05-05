@@ -4,11 +4,17 @@ import android.os.Handler
 import com.key.magicbook.R
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.activity.index.IndexActivity
+import com.key.magicbook.activity.login.LoginActivity
 
 class SplashActivity : MineBaseActivity<SplashPresenter>() {
     override fun initView() {
         Handler().postDelayed({
-            val intent = Intent(this@SplashActivity, IndexActivity::class.java)
+            var intent :Intent?= null
+            intent = if(isLogin()){
+                Intent(this@SplashActivity, IndexActivity::class.java)
+            }else{
+                Intent(this@SplashActivity, LoginActivity::class.java)
+            }
             startActivity(intent)
             finish()
         },100)

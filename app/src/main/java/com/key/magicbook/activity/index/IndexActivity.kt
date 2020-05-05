@@ -38,7 +38,7 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
         if(mFragments.size == 0){
             mFragments.add(BookRackFragment.newInstance())
             mFragments.add(SecondFragment.newInstance())
-            mFragments.add(MineFragment.newInstance())
+            mFragments.add(MineFragment.newInstance(getUserInfo().userName))
         }
 
         for (i in this.iconSelectIds.indices) {

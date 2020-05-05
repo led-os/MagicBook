@@ -3,12 +3,9 @@ package com.key.magicbook.activity.index
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.LinearLayout.HORIZONTAL
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,16 +14,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.base.BaseFragment
 import com.key.keylibrary.utils.UiUtils
-import com.key.keylibrary.widget.CustomScrollView
 import com.key.magicbook.R
 import com.key.magicbook.activity.search.SearchActivity
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
-import com.key.magicbook.jsoup.RxJsoup
 import com.key.magicbook.util.GlideUtils
 import com.stone.pile.libs.PileLayout
 import kotlinx.android.synthetic.main.fragment_index_book_city.*
+import kotlinx.android.synthetic.main.fragment_index_book_city.list
 import org.jsoup.nodes.Document
 
 /**
@@ -36,7 +32,9 @@ class BookCityFragment : BaseFragment() {
     private val baseUrl = "https://www.dingdiann.com/"
     private var adapter :Adapter ?= null
     private var books: ArrayList<BookDetail> = ArrayList()
-    private var doucument :Document ?= null
+    private var document :Document ?= null
+    private var mPileLayout:PileLayout ?= null
+    private var headerView :View ?= null
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_book_city
     }
@@ -62,41 +60,41 @@ class BookCityFragment : BaseFragment() {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = Adapter()
         list.adapter = adapter
-        val marginLayoutParams = list.layoutParams as ViewGroup.MarginLayoutParams
-        marginLayoutParams.topMargin = UiUtils.getStateBar(activity)
-        list.layoutParams = marginLayoutParams
-        scroll.setOnTouchMoveListener { code, touchY,transY ->
-          var interceptor  = false
-          when(code){
-              0->{
-                  val stateBar = UiUtils.getStateBar(activity)
-                  val b1 = UiUtils.location(list)[1] <= stateBar
-                  interceptor = !b1
-                  if(b1){
-                      val linearLayoutManager = list.layoutManager as LinearLayoutManager
-                      val lastPosition =
-                          linearLayoutManager.findLastVisibleItemPosition()
-
-                      val firstPosition =
-                          linearLayoutManager.findFirstVisibleItemPosition()
-                      interceptor = if(transY < 0){
-                          lastPosition >= adapter!!.data.size - 1
-                      }else{
-                          firstPosition == 0;
-                      }
-
-                  }
-
-              }
-              1->{
-                  interceptor = false
-              }
-              2->{
-                  interceptor  = false
-              }
-          }
-          interceptor
-      }
+        headerView = UiUtils.inflate(activity,R.layout.item_book_city_head)
+        mPileLayout = headerView!!.findViewById(R.id.pile_layout)
+        adapter!!.addHeaderView(headerView!!)
+//        scroll.setOnTouchMoveListener { code, touchY,transY ->
+//          var interceptor  = false
+//          when(code){
+//              0->{
+//                  val stateBar = UiUtils.getStateBar(activity)
+//                  val b1 = UiUtils.location(list)[1] <= stateBar
+//                  interceptor = !b1
+//                  if(b1){
+//                      val linearLayoutManager = list.layoutManager as LinearLayoutManager
+//                      val lastPosition =
+//                          linearLayoutManager.findLastVisibleItemPosition()
+//
+//                      val firstPosition =
+//                          linearLayoutManager.findFirstVisibleItemPosition()
+//                      interceptor = if(transY < 0){
+//                          lastPosition >= adapter!!.data.size - 1
+//                      }else{
+//                          firstPosition == 0;
+//                      }
+//
+//                  }
+//
+//              }
+//              1->{
+//                  interceptor = false
+//              }
+//              2->{
+//                  interceptor  = false
+//              }
+//          }
+//          interceptor
+//      }
         initData()
     }
 
@@ -107,7 +105,7 @@ class BookCityFragment : BaseFragment() {
             .subscribe(object : CustomBaseObserver<Document>() {
                 override fun next(o: Document?) {
                     books = ArrayList()
-                    doucument = o
+                    document = o
                     val select = o!!.select("#hotcontent > div.l > div")
                     for (value in select) {
                         val bookDetail = BookDetail()
@@ -132,8 +130,6 @@ class BookCityFragment : BaseFragment() {
                     val select1 = o!!.select("#novelslist1 > div")
                     for (value in select1) {
                         val bookDetail = BookDetail()
-
-
 
                         val img = value.select(" div > div.image > img").attr("src")
                         val name = value.select(" div > dl > dt > a").text()
@@ -172,6 +168,7 @@ class BookCityFragment : BaseFragment() {
                     }
 
 
+
                     loadPile()
                     Thread(Runnable {
                         loadNovelList()
@@ -185,9 +182,9 @@ class BookCityFragment : BaseFragment() {
 
 
     private fun loadPile() {
-        if(pile_layout != null){
-            if(pile_layout.adapter == null){
-                pile_layout.setAdapter(object :PileLayout.Adapter(){
+        if(mPileLayout != null){
+            if(mPileLayout!!.adapter == null){
+                mPileLayout!!.setAdapter(object :PileLayout.Adapter(){
                     override fun getItemCount(): Int {
                         return if(books.size > 0){
                             books!!.size
@@ -232,8 +229,8 @@ class BookCityFragment : BaseFragment() {
 
                     override fun displaying(position: Int) {
                         super.displaying(position)
-                        name.text = books!![position].bookName
-                        intro.text = books!![position].bookIntro
+                        headerView!!.findViewById<TextView>(R.id.name).text = books!![position].bookName
+                        headerView!!.findViewById<TextView>(R.id.intro).text = books!![position].bookIntro
                     }
 
                 })
@@ -267,7 +264,7 @@ class BookCityFragment : BaseFragment() {
 
 
 
-    public class ItemAdapter:BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_fragment_city_list){
+     class ItemAdapter:BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_fragment_city_list){
         override fun convert(helper: BaseViewHolder, item: BookDetail) {
             helper.setText(R.id.name,item.bookName)
             GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.image))
@@ -298,9 +295,9 @@ class BookCityFragment : BaseFragment() {
     }
     private fun loadNovelList(){
         val arrayList = ArrayList<ArrayList<BookDetail>>()
-        if(doucument != null){
+        if(document != null){
             //经典推荐
-            val scriptures = doucument!!.select("#hotcontent > div.r > ul > li")
+            val scriptures = document!!.select("#hotcontent > div.r > ul > li")
             var scripturesDetails =ArrayList<BookDetail>()
             for(value in scriptures){
 
@@ -319,7 +316,7 @@ class BookCityFragment : BaseFragment() {
             arrayList.add(scripturesDetails)
 
             //0 ：玄幻奇幻 1 ：武侠仙侠 2 :都市言情
-            val select = doucument!!.select("#novelslist1 > div")
+            val select = document!!.select("#novelslist1 > div")
             var index = 0
             for(value in select){
                 val select1 = value.select("ul > li")
@@ -356,11 +353,8 @@ class BookCityFragment : BaseFragment() {
                 }
             }
 
-
-
-
             //0 ：历史军事 1 ：科幻灵异 2 :网游竞技
-            val select2 = doucument!!.select("#novelslist2 > div")
+            val select2 = document!!.select("#novelslist2 > div")
             index = 0
             for(value in select2){
                 val select1 = value.select("ul > li")
@@ -389,8 +383,6 @@ class BookCityFragment : BaseFragment() {
                             bookDetailNovel.add(bookDetail)
                         }
                     }
-
-                    Log.e("pile",  bookName +authorName   + attr)
                 }
 
                 index++
@@ -400,12 +392,11 @@ class BookCityFragment : BaseFragment() {
             }
 
             //新书
-            val new = doucument!!.select("#newscontent > div.r > ul > li")
+            val new = document!!.select("#newscontent > div.r > ul > li")
             val bookDetails = ArrayList<BookDetail>()
             for(value in new){
                 val bookName =  value.select("span.s2 > a").text()
-                val attr = value.select("span.s2 > a")
-                    .attr("href")
+                val attr = value.select("span.s2 > a").attr("href")
                 val authorName = value.select("span.s5").text()
                 val bookDetail = BookDetail()
                 bookDetail.bookName = bookName
@@ -416,9 +407,12 @@ class BookCityFragment : BaseFragment() {
             }
             arrayList.add(bookDetails)
 
-            activity!!.runOnUiThread {
-                adapter!!.setNewData(arrayList)
+            if(activity != null){
+                activity!!.runOnUiThread {
+                    adapter!!.setNewData(arrayList)
+                }
             }
+
         }
     }
 

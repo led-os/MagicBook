@@ -44,31 +44,31 @@ public class CustomScrollView extends ScrollView {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         boolean intercept =   super.onInterceptTouchEvent(ev);
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                lastX = ev.getX();
-                lastY = ev.getY();
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if(onTouchMoveListener != null){
-                    float v = ev.getY() - lastY;
-                    float horizontal = Math.abs(ev.getX() - lastX);
-                    float vertical = Math.abs(v);
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                lastX = ev.getX();
+//                lastY = ev.getY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                if(onTouchMoveListener != null){
+//                    float v = ev.getY() - lastY;
+//                    float horizontal = Math.abs(ev.getX() - lastX);
+//                    float vertical = Math.abs(v);
+//
+//                   int code  = 0;
+//                   if(horizontal > 0 && horizontal > vertical){
+//                        code = 1;
+//                    }else if(horizontal == 0 && vertical == 0){
+//                        code = 2;
+//                   }
+//                    intercept =  onTouchMoveListener.touchMove(code,ev.getY(),v);
+//                }
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                break;
+//        }
 
-                   int code  = 0;
-                   if(horizontal > 0 && horizontal > vertical){
-                        code = 1;
-                    }else if(horizontal == 0 && vertical == 0){
-                        code = 2;
-                   }
-                    intercept =  onTouchMoveListener.touchMove(code,ev.getY(),v);
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                break;
-        }
-
-        return intercept;
+        return false;
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.allen.library.interceptor;
 
+import android.util.Log;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
@@ -36,14 +38,18 @@ public class NetCacheInterceptor implements Interceptor {
         boolean connected = isNetworkConnected();
         if (connected) {
             //如果有网络，缓存60s
-            Response response = chain.proceed(request);
-            CacheControl.Builder builder = new CacheControl.Builder()
-                    .maxAge(cacheTime, TimeUnit.SECONDS);
+            try{
+                Response response = chain.proceed(request);
+                CacheControl.Builder builder = new CacheControl.Builder()
+                        .maxAge(cacheTime, TimeUnit.SECONDS);
 
-            return response.newBuilder()
-                    .header("Cache-Control", builder.build().toString())
-                    .removeHeader("Pragma")
-                    .build();
+                return response.newBuilder()
+                        .header("Cache-Control", builder.build().toString())
+                        .removeHeader("Pragma")
+                        .build();
+            }catch (Exception e){
+                Log.e("netError",e.toString());
+            }
         }
         //如果没有网络，不做处理，直接返回
         return chain.proceed(request);

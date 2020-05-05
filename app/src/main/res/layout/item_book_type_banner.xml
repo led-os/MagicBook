@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_200"
+    android:layout_height="@dimen/dp_240"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
@@ -10,31 +10,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        app:cardElevation="18dp"
+        app:cardElevation="@dimen/dp_18"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="10dp">
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <ImageView
-                android:padding="5dp"
+                android:layout_margin="@dimen/dp_5"
                 android:id="@+id/image"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_gravity="center"
-                android:layout_width="120dp"
-                android:layout_height="140dp"
+                android:layout_width="@dimen/dp_110"
+                android:layout_height="@dimen/dp_130"
                 android:scaleType="centerCrop"/>
 
 
 
             <TextView
+                app:layout_constraintTop_toBottomOf="@+id/image"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/name"
+                android:text="@string/app_name"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:layout_gravity="center"
@@ -43,7 +47,7 @@
                 android:layout_height="wrap_content"
                 />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     </androidx.cardview.widget.CardView>

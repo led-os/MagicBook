@@ -51,7 +51,6 @@ class SecondFragment : BaseFragment() {
             if(value == "首页"){
                 pageFragments.add(BookCityFragment.newInstance())
             }else{
-
                 pageFragments.add(BookTypeFragment.newInstance(pageUrls[index]))
             }
 

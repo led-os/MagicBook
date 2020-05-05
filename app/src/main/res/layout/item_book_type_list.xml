@@ -25,9 +25,8 @@
                 android:id="@+id/image"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_width="120dp"
-                android:layout_height="140dp"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_100"
                 android:scaleType="centerCrop"/>
 
 
@@ -37,8 +36,8 @@
                 app:layout_constraintLeft_toRightOf="@+id/image"
                 app:layout_constraintTop_toTopOf="parent"
                 android:textStyle="bold"
-                android:textSize="25sp"
-                android:layout_marginLeft="15dp"
+                android:textSize="18sp"
+                android:layout_marginLeft="@dimen/dp_15"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,10 +45,12 @@
             <TextView
                 android:id="@+id/author"
                 app:layout_constraintLeft_toRightOf="@+id/image"
-                app:layout_constraintTop_toBottomOf="@+id/name"
+                app:layout_constraintBottom_toBottomOf="@id/image"
                 android:textStyle="bold"
-                android:textSize="23sp"
-                android:layout_marginLeft="15dp"
+                android:textSize="16sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="@dimen/dp_15"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,15 +59,13 @@
 
 
             <TextView
+                android:layout_marginTop="5dp"
                 android:id="@+id/intro"
-                app:layout_constraintStart_toEndOf="@+id/image"
-                app:layout_constraintLeft_toRightOf="@+id/image"
-                app:layout_constraintTop_toBottomOf="@+id/author"
-                android:textStyle="bold"
-                android:textSize="23sp"
-                android:layout_marginLeft="15dp"
+                android:textSize="15sp"
+                android:lines="4"
+                app:layout_constraintTop_toBottomOf="@+id/image"
                 android:textColor="@color/black"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 />
 

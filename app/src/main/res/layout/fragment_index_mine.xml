@@ -69,10 +69,10 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/toolbar_right_icon"
-        android:layout_marginTop="13dp"
-        android:layout_width="80dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_width="@dimen/dp_55"
         android:layout_alignParentRight="true"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/dp_55"
         android:src="@mipmap/test"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

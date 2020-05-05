@@ -1,5 +1,6 @@
 package com.key.magicbook.activity.index
 
+import android.content.ContentValues
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -25,9 +26,12 @@ import com.key.keylibrary.utils.AppBarStateChangeListener
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.set.SetActivity
+import com.key.magicbook.base.MineBaseActivity
+import com.key.magicbook.bean.UserInfo
 import com.key.magicbook.util.BitmapUtil
 import com.key.magicbook.util.GlideUtils
 import kotlinx.android.synthetic.main.fragment_index_mine.*
+import org.litepal.LitePal
 
 /**
  * created by key  on 2020/3/2
@@ -35,6 +39,7 @@ import kotlinx.android.synthetic.main.fragment_index_mine.*
 class MineFragment :BaseFragment(){
     private var finalColor = 0
     private var appCompatActivity :AppCompatActivity ?= null
+    private var userName = ""
     //"我的评论",
     private var functions = arrayOf("阅读历史", "我的收藏","书单",
         "阅读数据","关于我们", "相关法律","设置")
@@ -47,9 +52,10 @@ class MineFragment :BaseFragment(){
 
 
      companion object {
-         fun  newInstance():MineFragment{
+         fun  newInstance(name :String):MineFragment{
              val mineFragment = MineFragment()
              val bundle = Bundle()
+             bundle.putString("name",name)
              mineFragment.arguments = bundle
              return mineFragment
          }
@@ -57,7 +63,7 @@ class MineFragment :BaseFragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments
+        userName = arguments!!.getString("name")!!
     }
 
     override fun initView() {
@@ -65,7 +71,14 @@ class MineFragment :BaseFragment(){
         setTitle(toolbar)
         appCompatActivity = activity as AppCompatActivity
         appCompatActivity!!.setSupportActionBar(toolbar)
-        setIconBackground("")
+        val findAll = LitePal.findAll(UserInfo::class.java)
+        for(value in findAll){
+
+            if(value.userName == userName){
+                setIconBackground(value.iconUrl)
+            }
+        }
+
         icon.setOnClickListener {
             val busMessage = BusMessage<Bitmap>()
             busMessage.tag = 0
@@ -132,6 +145,13 @@ class MineFragment :BaseFragment(){
     private fun setIconBackground(url :String){
         if(url.isNotEmpty()){
             GlideUtils.load(activity,url,icon)
+            GlideUtils.load(activity,url,toolbar_right_icon)
+            val findAll = LitePal.findAll(UserInfo::class.java)
+            for(value in findAll){
+                val contentValues = ContentValues()
+                contentValues.put("iconUrl",url)
+                LitePal.updateAll(UserInfo::class.java,contentValues,"userName = ?",userName)
+            }
         }
         var decodeResource = BitmapFactory.decodeResource(activity!!.resources, R.mipmap.test)
         if(url.isNotEmpty()){
@@ -200,6 +220,6 @@ class MineFragment :BaseFragment(){
 
     override fun onResume() {
         super.onResume()
-        appCompatActivity!!.supportActionBar!!.title = "谢泽凯"
+        appCompatActivity!!.supportActionBar!!.title = userName
     }
 }

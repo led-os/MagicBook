@@ -1,6 +1,7 @@
 package com.key.magicbook.util;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -63,6 +64,24 @@ public class DialogUtil {
 
     }
 
+    public static AlertDialog getWarm(Context context,
+                                              String content,
+                                              RemindDialogClickListener listener){
+        AlertDialog dialog = new CustomAlertDialog().new
+                Builder(context, UiUtils.inflate(context, R.layout.dialog_warm))
+                .setHeight(UiUtils.dip2px(200f))
+                .build();
 
+        TextView warm_content = dialog.findViewById(R.id.warm_content);
+        warm_content.setText(content);
+
+        if(listener!= null){
+            dialog.findViewById(R.id.close).setOnClickListener(v ->{
+                dialog.dismiss();
+                listener.onClick(true);
+                    });
+        }
+        return dialog;
+    }
 
 }

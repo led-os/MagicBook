@@ -151,10 +151,6 @@ public class PileLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        //测量所有布局
-
-
         //页面宽度
         int width = getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec);
 
@@ -165,7 +161,7 @@ public class PileLayout extends ViewGroup {
         everyHeight = (int) (everyWidth * sizeRatio);
 
 
-        // ?
+
         setMeasuredDimension(width, (int) (everyHeight * (1 + scaleStep) + getPaddingTop() + getPaddingBottom()));
 
 
@@ -292,11 +288,10 @@ public class PileLayout extends ViewGroup {
                 initVelocityTrackerIfNotExists();
                 mVelocityTracker.addMovement(event);
                 animatingView = null;
-
                 break;
-
             case MotionEvent.ACTION_MOVE:
-                if (scrollMode == MODE_IDLE) {
+                getParent().requestDisallowInterceptTouchEvent(true);
+                if(scrollMode == MODE_IDLE){
                     float xDistance = Math.abs(downX - event.getX());
                     float yDistance = Math.abs(downY - event.getY());
                     if (xDistance > yDistance && xDistance > mTouchSlop) {
@@ -306,14 +301,15 @@ public class PileLayout extends ViewGroup {
                     } else if (yDistance > xDistance && yDistance > mTouchSlop) {
                         // 垂直滑动
                         scrollMode = MODE_VERTICAL;
+
                     }
                 }
+
                 break;
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 recycleVelocityTracker();
-                // ACTION_UP还能拦截，说明手指没滑动，只是一个click事件，同样需要snap到特定位置
                 onRelease(event.getX(), 0);
                 break;
         }
@@ -332,6 +328,7 @@ public class PileLayout extends ViewGroup {
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
+                Log.e("pile","touch down");
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -347,12 +344,12 @@ public class PileLayout extends ViewGroup {
                 velocityTracker.computeCurrentVelocity(1000, mMaximumVelocity);
                 int velocity = (int) velocityTracker.getXVelocity();
                 recycleVelocityTracker();
-
                 onRelease(event.getX(), velocity);
                 break;
         }
         return true;
     }
+
 
 
     //滑动释放判断是滑动到下一个 childView 还是上一个 childView
@@ -486,10 +483,7 @@ public class PileLayout extends ViewGroup {
      */
     public void setAdapter(Adapter adapter) {
         this.adapter = adapter;
-
-        // ViewdoBindAdapter尚未渲染出来的时候，不做适配
         if (everyWidth > 0 && everyHeight > 0) {
-            Log.e("pile","doBindAdapter");
             doBindAdapter();
         }
     }
@@ -582,6 +576,7 @@ public class PileLayout extends ViewGroup {
 
     @Override
     public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        //当决定PileLayout 不再继续拦截事件时 释放资源
         if (disallowIntercept) {
             recycleVelocityTracker();
         }
