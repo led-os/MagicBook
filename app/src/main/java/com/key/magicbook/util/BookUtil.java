@@ -1,14 +1,13 @@
 package com.key.magicbook.util;
 
 import android.content.ContentValues;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.key.keylibrary.base.ConstantValues;
 import com.key.keylibrary.utils.FileUtils;
-import com.key.magicbook.bean.BookCatalogue;
-import com.key.magicbook.bean.BookList;
+import com.key.magicbook.db.BookCatalogue;
+import com.key.magicbook.db.BookList;
 import com.key.magicbook.bean.Cache;
 
 import org.litepal.LitePal;
@@ -32,6 +31,7 @@ public class BookUtil {
 //    protected final ArrayList<WeakReference<char[]>> myArray = new ArrayList<>();
 
     protected final ArrayList<Cache> myArray = new ArrayList<>();
+
     //目录
     private List<BookCatalogue> directoryList = new ArrayList<>();
 
@@ -176,6 +176,7 @@ public class BookUtil {
             try {
                 LitePal.update(BookList.class,values,bookList.getId());
             }catch (Exception e){
+                Log.e("BookUtils",e.toString());
             }
 
         }else{
@@ -260,6 +261,10 @@ public class BookUtil {
                     }else {
                         size += str.length();
                     }
+                }
+
+                for(BookCatalogue value :directoryList){
+                    Log.e("book_pile",value.getBookCatalogue());
                 }
             }
         }catch (Exception e){

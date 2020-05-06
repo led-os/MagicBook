@@ -273,23 +273,32 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         override fun convert(helper: BaseViewHolder, item: BookSearchResult) {
             helper.setText(R.id.name, item.name)
             helper.setText(R.id.author, item.author)
-
             GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.img))
-            helper.setImageDrawable(R.id.img,context.getDrawable(R.drawable.bg_f2))
+            if(item.img == null && !item.isLoad){
+                try{
+                    item.isLoad = true
+                    Log.e("bookSearch", item.name + " :" + item.bookUrl)
+                    JsoupUtils.getFreeDocumentForBody("https://www.dingdiann.com/" + item.bookUrl)
+                        .subscribe (object :CustomBaseObserver<ResponseBody>(){
+                            override fun next(o: ResponseBody?) {
+                                val parse = Jsoup.parse(o!!.string())
+                                item.data =  parse
+                                item.img = "https://www.dingdiann.com/" + parse.select("#fmimg > img").attr("src")
+                                GlideUtils.load(
+                                    context,
+                                    "https://www.dingdiann.com/" + parse.select("#fmimg > img").attr("src") ,
+                                    helper.getView<ImageView>(R.id.img)
+                                )
+                                item.updateTime = parse.select("#info > p:nth-child(4)").text()
+                                helper.setText(R.id.time, item.updateTime)
+                            }
 
-            if( item.img == null){
-                JsoupUtils.getFreeDocument("https://www.dingdiann.com/" + item.bookUrl)
-                    .subscribe {
-                        item.data = it
-                        item.img = "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src")
-                        GlideUtils.load(
-                            context,
-                            "https://www.dingdiann.com/" + it.select("#fmimg > img").attr("src") ,
-                            helper.getView<ImageView>(R.id.img)
-                        )
-                        item.updateTime = it.select("#info > p:nth-child(4)").text()
-                        helper.setText(R.id.time, item.updateTime)
-                    }
+                        })
+                }catch (e:Exception){
+                    item.isLoad = false
+                    Log.e("bookSearch",e.toString())
+                }
+
             }else{
                 GlideUtils.load(
                     context,

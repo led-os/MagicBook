@@ -8,7 +8,7 @@ import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.BookDetail
-import com.key.magicbook.bean.BookList
+import com.key.magicbook.db.BookList
 import com.key.magicbook.bookpage.Config
 import com.key.magicbook.bookpage.PageFactory
 import com.key.magicbook.bookpage.PageWidget
@@ -30,7 +30,10 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     }
 
     override fun initView() {
-        saveString("圣墟","112233","test")
+        saveString("圣墟","第1章5465465电脑上解析一个8k+章节的小说只要1s不到，但即便是骁龙835处理器手机也要3~4秒。因此最好将解析结果保存起来，防止不小心退出后需要重新解析。" +
+                "\n\r " +
+                "第2章65465" +
+                " 电脑上解析一个8k+章节的小说只要1s不到，但即便是骁龙835处理器手机也要3~4秒。因此最好将解析结果保存起来，防止不小心退出后需要重新解析。\n\r","test")
         val config = Config.createConfig(this)
         pageFactory = PageFactory.createPageFactory(this)
         bookpage.setPageMode(config.pageMode)
@@ -75,7 +78,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             bookList.bookname = "圣墟"
             bookList.begin = 0
             bookList.charset = ""
-            bookList.bookpath = ConstantValues.FILE_BOOK+File.separator + "test"+File.separator+"/圣墟.txt"
+            bookList.bookpath = ConstantValues.FILE_BOOK + File.separator + "test"+File.separator+"/圣墟.txt"
             pageFactory!!.openBook(bookList)
         }
     }

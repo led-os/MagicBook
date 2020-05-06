@@ -19,6 +19,15 @@ public class BookDetail {
     private List<String> chapterNames;
 
 
+    private boolean isLoad = false;
+    public boolean isLoad() {
+        return isLoad;
+    }
+
+    public void setLoad(boolean load) {
+        isLoad = load;
+    }
+
     public String getBookUrl() {
         return bookUrl;
     }

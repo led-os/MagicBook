@@ -11,7 +11,17 @@ public class BookSearchResult {
     private String author;
     private String img;
     private String updateTime;
+
     private Document data;
+
+    private boolean isLoad = false;
+    public boolean isLoad() {
+        return isLoad;
+    }
+
+    public void setLoad(boolean load) {
+        isLoad = load;
+    }
 
     public Document getData() {
         return data;

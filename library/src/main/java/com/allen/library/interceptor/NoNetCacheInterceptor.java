@@ -1,6 +1,7 @@
 package com.allen.library.interceptor;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -46,7 +47,14 @@ public class NoNetCacheInterceptor implements Interceptor {
                 request = request.newBuilder()
                         .cacheControl(CacheControl.FORCE_NETWORK)
                         .build();
-                return chain.proceed(request);
+
+                Response proceed = null;
+                try {
+                    proceed = chain.proceed(request);
+                }catch (Exception e){
+                    throw new IOException(e);
+                }
+                return proceed;
             }
 
             return response.newBuilder()
@@ -55,7 +63,14 @@ public class NoNetCacheInterceptor implements Interceptor {
                     .build();
         }
         //有网络的时候，这个拦截器不做处理，直接返回
-        return chain.proceed(request);
+        Response proceed = null;
+        try {
+            proceed =  chain.proceed(request);
+        }catch (Exception e){
+            throw new IOException(e);
+        }
+        return proceed;
+
     }
 
 }

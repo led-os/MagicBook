@@ -38,7 +38,7 @@ public class OkHttpConfig {
 
     private static String defaultCachePath;
     private static final long defaultCacheSize = 1024 * 1024 * 100;
-    private static final long defaultTimeout = 10;
+    private static final long defaultTimeout = 30;
 
 
     private static OkHttpConfig instance;
@@ -77,7 +77,7 @@ public class OkHttpConfig {
         private boolean isDebug;
         private boolean isCache;
         private int cacheTime = 60;
-        private int noNetCacheTime = 10;
+        private int noNetCacheTime = 20;
         private String cachePath;
         private long cacheMaxSize;
         private CookieStore cookieStore;
@@ -250,6 +250,7 @@ public class OkHttpConfig {
                 } else {
                     cache = new Cache(new File(defaultCachePath), defaultCacheSize);
                 }
+
 
                 okHttpClientBuilder
                         .cache(cache)

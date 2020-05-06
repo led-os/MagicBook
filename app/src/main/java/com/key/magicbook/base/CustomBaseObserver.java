@@ -5,7 +5,6 @@ import android.os.Handler;
 
 import com.allen.library.base.BaseObserver;
 import com.allen.library.interfaces.ILoadingView;
-import com.allen.library.utils.ToastUtils;
 
 import io.reactivex.disposables.Disposable;
 

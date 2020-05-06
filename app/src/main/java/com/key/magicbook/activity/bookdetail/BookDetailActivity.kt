@@ -56,6 +56,12 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             getBookContent(bookUrl,list[position])
         }
         list.adapter = adapter
+
+        cache.setOnClickListener {
+
+        }
+
+
     }
 
     override fun setLayoutId(): Int {

@@ -63,38 +63,6 @@ class BookCityFragment : BaseFragment() {
         headerView = UiUtils.inflate(activity,R.layout.item_book_city_head)
         mPileLayout = headerView!!.findViewById(R.id.pile_layout)
         adapter!!.addHeaderView(headerView!!)
-//        scroll.setOnTouchMoveListener { code, touchY,transY ->
-//          var interceptor  = false
-//          when(code){
-//              0->{
-//                  val stateBar = UiUtils.getStateBar(activity)
-//                  val b1 = UiUtils.location(list)[1] <= stateBar
-//                  interceptor = !b1
-//                  if(b1){
-//                      val linearLayoutManager = list.layoutManager as LinearLayoutManager
-//                      val lastPosition =
-//                          linearLayoutManager.findLastVisibleItemPosition()
-//
-//                      val firstPosition =
-//                          linearLayoutManager.findFirstVisibleItemPosition()
-//                      interceptor = if(transY < 0){
-//                          lastPosition >= adapter!!.data.size - 1
-//                      }else{
-//                          firstPosition == 0;
-//                      }
-//
-//                  }
-//
-//              }
-//              1->{
-//                  interceptor = false
-//              }
-//              2->{
-//                  interceptor  = false
-//              }
-//          }
-//          interceptor
-//      }
         initData()
     }
 

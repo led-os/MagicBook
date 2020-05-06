@@ -106,13 +106,23 @@
                 app:layout_constraintHorizontal_bias="1"
                 android:layout_height="0dp"/>
 
+            <Button
+                android:id="@+id/cache"
+                android:text="下载"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/read"
+                app:layout_constraintHorizontal_bias="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
 
             <Button
                 android:id="@+id/read"
                 android:text="看一看"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintLeft_toRightOf="@+id/cache"
                 app:layout_constraintRight_toLeftOf="@+id/add"
                 app:layout_constraintHorizontal_bias="1"
                 android:layout_width="0dp"

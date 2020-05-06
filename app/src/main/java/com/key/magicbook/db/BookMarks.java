@@ -1,4 +1,4 @@
-package com.key.magicbook.bean;
+package com.key.magicbook.db;
 
 import org.litepal.crud.LitePalSupport;
 

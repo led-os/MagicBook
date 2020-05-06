@@ -2,6 +2,7 @@ package com.allen.library.interceptor;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
 import okhttp3.Interceptor;
@@ -23,14 +24,18 @@ public abstract class HeaderInterceptor implements Interceptor {
         Request request = chain.request();
         Map<String, String> headers = buildHeaders();
         if (headers == null || headers.isEmpty()) {
-            return chain.proceed(request);
+            Response proceed = null;
+            try {
+                proceed = chain.proceed(request);
+            }catch (Exception e){
+                throw new IOException(e);
+            }
+            return proceed;
         } else {
-            Response response = chain.proceed(request.newBuilder()
+            return chain.proceed(request.newBuilder()
                     .headers(buildHeaders(request, headers))
                     .build());
-            return response;
         }
-
     }
 
     private Headers buildHeaders(Request request, Map<String, String> headerMap) {
@@ -42,7 +47,7 @@ public abstract class HeaderInterceptor implements Interceptor {
             }
             return builder.build();
         } else {
-            return headers;
+            return null;
         }
     }
 

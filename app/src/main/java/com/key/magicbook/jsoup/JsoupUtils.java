@@ -42,7 +42,8 @@ public class JsoupUtils {
 
 
     public static   Observable<Document> getDingDianSearch(String kw){
-        return ApiHelper.getFreeUrlApi().freeUrl("https://www.dingdiann.com/searchbook.php?keyword="+kw).compose(Transformer.<ResponseBody>switchSchedulers())
+        return ApiHelper.getFreeUrlApi().freeUrl("https://www.dingdiann.com/searchbook.php?keyword="+kw)
+                .compose(Transformer.<ResponseBody>switchSchedulers())
                 .flatMap((Function<ResponseBody, ObservableSource<Document>>) s -> {
                     Document parse = Jsoup.parse(s.string());
                     return Observable.create((ObservableOnSubscribe<Document>) e -> {
@@ -53,16 +54,33 @@ public class JsoupUtils {
     }
 
 
-    public static   Observable<Document> getFreeDocument(String url){
-        return ApiHelper.getFreeUrlApi().freeUrl(url)
-                .compose(Transformer.<ResponseBody>switchSchedulers())
-                .flatMap((Function<ResponseBody, ObservableSource<Document>>) s -> {
-                    Document parse = Jsoup.parse(s.string());
-                    return Observable.create((ObservableOnSubscribe<Document>) e -> {
-                        e.onNext(parse);
-                        e.onComplete();
+    public static Observable<Document> getFreeDocument(String url){
+        try {
+            return ApiHelper.getFreeUrlApi().freeUrl(url)
+                    .compose(Transformer.<ResponseBody>switchSchedulers())
+                    .flatMap((Function<ResponseBody, ObservableSource<Document>>) s -> {
+                        Document parse = Jsoup.parse(s.string());
+                        return Observable.create((ObservableOnSubscribe<Document>) e -> {
+                            e.onNext(parse);
+                            e.onComplete();
+                        });
                     });
-                });
+        }catch (Exception e){
+            return null;
+        }
+
+
+    }
+
+    public static Observable<ResponseBody> getFreeDocumentForBody(String url) throws Exception{
+        try {
+            return ApiHelper.getFreeUrlApi().freeUrl(url)
+                    .compose(Transformer.<ResponseBody>switchSchedulers());
+        }catch (Exception e){
+            return null;
+        }
+
+
     }
 
 
