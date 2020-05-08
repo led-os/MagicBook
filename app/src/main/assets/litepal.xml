@@ -2,12 +2,14 @@
 <litepal>
     <dbname value="book" ></dbname>
 
-    <version value="7" ></version>
+    <version value="9" ></version>
 
     <list>
         <mapping class="com.key.magicbook.db.BookCatalogue"></mapping>
         <mapping class="com.key.magicbook.db.BookList"></mapping>
         <mapping class="com.key.magicbook.db.BookMarks"></mapping>
+        <mapping class="com.key.magicbook.db.BookLike"></mapping>
+        <mapping class="com.key.magicbook.db.BookReadHistory"></mapping>
         <mapping class="com.key.magicbook.bean.BookSearchHistory"></mapping>
         <mapping class="com.key.magicbook.bean.UserInfo"></mapping>
     </list>

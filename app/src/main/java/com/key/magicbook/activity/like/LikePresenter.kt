@@ -7,8 +7,8 @@ import com.key.magicbook.activity.like.LikeActivity
 /**
  * created by key  on 2020/2/27
  */
-class SetPresenter : BasePresenter<Activity>() {
-    override fun getView(): SetActivity {
-        return iView as SetActivity
+class LikePresenter : BasePresenter<Activity>() {
+    override fun getView(): LikeActivity {
+        return iView as LikeActivity
     }
 }

@@ -195,7 +195,7 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
         register_account.setInputTypeNum()
         register_password.setInputTypePass()
         register_confirm_password.setInputTypePass()
-        register_account.setMineFocusChangeListener(MineFocusChangeListener {
+        register_account.setMineFocusChangeListener {
             if (lastAccount != register_account.editTextString) {
                 val empty: Boolean = register_account.editTextString.isEmpty()
                 if (!empty) {
@@ -208,10 +208,10 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
                 }
                 lastAccount = register_account.editTextString
             }
-        })
+        }
 
 
-        register_name.setMineFocusChangeListener(MineFocusChangeListener {
+        register_name.setMineFocusChangeListener {
             if (lastName != register_name.editTextString) {
                 val empty: Boolean = register_name.editTextString.isEmpty()
                 if (!empty) {
@@ -224,7 +224,7 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
                 }
                 lastName = register_name.editTextString
             }
-        })
+        }
     }
 
 

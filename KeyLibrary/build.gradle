@@ -71,10 +71,11 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     api "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     api 'com.yanzhenjie:permission:2.0.3'
-    api 'com.github.bumptech.glide:glide:4.8.0'
+    api 'com.github.bumptech.glide:glide:4.9.0'
   //  implementation 'com.github.todou:appbarspring:1.0.9'
+    api 'jp.wasabeef:glide-transformations:4.1.0'
     api 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.8.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.jph.takephoto:takephoto_library:4.0.3'
     implementation files('libs/juniversalchardet-1.0.3.jar')
     //noinspection GradleCompatible

@@ -1,9 +1,12 @@
 package com.key.magicbook.activity.bookdetail
 
+import android.content.ContentValues
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.allen.library.interceptor.Transformer
+import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.bean.BusMessage
@@ -14,7 +17,10 @@ import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.LoadingView
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookLike
 import com.key.magicbook.jsoup.JsoupUtils
+import com.key.magicbook.util.GlideUtils
+import com.wx.goodview.GoodView
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.Observer
@@ -24,6 +30,7 @@ import kotlinx.android.synthetic.main.activity_book_detail.*
 import kotlinx.android.synthetic.main.fragment_index_mine.toolbar
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.litepal.LitePal
 
 /**
  * created by key  on 2020/4/13
@@ -35,13 +42,15 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     private var bookName = ""
     private var adapter:Adapter ?= null
     private var mBookDetail :BookDetail ?=null
+    private var goodView:GoodView ?= null
+    private var isLike = false
+    private var bookUrl = ""
     override fun createPresenter(): BookDetailPresenter? {
         return BookDetailPresenter()
     }
 
     override fun initView() {
         setTitle(toolbar)
-        book_bg.layoutParams.height = UiUtils.getScreenHeight(this) / 4
         toolbar.setNavigationOnClickListener {
             finish()
             overridePendingTransition(0, 0)
@@ -61,7 +70,39 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
 
         }
 
+        goodView= GoodView(this)
+        like.setOnClickListener {
+            var imgId = R.mipmap.book_like
+            if(isLike){
+                imgId = R.mipmap.book_un_like
+            }
+            Glide.with(this).load(imgId).into(like)
+            isLike = !isLike
+            goodView!!.setImage(imgId)
+            goodView!!.show(like)
 
+
+            val findAll = LitePal.findAll(BookLike::class.java)
+            var isCheck = false
+            val bookLike = BookLike()
+            bookLike.bookName = mBookDetail!!.bookName
+            bookLike.bookAuthor = mBookDetail!!.bookAuthor
+            bookLike.bookUrl = bookUrl
+            bookLike.bookOnlyTag = mBookDetail!!.bookName +  mBookDetail!!.bookAuthor + bookUrl
+            if(isLike){
+                Log.e("pile","work isLike to true")
+                val contentValues = ContentValues()
+                contentValues.put("isLike", "true")
+                LitePal.updateAll(BookLike::class.java,contentValues,"bookOnlyTag = ?",bookLike.bookOnlyTag)
+            }else{
+                Log.e("pile","work isLike to false")
+                val contentValues = ContentValues()
+                contentValues.put("isLike", "false")
+                LitePal.updateAll(BookLike::class.java,contentValues,"bookOnlyTag = ?",bookLike.bookOnlyTag)
+            }
+
+
+        }
     }
 
     override fun setLayoutId(): Int {
@@ -71,13 +112,14 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     override fun receiveMessage(busMessage: BusMessage<Any>) {
         super.receiveMessage(busMessage)
         bookName = busMessage.specialMessage
+        bookUrl = busMessage.message
         runOnUiThread {
             executeData(busMessage.data as Document)
         }
     }
 
     private fun executeData(document: Document) {
-        val img = document.select("#fmimg > img:nth-child(1)")
+        val img = document.select("#fmimg > img")
         val name = document.select("#info > h1:nth-child(1)")
         val author = document.select("#info > p:nth-child(2)")
         val update = document.select("#info > p:nth-child(4)")
@@ -85,14 +127,14 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         val intro = document.select("#intro")
         val select = document.select("#list > dl > dd")
 
-
         val bookDetail = BookDetail()
-        bookDetail.bookCover = baseUrl + img.text()
+        bookDetail.bookCover = baseUrl + img.attr("src")
         bookDetail.bookName = name.text()
         bookDetail.bookAuthor = author.text()
         bookDetail.lastUpdateTime = update.text()
         bookDetail.lastChapter = lastChapter.text()
         bookDetail.bookIntro = intro.text()
+        bookDetail.bookUrl = bookUrl
         Observable.fromArray(select.reversed())
             .compose(Transformer.switchSchedulers())
             .flatMap(Function<List<Element>, ObservableSource<String>> {
@@ -148,7 +190,38 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         }
         last_update_info_time.text = lastUpdateTime
         last_update_info_chapter.text = bookDetail.lastChapter
+        intro.text = bookDetail.bookIntro
         adapter!!.setNewData(bookDetail.chapterNames)
+        GlideUtils.load(this,bookDetail.bookCover,book_cover)
+        Thread {
+            GlideUtils.loadBlur(this,bookDetail.bookCover,book_root)
+        }.start()
+
+
+        var isCheck = false
+        val findAll = LitePal.findAll(BookLike::class.java)
+        val tag = bookName + bookDetail.bookAuthor + bookUrl
+        for(value in findAll){
+            if(tag == value.bookOnlyTag){
+                isCheck = true
+                isLike = value.isLike == "true"
+            }
+        }
+        var imgId =  R.mipmap.book_un_like
+        if(isLike){
+           imgId =  R.mipmap.book_like
+        }
+        if(!isCheck){
+            val bookLike = BookLike()
+            bookLike.bookName = bookName
+            bookLike.bookAuthor = mBookDetail!!.bookAuthor
+            bookLike.bookUrl = bookUrl
+            bookLike.bookOnlyTag = bookName + mBookDetail!!.bookAuthor + bookUrl
+            bookLike.isLike  = "false"
+            bookLike.save()
+        }
+
+        Glide.with(this).load(imgId).into(like)
     }
 
 
@@ -157,7 +230,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         toolbar.title = bookName
     }
 
-    public class Adapter() :BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_chapter){
+    class Adapter() :BaseQuickAdapter<String,BaseViewHolder>(R.layout.item_chapter){
         override fun convert(helper: BaseViewHolder, item: String) {
              helper.setText(R.id.chapter,item)
         }

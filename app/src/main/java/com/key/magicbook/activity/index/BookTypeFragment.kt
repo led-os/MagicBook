@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.allen.library.base.BaseObserver
@@ -17,11 +18,13 @@ import com.bigkoo.convenientbanner.holder.Holder
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.base.BaseFragment
+import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
+import com.key.magicbook.util.UiUtil
 import kotlinx.android.synthetic.main.fragment_book_type.*
 import okhttp3.ResponseBody
 import org.jsoup.Jsoup
@@ -113,11 +116,22 @@ class BookTypeFragment : BaseFragment() {
         Holder<BookDetail>(itemView) {
         override fun updateUI(data: BookDetail?) {
             itemView.findViewById<TextView>(R.id.name).text = data!!.bookName
+            itemView.findViewById<ConstraintLayout>(R.id.banner).layoutParams.width =
+                UiUtils.getScreenWidth(activity)  -UiUtils.dip2px(36f)
             GlideUtils.load(
                 activity,
                 "https://www.dingdiann.com/" + data!!.bookCover,
                 itemView.findViewById<ImageView>(R.id.image)
             )
+
+            Thread {
+                GlideUtils.loadBlur(
+                    activity,
+                    "https://www.dingdiann.com/" + data!!.bookCover,
+                    itemView.findViewById<ImageView>(R.id.bg)
+                )
+            }.start()
+
         }
 
         override fun initView(itemView: View?) {

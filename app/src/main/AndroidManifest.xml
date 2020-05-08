@@ -29,6 +29,7 @@
 
 
         <activity android:name="com.key.magicbook.activity.index.IndexActivity"/>
+        <activity android:name="com.key.magicbook.activity.like.LikeActivity"/>
         <activity android:name="com.key.magicbook.activity.set.SetActivity"/>
         <activity android:name="com.key.magicbook.activity.login.LoginActivity"/>
         <activity android:name="com.key.magicbook.activity.read.ReadActivity"/>

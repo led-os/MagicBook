@@ -52,6 +52,7 @@ dependencies {
         classRename 'org.w3c.dom.**', 'my.org.w3c.dom.@1'
         classRename 'com.gargoylesoftware.css.dom.**','my.com.gargoylesoftware.css.dom.@1'
     }
+    implementation 'com.wx.goodview:goodview:1.0.0'
     implementation  'com.umeng.umsdk:analytics:8.0.0'
     implementation  'com.umeng.umsdk:common:2.0.0'
     implementation "com.andkulikov:transitionseverywhere:1.6.5"

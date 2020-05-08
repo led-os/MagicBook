@@ -25,8 +25,8 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.AppBarStateChangeListener
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.activity.like.LikeActivity
 import com.key.magicbook.activity.set.SetActivity
-import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.UserInfo
 import com.key.magicbook.util.BitmapUtil
 import com.key.magicbook.util.GlideUtils
@@ -129,9 +129,15 @@ class MineFragment :BaseFragment(){
 
 
             when(value){
+                1->{
+                    fun_root.getChildAt(value).setOnClickListener {
+                        startActivity( Intent(activity, LikeActivity::class.java))
+                        activity!!.overridePendingTransition(0,0)
+                    }
+                }
                 6->{
                     fun_root.getChildAt(value).setOnClickListener {
-                        startActivity( Intent(activity,SetActivity::class.java))
+                        startActivity( Intent(activity, SetActivity::class.java))
                         activity!!.overridePendingTransition(0,0)
                     }
 

@@ -19,7 +19,7 @@
                 android:id="@+id/collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="@color/blue"
+                app:contentScrim="@color/trans_color"
                 android:theme="@style/ToolbarThemeWhite"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -39,7 +39,6 @@
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar"
-                    app:title="Name"
                     android:layout_width="match_parent"
                     android:layout_height="?android:attr/actionBarSize"
                     app:layout_collapseMode="pin" />
