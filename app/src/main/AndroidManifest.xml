@@ -39,6 +39,8 @@
         <activity android:name=".activity.bookdetail.BookDetailActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>
+        <activity android:name="com.key.magicbook.activity.options.OptionsPickViewActivity"
+                  android:theme="@style/TransTheme"/>
     </application>
 
 </manifest>

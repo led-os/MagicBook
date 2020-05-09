@@ -1,10 +1,11 @@
 package com.key.magicbook.activity.index
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,9 @@ class BookCityFragment : BaseFragment() {
     private var document :Document ?= null
     private var mPileLayout:PileLayout ?= null
     private var headerView :View ?= null
+    private var inAnimation = false
+    private var searcherWidth = 0;
+
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_book_city
     }
@@ -63,6 +67,72 @@ class BookCityFragment : BaseFragment() {
         headerView = UiUtils.inflate(activity,R.layout.item_book_city_head)
         mPileLayout = headerView!!.findViewById(R.id.pile_layout)
         adapter!!.addHeaderView(headerView!!)
+
+
+        list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if(dy > 0){
+                    if(searcherWidth == 0){
+                        searcherWidth = search.width
+                    }
+                    if(search.visibility == View.VISIBLE && !inAnimation) {
+                        val duration = ObjectAnimator
+                            .ofInt(ViewWrapper(search), "width", searcherWidth, 0)
+                            .setDuration(300)
+
+                        duration.addListener(object :Animator.AnimatorListener{
+                            override fun onAnimationRepeat(animation: Animator?) {
+
+                            }
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                search.visibility = View.GONE
+                                inAnimation = false
+                            }
+
+                            override fun onAnimationCancel(animation: Animator?) {
+                            }
+
+                            override fun onAnimationStart(animation: Animator?) {
+                                inAnimation = true
+                            }
+
+                        })
+                        duration.start()
+                    }
+
+                }else{
+                    if(search.visibility == View.GONE&& !inAnimation){
+                        search.layoutParams.width = 0
+                        search.visibility = View.VISIBLE
+                        val duration = ObjectAnimator
+                            .ofInt(ViewWrapper(search), "width", 0, searcherWidth)
+                            .setDuration(300)
+                        duration.addListener(object :Animator.AnimatorListener{
+                            override fun onAnimationRepeat(animation: Animator?) {
+
+                            }
+
+                            override fun onAnimationEnd(animation: Animator?) {
+                                inAnimation = false
+                            }
+
+                            override fun onAnimationCancel(animation: Animator?) {
+                            }
+
+                            override fun onAnimationStart(animation: Animator?) {
+                                inAnimation = true
+                            }
+
+                        })
+
+                        duration.start()
+
+                    }
+
+                }
+            }
+        })
         initData()
     }
 
@@ -382,6 +452,23 @@ class BookCityFragment : BaseFragment() {
             }
 
         }
+    }
+
+
+    private class ViewWrapper(private val mTarget: View) {
+        var width: Int
+            get() = mTarget.layoutParams.width
+            set(width) {
+                mTarget.layoutParams.width = width
+                mTarget.requestLayout()
+            }
+
+        var height: Int
+            get() = mTarget.layoutParams.height
+            set(height) {
+                mTarget.layoutParams.width = height
+                mTarget.requestLayout()
+            }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.key.magicbook.activity.read
-
+import android.graphics.Typeface
+import android.view.View
 import android.widget.Toast
 import com.key.keylibrary.base.ConstantValues
 import com.key.keylibrary.bean.BusMessage
@@ -8,11 +9,12 @@ import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.BookDetail
-import com.key.magicbook.db.BookList
 import com.key.magicbook.bookpage.Config
 import com.key.magicbook.bookpage.PageFactory
 import com.key.magicbook.bookpage.PageWidget
+import com.key.magicbook.db.BookList
 import com.key.magicbook.jsoup.JsoupUtils
+import com.key.magicbook.util.BrightnessUtil
 import kotlinx.android.synthetic.main.activity_read.*
 import org.jsoup.nodes.Element
 import java.io.File
@@ -30,10 +32,70 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     }
 
     override fun initView() {
-        saveString("圣墟","第1章5465465电脑上解析一个8k+章节的小说只要1s不到，但即便是骁龙835处理器手机也要3~4秒。因此最好将解析结果保存起来，防止不小心退出后需要重新解析。" +
-                "\n\r " +
-                "第2章65465" +
-                " 电脑上解析一个8k+章节的小说只要1s不到，但即便是骁龙835处理器手机也要3~4秒。因此最好将解析结果保存起来，防止不小心退出后需要重新解析。\n\r","test")
+        setTitle(toolbar)
+        saveString("圣墟","test  pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {\n" +
+                "            @Override\n" +
+                "            public void onTimeSelect(Date date, View v) {//选中事件回调\n" +
+                "\t\t\tSimpleDateFormat simpleDateFormat = new SimpleDateFormat(\"yyyy年MM月dd日-HH时MM分\");\n" +
+                "\t\t\tString format = simpleDateFormat.format(date);\n" +
+                "\t\t\tselect_time.setText(format);\n" +
+                "} })//\n" +
+                ".setType(TimePickerView.Type.ALL)//默认全部显示\n" +
+                "                        .setCancelText(\"取消\")//取消按钮文字\n" +
+                "                        .setSubmitText(\"确定\")//确认按钮文字\n" +
+                "                        .setContentSize(18)//滚轮文字大小\n" +
+                "                        .setTitleSize(20)//标题文字大小\n" +
+                "                        .setTitleText(\"选择时间\")//标题文字\n" +
+                "                        .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示\n" +
+                "                        .isCyclic(true)//是否循环滚动\n" +
+                "                        .setTitleColor(Color.BLACK)//标题文字颜色\n" +
+                "                        .setSubmitColor(R.color.hui)//确定按钮文字颜色\n" +
+                "                        .setCancelColor(R.color.hui)//取消按钮文字颜色\n" +
+                "                        .setTitleBgColor(0xFF666666)//标题背景颜色 Night mode\n" +
+                "                        .setBgColor(0xFF333333)//滚轮背景颜色 Night mode\n" +
+                "//                .setRange(calendar.get(Calendar.YEAR) - 20, calendar.get(Calendar.YEAR) + 20)//默认是1900-2100年\n" +
+                "                        .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/\n" +
+                "                        .setRangDate(startDate,endDate)//起始终止年月日设定\n" +
+                "                        .setLabel(\"年\",\"月\",\"日\",\"时\",\"分\",\"秒\")\n" +
+                "                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。\n" +
+                "                        .isDialog(false)//是否显示为对话框样式\n" +
+                "                        .build();\n" +
+                "                pvTime.show();\n" +
+                "\n" +
+                "————————————————\n" +
+                "版权声明：本文为CSDN博主「KeyBoarder_」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。\n" +
+                "原文链接：https://blog.csdn.net/weixin_39738488/article/details/78954606  pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {\n" +
+                "            @Override\n" +
+                "            public void onTimeSelect(Date date, View v) {//选中事件回调\n" +
+                "\t\t\tSimpleDateFormat simpleDateFormat = new SimpleDateFormat(\"yyyy年MM月dd日-HH时MM分\");\n" +
+                "\t\t\tString format = simpleDateFormat.format(date);\n" +
+                "\t\t\tselect_time.setText(format);\n" +
+                "} })//\n" +
+                ".setType(TimePickerView.Type.ALL)//默认全部显示\n" +
+                "                        .setCancelText(\"取消\")//取消按钮文字\n" +
+                "                        .setSubmitText(\"确定\")//确认按钮文字\n" +
+                "                        .setContentSize(18)//滚轮文字大小\n" +
+                "                        .setTitleSize(20)//标题文字大小\n" +
+                "                        .setTitleText(\"选择时间\")//标题文字\n" +
+                "                        .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示\n" +
+                "                        .isCyclic(true)//是否循环滚动\n" +
+                "                        .setTitleColor(Color.BLACK)//标题文字颜色\n" +
+                "                        .setSubmitColor(R.color.hui)//确定按钮文字颜色\n" +
+                "                        .setCancelColor(R.color.hui)//取消按钮文字颜色\n" +
+                "                        .setTitleBgColor(0xFF666666)//标题背景颜色 Night mode\n" +
+                "                        .setBgColor(0xFF333333)//滚轮背景颜色 Night mode\n" +
+                "//                .setRange(calendar.get(Calendar.YEAR) - 20, calendar.get(Calendar.YEAR) + 20)//默认是1900-2100年\n" +
+                "                        .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/\n" +
+                "                        .setRangDate(startDate,endDate)//起始终止年月日设定\n" +
+                "                        .setLabel(\"年\",\"月\",\"日\",\"时\",\"分\",\"秒\")\n" +
+                "                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。\n" +
+                "                        .isDialog(false)//是否显示为对话框样式\n" +
+                "                        .build();\n" +
+                "                pvTime.show();\n" +
+                "\n" +
+                "————————————————\n" +
+                "版权声明：本文为CSDN博主「KeyBoarder_」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。\n" +
+                "原文链接：https://blog.csdn.net/weixin_39738488/article/details/78954606","test")
         val config = Config.createConfig(this)
         pageFactory = PageFactory.createPageFactory(this)
         bookpage.setPageMode(config.pageMode)
@@ -56,7 +118,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             }
 
             override fun center() {
-
+                controlSettingShow()
             }
 
             override fun cancel() {
@@ -81,6 +143,61 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             bookList.bookpath = ConstantValues.FILE_BOOK + File.separator + "test"+File.separator+"/圣墟.txt"
             pageFactory!!.openBook(bookList)
         }
+
+
+
+        read_set.setOnClickListener {
+            val settingDialogFragment = SettingDialogFragment()
+            settingDialogFragment.show(supportFragmentManager,"set")
+            settingDialogFragment.setSettingListener(object :SettingDialogFragment.SettingListener{
+                override fun changeTypeFace(typeface: Typeface?) {
+                    pageFactory!!.changeTypeface(typeface)
+
+                }
+
+                override fun changePageMode(pageMode: Int) {
+                    bookpage.setPageMode(pageMode)
+                }
+
+                override fun changeFontSize(fontSize: Int) {
+                    pageFactory!!.changeFontSize(fontSize)
+                }
+
+                override fun changeSystemBright(isSystem: Boolean?, brightness: Float) {
+                    if (!isSystem!!) {
+                        BrightnessUtil.setBrightness(this@ReadActivity, brightness)
+                    } else {
+                        val bh: Int = BrightnessUtil.getScreenBrightness(this@ReadActivity)
+                        BrightnessUtil.setBrightness(this@ReadActivity, bh)
+                    }
+
+                }
+
+                override fun changeBookBg(type: Int) {
+                    pageFactory!!.changeBookBg(type)
+                }
+
+            })
+        }
+
+
+        read_menu.setOnClickListener {
+            val menuDialogFragment = MenuDialogFragment()
+            menuDialogFragment.show(supportFragmentManager,"menu")
+        }
+    }
+
+    private fun controlSettingShow() {
+        val b = toolbar.visibility == View.GONE
+        if(b){
+            toolbar.visibility  = View.VISIBLE
+            day.visibility = View.VISIBLE
+            set.visibility = View.VISIBLE
+        }else{
+            toolbar.visibility  = View.GONE
+            day.visibility = View.GONE
+            set.visibility = View.GONE
+        }
     }
 
     private fun getChapter(b: Boolean) {
@@ -96,15 +213,10 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
                     }
                 }
             }
-
-
         }
 
 
-
-
         if(b){
-            //next
             if(index -1 >= 0){
                 loadBook(book!!,"",book!!.chapterNames[index-1],b)
             }else{
