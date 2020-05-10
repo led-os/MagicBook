@@ -42,9 +42,7 @@ import java.util.Locale;
 public class PageFactory {
     private static final String TAG = "PageFactory";
     private static PageFactory pageFactory;
-
     private Context mContext;
-
     /**
      * Config 字体大小颜色背景的配置类
      */
@@ -470,9 +468,10 @@ public class PageFactory {
 
 
 
+        //+ UiUtils.getStateBar(UiUtils.getContext()
 
         //画书名
-        c.drawText(CommonUtil.subString(bookName,12), marginWidth ,statusMarginBottom + mBatteryFontSize+ UiUtils.getStateBar(UiUtils.getContext()), mBatteryPaint);
+        c.drawText(CommonUtil.subString(bookName,12), marginWidth ,statusMarginBottom + mBatteryFontSize, mBatteryPaint);
 
 
         //画章
@@ -494,9 +493,8 @@ public class PageFactory {
      */
     public void prePage(){
         if (currentPage.getBegin() <= 0) {
-            Log.e(TAG,"当前是第一页");
             if (!m_isFirstPage){
-   //             Toast.makeText(mContext, "当前是第一页", Toast.LENGTH_SHORT).show();
+
             }
             m_isFirstPage = true;
             return;
@@ -516,9 +514,8 @@ public class PageFactory {
      */
     public void nextPage(){
         if (currentPage.getEnd() >= mBookUtil.getBookLen()) {
-            Log.e(TAG,"已经是最后一页了");
             if (!m_isLastPage){
-          //      Toast.makeText(mContext, "已经是最后一页了", Toast.LENGTH_SHORT).show();
+                //lastPage()
             }
             m_isLastPage = true;
             return;
@@ -556,9 +553,9 @@ public class PageFactory {
         //根据文件名称决定书名
         bookName = FileUtils.getFileName(bookPath);
 
-        mStatus = Status.OPENING;
-        drawStatus(mBookPageWidget.getCurPage());
-        drawStatus(mBookPageWidget.getNextPage());
+//        mStatus = Status.OPENING;
+//        drawStatus(mBookPageWidget.getCurPage());
+//        drawStatus(mBookPageWidget.getNextPage());
 
 
         /**
@@ -595,9 +592,9 @@ public class PageFactory {
                 /**
                  * 更新书本状态
                  */
-                PageFactory.mStatus = PageFactory.Status.FAIL;
-                drawStatus(mBookPageWidget.getCurPage());
-                drawStatus(mBookPageWidget.getNextPage());
+//                PageFactory.mStatus = PageFactory.Status.FAIL;
+//                drawStatus(mBookPageWidget.getCurPage());
+//                drawStatus(mBookPageWidget.getNextPage());
                 Toast.makeText(mContext,"打开书本失败！",Toast.LENGTH_SHORT).show();
             }
         }
@@ -695,6 +692,17 @@ public class PageFactory {
         if (!line.isEmpty() && lines.size() < mLineCount){
             lines.add(line);
         }
+        if(lines.size() > 0){
+            String s = lines.get(lines.size() - 1).trim();
+
+            boolean b = s.length() == 1;
+
+            if(b){
+                lines.remove(lines.size() - 1);
+            }
+
+        }
+
         for (String str : lines){
             Log.e(TAG,str + "   ");
         }

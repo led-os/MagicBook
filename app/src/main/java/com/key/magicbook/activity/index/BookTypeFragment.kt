@@ -20,6 +20,7 @@ import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.base.BaseFragment
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
@@ -76,16 +77,16 @@ class BookTypeFragment : BaseFragment() {
             if (item.bookCover == null && !item.isLoad) {
                     item.isLoad = true
                 try {
-                    JsoupUtils.getFreeDocumentForBody("https://www.dingdiann.com/" + item.bookUrl)
+                    JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
                         .subscribe(object :CustomBaseObserver<ResponseBody>(){
                             override fun next(o: ResponseBody?) {
                                 try {
                                     val parse = Jsoup.parse(o!!.string())
                                     item.bookCover =
-                                        "https://www.dingdiann.com/" + parse.select("#fmimg > img").attr("src")
+                                        ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src")
                                     GlideUtils.load(
                                         context,
-                                        "https://www.dingdiann.com/" + parse.select("#fmimg > img")
+                                        ConstantValues.BASE_URL+ parse.select("#fmimg > img")
                                             .attr("src"),
                                         helper.getView<ImageView>(R.id.image)
                                     )
@@ -120,14 +121,14 @@ class BookTypeFragment : BaseFragment() {
                 UiUtils.getScreenWidth(activity)  -UiUtils.dip2px(36f)
             GlideUtils.load(
                 activity,
-                "https://www.dingdiann.com/" + data!!.bookCover,
+                ConstantValues.BASE_URL + data!!.bookCover,
                 itemView.findViewById<ImageView>(R.id.image)
             )
 
             Thread {
                 GlideUtils.loadBlur(
                     activity,
-                    "https://www.dingdiann.com/" + data!!.bookCover,
+                    ConstantValues.BASE_URL + data!!.bookCover,
                     itemView.findViewById<ImageView>(R.id.bg)
                 )
             }.start()

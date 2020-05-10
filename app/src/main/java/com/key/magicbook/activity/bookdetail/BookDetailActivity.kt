@@ -13,6 +13,7 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.read.ReadActivity
+import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.LoadingView
 import com.key.magicbook.base.MineBaseActivity
@@ -36,7 +37,6 @@ import org.litepal.LitePal
  * created by key  on 2020/4/13
  */
 class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
-    private val baseUrl = "https://www.dingdiann.com/"
     private var localChapterUrls: ArrayList<String>? = null
     private var localChapterNames: ArrayList<String>? = null
     private var bookName = ""
@@ -60,7 +60,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         adapter!!.setOnItemClickListener { adapter,
                                          view,
                                          position ->
-            val bookUrl = baseUrl + localChapterUrls!![position]
+            val bookUrl = ConstantValues.BASE_URL + localChapterUrls!![position]
             val list = adapter.data as List<String>
             getBookContent(bookUrl,list[position])
         }
@@ -70,6 +70,11 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
 
         }
 
+
+        read.setOnClickListener {
+            val bookUrl = ConstantValues.BASE_URL + localChapterUrls!![3]
+            getBookContent(bookUrl,mBookDetail!!.chapterNames[3])
+        }
         goodView= GoodView(this)
         like.setOnClickListener {
             var imgId = R.mipmap.book_like
@@ -81,21 +86,16 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             goodView!!.setImage(imgId)
             goodView!!.show(like)
 
-
-            val findAll = LitePal.findAll(BookLike::class.java)
-            var isCheck = false
             val bookLike = BookLike()
             bookLike.bookName = mBookDetail!!.bookName
             bookLike.bookAuthor = mBookDetail!!.bookAuthor
             bookLike.bookUrl = bookUrl
             bookLike.bookOnlyTag = mBookDetail!!.bookName +  mBookDetail!!.bookAuthor + bookUrl
             if(isLike){
-                Log.e("pile","work isLike to true")
                 val contentValues = ContentValues()
                 contentValues.put("isLike", "true")
                 LitePal.updateAll(BookLike::class.java,contentValues,"bookOnlyTag = ?",bookLike.bookOnlyTag)
             }else{
-                Log.e("pile","work isLike to false")
                 val contentValues = ContentValues()
                 contentValues.put("isLike", "false")
                 LitePal.updateAll(BookLike::class.java,contentValues,"bookOnlyTag = ?",bookLike.bookOnlyTag)
@@ -128,7 +128,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         val select = document.select("#list > dl > dd")
 
         val bookDetail = BookDetail()
-        bookDetail.bookCover = baseUrl + img.attr("src")
+        bookDetail.bookCover = ConstantValues.BASE_URL + img.attr("src")
         bookDetail.bookName = name.text()
         bookDetail.bookAuthor = author.text()
         bookDetail.lastUpdateTime = update.text()

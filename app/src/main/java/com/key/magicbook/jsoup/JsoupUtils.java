@@ -2,6 +2,7 @@ package com.key.magicbook.jsoup;
 
 import com.allen.library.interceptor.Transformer;
 import com.key.magicbook.api.ApiHelper;
+import com.key.magicbook.base.ConstantValues;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +20,7 @@ import okhttp3.ResponseBody;
  */
 public class JsoupUtils {
 
-    public static String  searchBaseUrl = "https://www.dingdiann.com/";
+    public static String  searchBaseUrl = ConstantValues.BASE_URL;
 
 
     public static   Observable<Document> getQIDIANIndex(){
@@ -42,7 +43,7 @@ public class JsoupUtils {
 
 
     public static   Observable<Document> getDingDianSearch(String kw){
-        return ApiHelper.getFreeUrlApi().freeUrl("https://www.dingdiann.com/searchbook.php?keyword="+kw)
+        return ApiHelper.getFreeUrlApi().freeUrl(ConstantValues.BASE_URL +"searchbook.php?keyword="+kw)
                 .compose(Transformer.<ResponseBody>switchSchedulers())
                 .flatMap((Function<ResponseBody, ObservableSource<Document>>) s -> {
                     Document parse = Jsoup.parse(s.string());

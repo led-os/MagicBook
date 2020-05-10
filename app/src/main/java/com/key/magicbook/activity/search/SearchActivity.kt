@@ -24,10 +24,7 @@ import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.bookdetail.BookDetailActivity
 import com.key.magicbook.api.ApiHelper
-import com.key.magicbook.base.CustomBaseObserver
-import com.key.magicbook.base.LoadingView
-import com.key.magicbook.base.MineBaseActivity
-import com.key.magicbook.base.RemindDialogClickListener
+import com.key.magicbook.base.*
 import com.key.magicbook.bean.BookSearchHistory
 import com.key.magicbook.bean.BookSearchResult
 import com.key.magicbook.jsoup.JsoupUtils
@@ -53,7 +50,6 @@ import org.litepal.LitePal
  * created by key  on 2020/4/1
  */
 class SearchActivity : MineBaseActivity<SearchPresenter>() {
-    private val searchBaseUrl = "https://www.dingdiann.com/"
     private var localDocuments: ArrayList<Document> = ArrayList()
     private var localUrls: ArrayList<String> = ArrayList()
     private var adapter: Adapter? = null
@@ -278,15 +274,15 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                 try{
                     item.isLoad = true
                     Log.e("bookSearch", item.name + " :" + item.bookUrl)
-                    JsoupUtils.getFreeDocumentForBody("https://www.dingdiann.com/" + item.bookUrl)
+                    JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
                         .subscribe (object :CustomBaseObserver<ResponseBody>(){
                             override fun next(o: ResponseBody?) {
                                 val parse = Jsoup.parse(o!!.string())
                                 item.data =  parse
-                                item.img = "https://www.dingdiann.com/" + parse.select("#fmimg > img").attr("src")
+                                item.img = ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src")
                                 GlideUtils.load(
                                     context,
-                                    "https://www.dingdiann.com/" + parse.select("#fmimg > img").attr("src") ,
+                                    ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src") ,
                                     helper.getView<ImageView>(R.id.img)
                                 )
                                 item.updateTime = parse.select("#info > p:nth-child(4)").text()

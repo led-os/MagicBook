@@ -17,6 +17,7 @@ import com.key.keylibrary.base.BaseFragment
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.search.SearchActivity
+import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.bean.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
@@ -30,7 +31,7 @@ import org.jsoup.nodes.Document
  * created by key  on 2020/3/2
  */
 class BookCityFragment : BaseFragment() {
-    private val baseUrl = "https://www.dingdiann.com/"
+    private val baseUrl =ConstantValues.BASE_URL
     private var adapter :Adapter ?= null
     private var books: ArrayList<BookDetail> = ArrayList()
     private var document :Document ?= null
@@ -307,12 +308,12 @@ class BookCityFragment : BaseFragment() {
             helper.setText(R.id.name,item.bookName)
             GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.image))
             if( item.bookCover == null){
-                JsoupUtils.connectFreeUrl("https://www.dingdiann.com/"+item.bookUrl ,"#fmimg > img:nth-child(1)")
+                JsoupUtils.connectFreeUrl(ConstantValues.BASE_URL+item.bookUrl ,"#fmimg > img:nth-child(1)")
                     .subscribe {
-                        item.bookCover = "https://www.dingdiann.com/" +it.attr("src")
+                        item.bookCover =ConstantValues.BASE_URL +it.attr("src")
                         GlideUtils.load(
                             context,
-                            "https://www.dingdiann.com/" +it.attr("src") ,
+                            ConstantValues.BASE_URL +it.attr("src") ,
                             helper.getView<ImageView>(R.id.image)
                         )
                     }

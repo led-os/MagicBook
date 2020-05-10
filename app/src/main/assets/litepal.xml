@@ -6,6 +6,7 @@
 
     <list>
         <mapping class="com.key.magicbook.db.BookCatalogue"></mapping>
+        <mapping class="com.key.magicbook.db.BookReadChapter"></mapping>
         <mapping class="com.key.magicbook.db.BookList"></mapping>
         <mapping class="com.key.magicbook.db.BookMarks"></mapping>
         <mapping class="com.key.magicbook.db.BookLike"></mapping>

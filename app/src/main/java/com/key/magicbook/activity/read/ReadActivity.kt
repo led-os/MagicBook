@@ -1,5 +1,6 @@
 package com.key.magicbook.activity.read
 import android.graphics.Typeface
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.key.keylibrary.base.ConstantValues
@@ -13,10 +14,12 @@ import com.key.magicbook.bookpage.Config
 import com.key.magicbook.bookpage.PageFactory
 import com.key.magicbook.bookpage.PageWidget
 import com.key.magicbook.db.BookList
+import com.key.magicbook.db.BookReadChapter
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.BrightnessUtil
 import kotlinx.android.synthetic.main.activity_read.*
 import org.jsoup.nodes.Element
+import org.litepal.LitePal
 import java.io.File
 
 /**
@@ -27,75 +30,20 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     private var pageFactory :PageFactory ?= null
     private var cacheName = ""
     private var currentChapterName = ""
+    private var isOpen = false
+    private var bookCacheName = "";
     override fun createPresenter(): ReadPresenter? {
         return ReadPresenter()
     }
 
     override fun initView() {
         setTitle(toolbar)
-        saveString("圣墟","test  pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {\n" +
-                "            @Override\n" +
-                "            public void onTimeSelect(Date date, View v) {//选中事件回调\n" +
-                "\t\t\tSimpleDateFormat simpleDateFormat = new SimpleDateFormat(\"yyyy年MM月dd日-HH时MM分\");\n" +
-                "\t\t\tString format = simpleDateFormat.format(date);\n" +
-                "\t\t\tselect_time.setText(format);\n" +
-                "} })//\n" +
-                ".setType(TimePickerView.Type.ALL)//默认全部显示\n" +
-                "                        .setCancelText(\"取消\")//取消按钮文字\n" +
-                "                        .setSubmitText(\"确定\")//确认按钮文字\n" +
-                "                        .setContentSize(18)//滚轮文字大小\n" +
-                "                        .setTitleSize(20)//标题文字大小\n" +
-                "                        .setTitleText(\"选择时间\")//标题文字\n" +
-                "                        .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示\n" +
-                "                        .isCyclic(true)//是否循环滚动\n" +
-                "                        .setTitleColor(Color.BLACK)//标题文字颜色\n" +
-                "                        .setSubmitColor(R.color.hui)//确定按钮文字颜色\n" +
-                "                        .setCancelColor(R.color.hui)//取消按钮文字颜色\n" +
-                "                        .setTitleBgColor(0xFF666666)//标题背景颜色 Night mode\n" +
-                "                        .setBgColor(0xFF333333)//滚轮背景颜色 Night mode\n" +
-                "//                .setRange(calendar.get(Calendar.YEAR) - 20, calendar.get(Calendar.YEAR) + 20)//默认是1900-2100年\n" +
-                "                        .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/\n" +
-                "                        .setRangDate(startDate,endDate)//起始终止年月日设定\n" +
-                "                        .setLabel(\"年\",\"月\",\"日\",\"时\",\"分\",\"秒\")\n" +
-                "                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。\n" +
-                "                        .isDialog(false)//是否显示为对话框样式\n" +
-                "                        .build();\n" +
-                "                pvTime.show();\n" +
-                "\n" +
-                "————————————————\n" +
-                "版权声明：本文为CSDN博主「KeyBoarder_」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。\n" +
-                "原文链接：https://blog.csdn.net/weixin_39738488/article/details/78954606  pvTime = new TimePickerView.Builder(this, new TimePickerView.OnTimeSelectListener() {\n" +
-                "            @Override\n" +
-                "            public void onTimeSelect(Date date, View v) {//选中事件回调\n" +
-                "\t\t\tSimpleDateFormat simpleDateFormat = new SimpleDateFormat(\"yyyy年MM月dd日-HH时MM分\");\n" +
-                "\t\t\tString format = simpleDateFormat.format(date);\n" +
-                "\t\t\tselect_time.setText(format);\n" +
-                "} })//\n" +
-                ".setType(TimePickerView.Type.ALL)//默认全部显示\n" +
-                "                        .setCancelText(\"取消\")//取消按钮文字\n" +
-                "                        .setSubmitText(\"确定\")//确认按钮文字\n" +
-                "                        .setContentSize(18)//滚轮文字大小\n" +
-                "                        .setTitleSize(20)//标题文字大小\n" +
-                "                        .setTitleText(\"选择时间\")//标题文字\n" +
-                "                        .setOutSideCancelable(true)//点击屏幕，点在控件外部范围时，是否取消显示\n" +
-                "                        .isCyclic(true)//是否循环滚动\n" +
-                "                        .setTitleColor(Color.BLACK)//标题文字颜色\n" +
-                "                        .setSubmitColor(R.color.hui)//确定按钮文字颜色\n" +
-                "                        .setCancelColor(R.color.hui)//取消按钮文字颜色\n" +
-                "                        .setTitleBgColor(0xFF666666)//标题背景颜色 Night mode\n" +
-                "                        .setBgColor(0xFF333333)//滚轮背景颜色 Night mode\n" +
-                "//                .setRange(calendar.get(Calendar.YEAR) - 20, calendar.get(Calendar.YEAR) + 20)//默认是1900-2100年\n" +
-                "                        .setDate(selectedDate)// 如果不设置的话，默认是系统时间*/\n" +
-                "                        .setRangDate(startDate,endDate)//起始终止年月日设定\n" +
-                "                        .setLabel(\"年\",\"月\",\"日\",\"时\",\"分\",\"秒\")\n" +
-                "                        .isCenterLabel(false) //是否只显示中间选中项的label文字，false则每项item全部都带有label。\n" +
-                "                        .isDialog(false)//是否显示为对话框样式\n" +
-                "                        .build();\n" +
-                "                pvTime.show();\n" +
-                "\n" +
-                "————————————————\n" +
-                "版权声明：本文为CSDN博主「KeyBoarder_」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。\n" +
-                "原文链接：https://blog.csdn.net/weixin_39738488/article/details/78954606","test")
+        hideSystemUI()
+        toolbar.setNavigationOnClickListener {
+            finish()
+            overridePendingTransition(0,0)
+        }
+        saveString("圣墟","test","test")
         val config = Config.createConfig(this)
         pageFactory = PageFactory.createPageFactory(this)
         bookpage.setPageMode(config.pageMode)
@@ -182,7 +130,8 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
 
         read_menu.setOnClickListener {
-            val menuDialogFragment = MenuDialogFragment()
+            val menuDialogFragment = MenuDialogFragment.newInstance(
+                book!!.bookName + book!!.bookAuthor + book!!.bookUrl)
             menuDialogFragment.show(supportFragmentManager,"menu")
         }
     }
@@ -190,10 +139,12 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     private fun controlSettingShow() {
         val b = toolbar.visibility == View.GONE
         if(b){
+            showSystemUI()
             toolbar.visibility  = View.VISIBLE
             day.visibility = View.VISIBLE
             set.visibility = View.VISIBLE
         }else{
+            hideSystemUI()
             toolbar.visibility  = View.GONE
             day.visibility = View.GONE
             set.visibility = View.GONE
@@ -201,7 +152,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     }
 
     private fun getChapter(b: Boolean) {
-        var index :Int = 0
+        var index = 0
         if(book != null){
             if(book!!.chapterNames != null){
                 if(book!!.chapterNames.size > 0){
@@ -218,20 +169,19 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
         if(b){
             if(index -1 >= 0){
-                loadBook(book!!,"",book!!.chapterNames[index-1],b)
+                loadBook(book!!,false)
             }else{
-                Toast.makeText(this,"当前章节为最后一章",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"您已阅读完全部内容",Toast.LENGTH_SHORT).show()
             }
 
 
         }else{
-            //pre
             if(book != null ){
                 if( book!!.chapterUrls != null){
                     if(book!!.chapterUrls.size-1 >= index +1){
-                        loadBook(book!!,"",book!!.chapterNames[index+1],b)
+                        loadBook(book!!,false)
                     }else{
-                        Toast.makeText(this,"当前章节为第一章",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this,"前面没有内容了喔",Toast.LENGTH_SHORT).show()
                     }
                 }
 
@@ -249,7 +199,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         val bookDetail = busMessage.data as BookDetail
         val message = busMessage.message
         val chapter = busMessage.specialMessage
-        loadBook(bookDetail,message,chapter,true)
+        loadBook(bookDetail,true)
     }
 
     private fun cacheBook(bookDetail: BookDetail, message: String?) {
@@ -270,32 +220,78 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     }
 
 
-    private fun loadBook(book :BookDetail,content:String,chapter :String,isFirstPage :Boolean){
-        val s = book.bookName + chapter
-        currentChapterName = chapter
-        cacheName = book.bookName + book.bookAuthor
-        cacheName = cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
-        this.book = book
-        val file =
-            File(ConstantValues.FILE_BOOK + File.separator + cacheName + File.separator + "/$s.txt")
-        if(!file.exists()){
-            saveString(s,content,cacheName)
-        }
-        cacheBook(book,chapter)
-        pageFactory!!.setPageWidget(bookpage)
-        val bookList = BookList()
-        bookList.bookname =  chapter
-        if(isFirstPage){
-            bookList.begin = 0
-        }else{
-            if(file.exists()){
-                bookList.begin = pageFactory!!.bookLen
+    private fun loadBook(book :BookDetail,isFirstLoad :Boolean){
+        if(isFirstLoad){
+            bookCacheName = filterSpecialSymbol(book.bookName + book.bookAuthor + book.bookUrl)
+            cacheName = book.bookName + book.bookAuthor
+            cacheName = filterSpecialSymbol(cacheName)
+            this.book = book
+            val b = book.chapterNames.size == book.chapterUrls.size
+            val find = LitePal.where("bookChapterOnlyTag = ?",
+                book.bookName + book.bookAuthor + book.bookUrl).find(BookReadChapter::class.java)
+
+            if(b && find.size == 0 ){
+                for((index,value) in book.chapterNames.withIndex()){
+                    val bookReadChapter = BookReadChapter()
+                    bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
+                    bookReadChapter.chapterName =
+                        filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
+                    bookReadChapter.chapterUrl = book.chapterUrls[index]
+                    bookReadChapter.bookChapterContent = ""
+                    bookReadChapter.begin = 0
+                    bookReadChapter.chapterNum  = book.chapterNames.size - index
+                    bookReadChapter.isLook = "false"
+                    bookReadChapter.isCache = "false"
+                    bookReadChapter.save()
+                }
+            }else if(b && find.size > book.chapterNames.size){
+                val i = find.size - book.chapterNames.size
+                for(index in 0 .. i){
+                    val bookReadChapter = BookReadChapter()
+                    bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
+                    val value = book.chapterNames[index]
+                    bookReadChapter.chapterName =
+                        filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
+                    bookReadChapter.chapterUrl = book.chapterUrls[index]
+                    bookReadChapter.bookChapterContent = ""
+                    bookReadChapter.begin = 0
+                    bookReadChapter.chapterNum  = book.chapterNames.size - index
+                    bookReadChapter.isLook = "false"
+                    bookReadChapter.isCache = "false"
+                    bookReadChapter.save()
+                }
             }
         }
 
+        pageFactory!!.setPageWidget(bookpage)
+
+        val bookList = BookList()
+        bookList.bookname =  book.bookName
+        bookList.begin = 0
+        toolbar.title = ""
         bookList.charset = ""
-        bookList.bookpath = ConstantValues.FILE_BOOK+ File.separator+ cacheName +File.separator+"/$s.txt"
+        bookList.bookpath = ConstantValues.FILE_BOOK + File.separator+ cacheName +File.separator+"/${
+           bookCacheName}.txt"
         pageFactory!!.openBook(bookList)
+
+
+    }
+
+
+    private fun filterSpecialSymbol(cacheName :String) :String{
+     return  cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
+    }
+
+    private fun getChapterName(chapterPosition :Int,value :String) :String{
+      return if(value.contains("第") && value.contains("章")){
+            val start = value.indexOf("第")
+            val end = value.indexOf("章")
+            val substring = value.substring(start, end +1)
+            val replace = value.replace(substring, "")
+            "第" +  chapterPosition + "章" + " " + replace
+        }else{
+            "第" +  chapterPosition + "章" + " " + value
+        }
     }
     private fun saveString(name :String,content: String,fileName :String){
         FileUtils.saveString(content,name,ConstantValues.FILE_BOOK+ File.separator+ fileName +File.separator)
@@ -303,12 +299,30 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
 
     private fun getBookContent(bookUrl :String,chapter :String){
-        val connectFreeUrl = JsoupUtils.connectFreeUrl("https://www.dingdiann.com/$bookUrl", "#content")
+        val connectFreeUrl = JsoupUtils.connectFreeUrl(com.key.magicbook.base.ConstantValues.BASE_URL +bookUrl, "#content")
         connectFreeUrl.subscribe(object : CustomBaseObserver<Element>(){
             override fun next(o: Element?) {
-                val s = book!!.bookName + chapter
+                val s = book!!.bookName
                 saveString(s,o!!.text(),cacheName)
             }
         })
+    }
+
+    /**
+     * 隐藏菜单。沉浸式阅读
+     */
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    }
+
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 }

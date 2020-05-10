@@ -28,7 +28,6 @@ public class BookUtil {
     private static final String cachedPath = ConstantValues.FILE_BOOK_CACHE;
     //存储的字符数
     public static final int cachedSize = 30000;
-//    protected final ArrayList<WeakReference<char[]>> myArray = new ArrayList<>();
 
     protected final ArrayList<Cache> myArray = new ArrayList<>();
 
@@ -51,13 +50,10 @@ public class BookUtil {
 
     public synchronized void openBook(BookList bookList) throws IOException {
         this.bookList = bookList;
-
-        if (bookPath == null || !bookPath.equals(bookList.getBookpath())) {
-            cleanCacheFile();
-            this.bookPath = bookList.getBookpath();
-            bookName = FileUtils.getFileName(bookPath);
-            cacheBook();
-        }
+        cleanCacheFile();
+        this.bookPath = bookList.getBookpath();
+        bookName = FileUtils.getFileName(bookPath);
+        cacheBook();
     }
 
     private void cleanCacheFile(){
@@ -176,7 +172,7 @@ public class BookUtil {
             try {
                 LitePal.update(BookList.class,values,bookList.getId());
             }catch (Exception e){
-                Log.e("BookUtils",e.toString());
+                Log.e("bookError",e.toString());
             }
 
         }else{
@@ -215,7 +211,8 @@ public class BookUtil {
                     if (!cacheBook.exists()){
                         cacheBook.createNewFile();
                     }
-                    final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName(index)), "UTF-16LE");
+                    final OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileName(index)),
+                            "UTF-16LE");
                     writer.write(buf);
                     writer.close();
                 } catch (IOException e) {
@@ -284,7 +281,7 @@ public class BookUtil {
         return cachedPath + bookName + index ;
     }
 
-    //获取书本缓存
+
     public char[] block(int index) {
         if (myArray.size() == 0){
             return new char[1];
