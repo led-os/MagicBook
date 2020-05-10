@@ -7,6 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.CustomTabEntity
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.key.magicbook.R
+import com.key.magicbook.activity.index.booksecond.SecondFragment
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.TabEntity
 import kotlinx.android.synthetic.main.activity_index.*

@@ -18,6 +18,10 @@ class TargetActivity : BaseActivity(), CustomAdapt {
         return R.layout.activity_target
     }
 
+    override fun bindView() {
+        TODO("Not yet implemented")
+    }
+
     override fun initView() {
         val busMessage = BusMessage<String>()
         val target = MainActivity::class

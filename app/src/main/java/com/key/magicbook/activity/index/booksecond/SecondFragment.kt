@@ -1,20 +1,25 @@
-package com.key.magicbook.activity.index
+package com.key.magicbook.activity.index.booksecond
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.key.keylibrary.base.BaseFragment
 import com.key.magicbook.R
+import com.key.magicbook.activity.index.bookcity.BookCityFragment
+import com.key.magicbook.activity.index.booktype.BookTypeFragment
+import com.key.magicbook.activity.index.booktype.BookTypePresenter
+import com.key.magicbook.base.MineBaseFragment
 import kotlinx.android.synthetic.main.fragment_second.*
 
 /**
  * created by key  on 2020/4/30
  */
-class SecondFragment : BaseFragment() {
+class SecondFragment : MineBaseFragment<BookSecondPresenter>() {
 
-    var pageTitles = arrayOf("首页","玄幻奇幻", "武侠仙侠","都市言情", "历史军事",
+    var pageTitles = arrayOf(
+        "首页","玄幻奇幻", "武侠仙侠",
+        "都市言情", "历史军事",
         "科幻灵异","网游竞技","女生频道")
 
     var pageUrls = arrayOf(
@@ -27,8 +32,9 @@ class SecondFragment : BaseFragment() {
         "https://www.dingdiann.com/ddk_7/")
     var pageFragments :ArrayList<BaseFragment> = ArrayList();
     companion object{
-        fun newInstance():SecondFragment{
-            val secondFragment = SecondFragment()
+        fun newInstance(): SecondFragment {
+            val secondFragment =
+                SecondFragment()
             val bundle = Bundle()
             secondFragment.arguments = bundle
             return secondFragment
@@ -41,6 +47,8 @@ class SecondFragment : BaseFragment() {
         arguments
     }
 
+
+
     override fun setLayoutId(): Int {
         return R.layout.fragment_second
     }
@@ -51,7 +59,6 @@ class SecondFragment : BaseFragment() {
             if(value == "首页"){
                 pageFragments.add(BookCityFragment.newInstance())
             }else{
-            //    pageFragments.add(BookCityFragment.newInstance())
                pageFragments.add(BookTypeFragment.newInstance(pageUrls[index]))
             }
 
@@ -75,5 +82,9 @@ class SecondFragment : BaseFragment() {
         override fun getPageTitle(position: Int): CharSequence? {
             return pageTitles[position]
         }
+    }
+
+    override fun createPresenter(): BookSecondPresenter {
+        return BookSecondPresenter()
     }
 }

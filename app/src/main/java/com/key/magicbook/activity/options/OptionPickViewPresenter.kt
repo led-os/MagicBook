@@ -8,6 +8,6 @@ import com.key.keylibrary.base.BasePresenter
  */
 class OptionPickViewPresenter : BasePresenter<Activity>() {
     override fun getView(): OptionsPickViewActivity {
-        return iView as OptionsPickViewActivity
+        return iView!!.get() as OptionsPickViewActivity
     }
 }

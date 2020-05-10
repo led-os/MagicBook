@@ -15,15 +15,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.allen.library.interceptor.Transformer
-import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.bookdetail.BookDetailActivity
-import com.key.magicbook.api.ApiHelper
 import com.key.magicbook.base.*
 import com.key.magicbook.bean.BookSearchHistory
 import com.key.magicbook.bean.BookSearchResult
@@ -32,12 +29,6 @@ import com.key.magicbook.util.DialogUtil
 import com.key.magicbook.util.GlideUtils
 import com.transitionseverywhere.Fade
 import com.transitionseverywhere.TransitionManager
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.ObservableSource
-import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function
 import kotlinx.android.synthetic.main.activity_search.*
 import kotlinx.android.synthetic.main.activity_set.toolbar
 import okhttp3.ResponseBody
@@ -50,11 +41,8 @@ import org.litepal.LitePal
  * created by key  on 2020/4/1
  */
 class SearchActivity : MineBaseActivity<SearchPresenter>() {
-    private var localDocuments: ArrayList<Document> = ArrayList()
-    private var localUrls: ArrayList<String> = ArrayList()
     private var adapter: Adapter? = null
     private var mInputMethodManager: InputMethodManager? = null
-    private val freeSecondUrl = ApiHelper.getFreeSecondUrlApi()
     override fun createPresenter(): SearchPresenter {
         return SearchPresenter()
     }
@@ -176,60 +164,17 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
     private fun search(name: String) {
         hintKeyBoard()
         getLocalSearchHistory()
-        JsoupUtils.getDingDianSearch(name)
-            .flatMap(Function<Document, ObservableSource<ArrayList<BookSearchResult>>> {
-                val select = it!!.select(" span:nth-child(2) > a:nth-child(1)")
-                val select1 = it!!.select(" span:nth-child(4)")
-                var zipWith:ArrayList<BookSearchResult>  = ArrayList()
-
-
-                for ((index, value) in select.withIndex()) {
-                    val bookSearchResult = BookSearchResult()
-                    bookSearchResult.name = value.text()
-                    bookSearchResult.author = select1[index + 1].text()
-                    bookSearchResult.bookUrl = value.attr("href")
-                    Log.e("pile",value.attr("href"))
-                    Log.e("pile",value.text())
-                    Log.e("pile", select1[index + 1].text())
-                    zipWith!!.add(bookSearchResult)
-                }
-
-
-
-                Observable.create { observableEmitter ->
-                    observableEmitter.onNext(zipWith)
-                    observableEmitter.onComplete()
-                }
-
-
-            })
-            .compose(Transformer.switchSchedulers())
-            .subscribe(object :
-                CustomBaseObserver<ArrayList<BookSearchResult>>(LoadingView(this@SearchActivity)) {
-                override fun next(o: ArrayList<BookSearchResult>) {
-                    if (o!!.size > 0) {
-                        history.visibility = View.GONE
-                        list.visibility = View.VISIBLE
-                        adapter!!.setNewData(o)
-                    } else {
-                        history.visibility = View.VISIBLE
-                    }
-                }
-
-
-                override fun onError(e: Throwable) {
-                    super.onError(e)
-                    findViewById<EditText>(R.id.name).setText("")
-                    Toast.makeText(this@SearchActivity, "暂无您搜索的书籍或作者", Toast.LENGTH_SHORT).show()
-                }
-            })
+        presenter!!.search(name)
     }
 
 
     private fun getLocalSearchHistory() {
-        val searchHistory = LitePal.findAll(BookSearchHistory::class.java)
         flow.removeAllViews()
-        if (searchHistory.size > 0) {
+        presenter!!.getLocalSearchHistory()
+    }
+
+    fun loadFlow(searchHistory: List<BookSearchHistory>) {
+        if (searchHistory.isNotEmpty()) {
             for (value in searchHistory) {
                 val textView = TextView(this)
                 textView.setBackgroundResource(R.drawable.shape_bg)
@@ -263,26 +208,25 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
     }
 
 
-
-
     inner class Adapter(res: Int) : BaseQuickAdapter<BookSearchResult, BaseViewHolder>(res) {
         override fun convert(helper: BaseViewHolder, item: BookSearchResult) {
             helper.setText(R.id.name, item.name)
             helper.setText(R.id.author, item.author)
             GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.img))
-            if(item.img == null && !item.isLoad){
-                try{
+            if (item.img == null && !item.isLoad) {
+                try {
                     item.isLoad = true
-                    Log.e("bookSearch", item.name + " :" + item.bookUrl)
                     JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
-                        .subscribe (object :CustomBaseObserver<ResponseBody>(){
+                        .subscribe(object : CustomBaseObserver<ResponseBody>() {
                             override fun next(o: ResponseBody?) {
                                 val parse = Jsoup.parse(o!!.string())
-                                item.data =  parse
-                                item.img = ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src")
+                                item.data = parse
+                                item.img = ConstantValues.BASE_URL + parse.select("#fmimg > img")
+                                    .attr("src")
                                 GlideUtils.load(
                                     context,
-                                    ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src") ,
+                                    ConstantValues.BASE_URL + parse.select("#fmimg > img")
+                                        .attr("src"),
                                     helper.getView<ImageView>(R.id.img)
                                 )
                                 item.updateTime = parse.select("#info > p:nth-child(4)").text()
@@ -290,12 +234,11 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                             }
 
                         })
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     item.isLoad = false
-                    Log.e("bookSearch",e.toString())
                 }
 
-            }else{
+            } else {
                 GlideUtils.load(
                     context,
                     item.img,
@@ -327,5 +270,23 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
             finish()
             overridePendingTransition(0, 0)
         }
+    }
+
+
+    fun getBookResult(o: ArrayList<BookSearchResult>) {
+        history.visibility = View.GONE
+        list.visibility = View.VISIBLE
+        adapter!!.setNewData(o)
+    }
+
+
+    fun resultNull() {
+        history.visibility = View.VISIBLE
+    }
+
+
+    fun searchError() {
+        findViewById<EditText>(R.id.name).setText("")
+        Toast.makeText(this@SearchActivity, "暂无您搜索的书籍或作者", Toast.LENGTH_SHORT).show()
     }
 }

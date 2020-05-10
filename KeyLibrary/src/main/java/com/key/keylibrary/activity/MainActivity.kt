@@ -12,6 +12,10 @@ class MainActivity : BaseActivity(), CustomAdapt {
         return R.layout.activity_main
     }
 
+    override fun bindView() {
+        TODO("Not yet implemented")
+    }
+
     override fun initView() {
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN)
     }

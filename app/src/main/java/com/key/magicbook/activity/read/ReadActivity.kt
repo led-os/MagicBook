@@ -30,7 +30,6 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     private var pageFactory :PageFactory ?= null
     private var cacheName = ""
     private var currentChapterName = ""
-    private var isOpen = false
     private var bookCacheName = "";
     override fun createPresenter(): ReadPresenter? {
         return ReadPresenter()
@@ -264,7 +263,6 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         }
 
         pageFactory!!.setPageWidget(bookpage)
-
         val bookList = BookList()
         bookList.bookname =  book.bookName
         bookList.begin = 0

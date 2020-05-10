@@ -8,6 +8,9 @@ import kotlinx.android.synthetic.main.fragment_index_book_video.*
  * created by key  on 2020/3/2
  */
 class BookVideoFragment :BaseFragment(){
+    override fun bindView() {
+
+    }
 
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_book_video

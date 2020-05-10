@@ -34,6 +34,7 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
     open var handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        bindView()
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
             fixOrientation()
         }
@@ -45,9 +46,12 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
         },100)
         initView()
         initAuto()
+
     }
 
 
+
+    abstract fun bindView()
     /**
      * fix error Only fullscreen opaque activities can request orientation
      * @return

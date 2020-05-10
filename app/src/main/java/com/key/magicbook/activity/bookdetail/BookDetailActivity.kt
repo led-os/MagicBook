@@ -2,15 +2,12 @@ package com.key.magicbook.activity.bookdetail
 
 import android.content.ContentValues
 import android.content.Intent
-import android.util.Log
-import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.allen.library.interceptor.Transformer
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
 import com.key.keylibrary.bean.BusMessage
-import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.read.ReadActivity
 import com.key.magicbook.base.ConstantValues
@@ -22,11 +19,6 @@ import com.key.magicbook.db.BookLike
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import com.wx.goodview.GoodView
-import io.reactivex.Observable
-import io.reactivex.ObservableSource
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Function
 import kotlinx.android.synthetic.main.activity_book_detail.*
 import kotlinx.android.synthetic.main.fragment_index_mine.toolbar
 import org.jsoup.nodes.Document
@@ -38,7 +30,6 @@ import org.litepal.LitePal
  */
 class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     private var localChapterUrls: ArrayList<String>? = null
-    private var localChapterNames: ArrayList<String>? = null
     private var bookName = ""
     private var adapter:Adapter ?= null
     private var mBookDetail :BookDetail ?=null
@@ -119,66 +110,14 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     }
 
     private fun executeData(document: Document) {
-        val img = document.select("#fmimg > img")
-        val name = document.select("#info > h1:nth-child(1)")
-        val author = document.select("#info > p:nth-child(2)")
-        val update = document.select("#info > p:nth-child(4)")
-        val lastChapter = document.select("#info > p:nth-child(5) > a")
-        val intro = document.select("#intro")
-        val select = document.select("#list > dl > dd")
 
-        val bookDetail = BookDetail()
-        bookDetail.bookCover = ConstantValues.BASE_URL + img.attr("src")
-        bookDetail.bookName = name.text()
-        bookDetail.bookAuthor = author.text()
-        bookDetail.lastUpdateTime = update.text()
-        bookDetail.lastChapter = lastChapter.text()
-        bookDetail.bookIntro = intro.text()
-        bookDetail.bookUrl = bookUrl
-        Observable.fromArray(select.reversed())
-            .compose(Transformer.switchSchedulers())
-            .flatMap(Function<List<Element>, ObservableSource<String>> {
-                localChapterUrls = ArrayList()
-                localChapterNames = ArrayList()
-                Observable.create { observableEmitter ->
-                    for (value in it) {
-                        observableEmitter.onNext(
-                            value.text() + "value" + value.select("a").attr("href")
-                        )
-                    }
-
-                    observableEmitter.onComplete()
-                }
-
-            }).distinct()
-            .subscribe(object : Observer<String> {
-                override fun onComplete() {
-                    bookDetail.chapterNames = localChapterNames
-                    bookDetail.chapterUrls = localChapterUrls
-                    loadView(bookDetail)
-                }
-
-                override fun onSubscribe(d: Disposable?) {
-
-                }
-
-                override fun onNext(value: String?) {
-                    val split = value!!.split("value")
-                    localChapterNames!!.add(split[0])
-                    localChapterUrls!!.add(split[1])
-                }
-
-                override fun onError(e: Throwable?) {
-                    Toast.makeText(this@BookDetailActivity, "加载目录失败", Toast.LENGTH_SHORT).show()
-                }
-
-            })
-
+        val parseBookDetail = presenter!!.parseBookDetail(document, bookUrl)
+        presenter!!.getChapters(parseBookDetail)
     }
 
-    private fun loadView(bookDetail: BookDetail) {
-        mBookDetail = bookDetail
+     fun loadView(bookDetail: BookDetail) {
         toolbar.title = bookDetail.bookName
+        localChapterUrls = bookDetail.chapterUrls as ArrayList<String>?
         var bookAuthor = bookDetail.bookAuthor
         if(bookAuthor.contains("：")){
             bookAuthor = bookAuthor.split("：")[1]

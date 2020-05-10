@@ -1,5 +1,7 @@
 package com.key.magicbook.bean;
 
+import org.jsoup.nodes.Element;
+
 import java.util.List;
 
 /**
@@ -17,7 +19,15 @@ public class BookDetail {
     private String bookType;
     private List<String> chapterUrls;
     private List<String> chapterNames;
+    private List<Element> chapterElements;
 
+    public List<Element> getChapterElements() {
+        return chapterElements;
+    }
+
+    public void setChapterElements(List<Element> chapterElements) {
+        this.chapterElements = chapterElements;
+    }
 
     private boolean isLoad = false;
     public boolean isLoad() {

@@ -46,10 +46,13 @@ abstract class BaseFragment : Fragment(), CustomAdapt {
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+        bindView()
         registerEventBus(this)
         initView()
     }
 
+
+    abstract fun bindView()
     override fun isBaseOnWidth(): Boolean {
         return false
     }

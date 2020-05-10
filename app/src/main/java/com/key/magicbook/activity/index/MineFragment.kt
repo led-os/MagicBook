@@ -41,11 +41,17 @@ class MineFragment :BaseFragment(){
     private var appCompatActivity :AppCompatActivity ?= null
     private var userName = ""
     //"我的评论",
-    private var functions = arrayOf("阅读历史", "我的收藏","书单",
-        "阅读数据","关于我们", "相关法律","设置")
+    // "阅读数据",
+    private var functions = arrayOf(
+        "阅读历史",
+        "我的收藏",
+        "书单",
+        "关于我们",
+        "设置")
     //R.mipmap.chat,
+    // R.mipmap.data,
     private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,
-        R.mipmap.data,R.mipmap.us,R.mipmap.law,R.mipmap.setting)
+       R.mipmap.us,R.mipmap.setting)
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_mine
     }
@@ -94,7 +100,6 @@ class MineFragment :BaseFragment(){
                 override fun onStateChanged(appBarLayout: AppBarLayout?, state: State?) {
                      when(state){
                          State.EXPANDED->{
-                            toolbar_right_icon.visibility = View.INVISIBLE
 
                          }
                          State.COLLAPSED->{
@@ -105,7 +110,6 @@ class MineFragment :BaseFragment(){
                              )
                              collapsing_toolbar.contentScrim = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
                                  intArrayOf(colorRevert,colorRevert))
-                             toolbar_right_icon.visibility = View.VISIBLE
                          }
                      }
                 }
@@ -221,6 +225,10 @@ class MineFragment :BaseFragment(){
             setIconBackground(busMessage.data)
         }
         return true
+    }
+
+    override fun bindView() {
+
     }
 
 

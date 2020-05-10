@@ -44,6 +44,10 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
             }
         }
 
+        adapter!!.setOnItemClickListener { adapter,
+                                           view, position ->
+
+        }
         adapter!!.setNewData(likes)
 
         WeSwipe.attach(list)

@@ -17,6 +17,10 @@ import org.greenrobot.eventbus.EventBus
  * created by key  on 2020/3/12
  */
 class ShowImageActivity : BaseActivity() {
+    override fun bindView() {
+
+    }
+
     override fun initView() {
         val layoutParams = scale_image.layoutParams
         layoutParams.height = UiUtils.getScreenHeight(this) /2

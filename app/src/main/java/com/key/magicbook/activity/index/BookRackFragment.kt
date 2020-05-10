@@ -15,6 +15,10 @@ import kotlinx.android.synthetic.main.fragment_index_mine_book.*
  * created by key  on 2020/3/2
  */
 class BookRackFragment :BaseFragment(){
+    override fun bindView() {
+
+    }
+
     override fun setLayoutId(): Int {
         return  R.layout.fragment_index_mine_book
     }
