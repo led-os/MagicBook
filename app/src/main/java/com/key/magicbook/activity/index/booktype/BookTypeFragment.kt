@@ -1,7 +1,6 @@
 package com.key.magicbook.activity.index.booktype
 
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -9,7 +8,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.allen.library.interceptor.Transformer
 import com.bigkoo.convenientbanner.ConvenientBanner
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator
 import com.bigkoo.convenientbanner.holder.Holder
@@ -152,51 +150,19 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
     }
 
     private fun loadData(isRefresh: Boolean) {
-        JsoupUtils.getFreeDocument(mBookUrl)
-            .compose(Transformer.switchSchedulers())
-            .subscribe(object : CustomBaseObserver<Document>() {
-                override fun next(o: Document?) {
-                    document = o
-                    headers = ArrayList()
-                    val select = o!!.select("#hotcontent > div > div")
-                    for (value in select) {
-                        val bookDetail = BookDetail()
-                        val img = value.select(" div > div.image  > a> img").attr("src")
-                        val name = value.select(" div > dl > dt > a").text()
-                        val url = value.select(" div > dl > dt > a").attr("href")
-                        val intro = value.select("div > dl > dd").text()
 
 
-                        bookDetail.bookIntro = intro
-                        bookDetail.bookCover = img
-                        bookDetail.bookName = name
-                        bookDetail.bookUrl = url
-                        if (!TextUtils.isEmpty(intro)) {
-                            headers!!.add(bookDetail)
-                        }
-                    }
+        presenter!!.getTypeDocument(mBookUrl)
 
-                    val new = o!!.select("#newscontent > div.r > ul > li")
-                    bookDetails = ArrayList<BookDetail>()
-                    for (value in new) {
-                        val bookName = value.select("span.s2 > a").text()
-                        val attr = value.select("span.s2 > a")
-                            .attr("href")
-                        val authorName = value.select("span.s5").text()
-                        val bookDetail = BookDetail()
-                        bookDetail.bookName = bookName
-                        bookDetail.bookUrl = attr
-                        bookDetail.bookAuthor = authorName
-                        bookDetail.bookType = ""
-                        if (!TextUtils.isEmpty(bookName)) {
-                            bookDetails!!.add(bookDetail)
-                        }
 
-                    }
-                    setData()
+    }
 
-                }
-            })
+    fun loadDocument(o :Document){
+        document = o
+        headers = presenter!!.parseHeaders(o)
+        bookDetails =  presenter!!.parseBookDetails(o)
+        setData()
+
     }
 
     private fun setData() {

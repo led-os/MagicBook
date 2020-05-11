@@ -18,6 +18,7 @@ import com.key.magicbook.db.BookReadChapter
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.BrightnessUtil
 import kotlinx.android.synthetic.main.activity_read.*
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.litepal.LitePal
 import java.io.File
@@ -30,7 +31,6 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
     private var pageFactory :PageFactory ?= null
     private var cacheName = ""
     private var currentChapterName = ""
-    private var bookCacheName = "";
     override fun createPresenter(): ReadPresenter? {
         return ReadPresenter()
     }
@@ -198,6 +198,9 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         val bookDetail = busMessage.data as BookDetail
         val message = busMessage.message
         val chapter = busMessage.specialMessage
+        val filterSpecialSymbol =
+            filterSpecialSymbol(bookDetail.bookName + bookDetail.bookAuthor +bookDetail.bookUrl)
+        saveString(bookDetail.bookName,message,filterSpecialSymbol)
         loadBook(bookDetail,true)
     }
 
@@ -220,48 +223,9 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
 
     private fun loadBook(book :BookDetail,isFirstLoad :Boolean){
-        if(isFirstLoad){
-            bookCacheName = filterSpecialSymbol(book.bookName + book.bookAuthor + book.bookUrl)
-            cacheName = book.bookName + book.bookAuthor
-            cacheName = filterSpecialSymbol(cacheName)
-            this.book = book
-            val b = book.chapterNames.size == book.chapterUrls.size
-            val find = LitePal.where("bookChapterOnlyTag = ?",
-                book.bookName + book.bookAuthor + book.bookUrl).find(BookReadChapter::class.java)
-
-            if(b && find.size == 0 ){
-                for((index,value) in book.chapterNames.withIndex()){
-                    val bookReadChapter = BookReadChapter()
-                    bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
-                    bookReadChapter.chapterName =
-                        filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
-                    bookReadChapter.chapterUrl = book.chapterUrls[index]
-                    bookReadChapter.bookChapterContent = ""
-                    bookReadChapter.begin = 0
-                    bookReadChapter.chapterNum  = book.chapterNames.size - index
-                    bookReadChapter.isLook = "false"
-                    bookReadChapter.isCache = "false"
-                    bookReadChapter.save()
-                }
-            }else if(b && find.size > book.chapterNames.size){
-                val i = find.size - book.chapterNames.size
-                for(index in 0 .. i){
-                    val bookReadChapter = BookReadChapter()
-                    bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
-                    val value = book.chapterNames[index]
-                    bookReadChapter.chapterName =
-                        filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
-                    bookReadChapter.chapterUrl = book.chapterUrls[index]
-                    bookReadChapter.bookChapterContent = ""
-                    bookReadChapter.begin = 0
-                    bookReadChapter.chapterNum  = book.chapterNames.size - index
-                    bookReadChapter.isLook = "false"
-                    bookReadChapter.isCache = "false"
-                    bookReadChapter.save()
-                }
-            }
-        }
-
+        cacheName = filterSpecialSymbol(book.bookName + book.bookAuthor + book.bookUrl)
+        this.book = book
+        loadSqlData(book)
         pageFactory!!.setPageWidget(bookpage)
         val bookList = BookList()
         bookList.bookname =  book.bookName
@@ -269,12 +233,51 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         toolbar.title = ""
         bookList.charset = ""
         bookList.bookpath = ConstantValues.FILE_BOOK + File.separator+ cacheName +File.separator+"/${
-           bookCacheName}.txt"
+           book.bookName}.txt"
+
         pageFactory!!.openBook(bookList)
 
 
     }
 
+    
+    private fun loadSqlData(book: BookDetail){
+        val b = book.chapterNames.size == book.chapterUrls.size
+        val find = LitePal.where("bookChapterOnlyTag = ?",
+            book.bookName + book.bookAuthor + book.bookUrl).find(BookReadChapter::class.java)
+
+        if(b && find.size == 0 ){
+            for((index,value) in book.chapterNames.withIndex()){
+                val bookReadChapter = BookReadChapter()
+                bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
+                bookReadChapter.chapterName =
+                    filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
+                bookReadChapter.chapterUrl = book.chapterUrls[index]
+                bookReadChapter.bookChapterContent = ""
+                bookReadChapter.begin = 0
+                bookReadChapter.chapterNum  = book.chapterNames.size - index
+                bookReadChapter.isLook = "false"
+                bookReadChapter.isCache = "false"
+                bookReadChapter.save()
+            }
+        }else if(b && find.size > book.chapterNames.size){
+            val i = find.size - book.chapterNames.size
+            for(index in 0 .. i){
+                val bookReadChapter = BookReadChapter()
+                bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
+                val value = book.chapterNames[index]
+                bookReadChapter.chapterName =
+                    filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
+                bookReadChapter.chapterUrl = book.chapterUrls[index]
+                bookReadChapter.bookChapterContent = ""
+                bookReadChapter.begin = 0
+                bookReadChapter.chapterNum  = book.chapterNames.size - index
+                bookReadChapter.isLook = "false"
+                bookReadChapter.isCache = "false"
+                bookReadChapter.save()
+            }
+        }
+    }
 
     private fun filterSpecialSymbol(cacheName :String) :String{
      return  cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
@@ -286,7 +289,14 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             val end = value.indexOf("章")
             val substring = value.substring(start, end +1)
             val replace = value.replace(substring, "")
-            "第" +  chapterPosition + "章" + " " + replace
+            if(replace.trim().replace(" ","").isEmpty()){
+                "第" +  chapterPosition + "章" + " " + value.
+                                        replace("第","").
+                                         replace("章","")
+            }else{
+                "第" +  chapterPosition + "章" + " " + replace
+            }
+
         }else{
             "第" +  chapterPosition + "章" + " " + value
         }
@@ -297,13 +307,17 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
 
     private fun getBookContent(bookUrl :String,chapter :String){
-        val connectFreeUrl = JsoupUtils.connectFreeUrl(com.key.magicbook.base.ConstantValues.BASE_URL +bookUrl, "#content")
+        val connectFreeUrl = JsoupUtils.connectFreeUrl(
+            com.key.magicbook.base.ConstantValues.BASE_URL + bookUrl, "#content")
         connectFreeUrl.subscribe(object : CustomBaseObserver<Element>(){
             override fun next(o: Element?) {
                 val s = book!!.bookName
                 saveString(s,o!!.text(),cacheName)
             }
         })
+    }
+    fun loadBookContent(document:Document){
+
     }
 
     /**

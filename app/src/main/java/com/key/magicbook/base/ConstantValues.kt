@@ -8,6 +8,6 @@ package com.key.magicbook.base
  */
 object ConstantValues {
 
-    const val BASE_URL = "https://www.dingdiann.com"
+    const val BASE_URL = "https://www.dingdiann.com/"
 
 }

@@ -28,9 +28,6 @@ class SearchModel :SearchContract.OnModel {
                     bookSearchResult.name = value.text()
                     bookSearchResult.author = select1[index + 1].text()
                     bookSearchResult.bookUrl = value.attr("href")
-                    Log.e("pile", value.attr("href"))
-                    Log.e("pile", value.text())
-                    Log.e("pile", select1[index + 1].text())
                     zipWith!!.add(bookSearchResult)
                 }
                 Observable.create { observableEmitter ->

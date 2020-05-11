@@ -16,20 +16,6 @@ import kotlinx.android.synthetic.main.fragment_second.*
  * created by key  on 2020/4/30
  */
 class SecondFragment : MineBaseFragment<BookSecondPresenter>() {
-
-    var pageTitles = arrayOf(
-        "首页","玄幻奇幻", "武侠仙侠",
-        "都市言情", "历史军事",
-        "科幻灵异","网游竞技","女生频道")
-
-    var pageUrls = arrayOf(
-        "首页","https://www.dingdiann.com/ddk_1/",
-        "https://www.dingdiann.com/ddk_2/",
-        "https://www.dingdiann.com/ddk_3/",
-        "https://www.dingdiann.com/ddk_4/",
-        "https://www.dingdiann.com/ddk_5/",
-        "https://www.dingdiann.com/ddk_6/",
-        "https://www.dingdiann.com/ddk_7/")
     var pageFragments :ArrayList<BaseFragment> = ArrayList();
     companion object{
         fun newInstance(): SecondFragment {
@@ -55,11 +41,11 @@ class SecondFragment : MineBaseFragment<BookSecondPresenter>() {
 
     override fun initView() {
         setTitle(indicator)
-        for((index ,value) in pageTitles.withIndex()){
+        for((index ,value) in presenter!!.getBookUrlsName().withIndex()){
             if(value == "首页"){
                 pageFragments.add(BookCityFragment.newInstance())
             }else{
-               pageFragments.add(BookTypeFragment.newInstance(pageUrls[index]))
+                pageFragments.add(BookTypeFragment.newInstance(presenter!!.getBookUrls()[index]))
             }
 
         }
@@ -76,11 +62,11 @@ class SecondFragment : MineBaseFragment<BookSecondPresenter>() {
         }
 
         override fun getCount(): Int {
-            return pageTitles.size
+            return presenter!!.getBookUrlsName().size
         }
 
         override fun getPageTitle(position: Int): CharSequence? {
-            return pageTitles[position]
+            return  presenter!!.getBookUrlsName()[position]
         }
     }
 

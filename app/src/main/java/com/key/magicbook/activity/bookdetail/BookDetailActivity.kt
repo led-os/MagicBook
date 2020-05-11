@@ -2,6 +2,7 @@ package com.key.magicbook.activity.bookdetail
 
 import android.content.ContentValues
 import android.content.Intent
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.allen.library.interceptor.Transformer
 import com.bumptech.glide.Glide
@@ -110,9 +111,8 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     }
 
     private fun executeData(document: Document) {
-
-        val parseBookDetail = presenter!!.parseBookDetail(document, bookUrl)
-        presenter!!.getChapters(parseBookDetail)
+        mBookDetail = presenter!!.parseBookDetail(document, bookUrl)
+        presenter!!.getChapters(mBookDetail!!)
     }
 
      fun loadView(bookDetail: BookDetail) {
@@ -151,6 +151,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
            imgId =  R.mipmap.book_like
         }
         if(!isCheck){
+            Log.e("pile",(mBookDetail == null).toString())
             val bookLike = BookLike()
             bookLike.bookName = bookName
             bookLike.bookAuthor = mBookDetail!!.bookAuthor

@@ -8,6 +8,6 @@ import com.key.keylibrary.base.BasePresenter
  */
 class ReadPresenter : BasePresenter<Activity>() {
     override fun getView(): ReadActivity {
-        return iView as ReadActivity
+        return iView!!.get() as ReadActivity
     }
 }

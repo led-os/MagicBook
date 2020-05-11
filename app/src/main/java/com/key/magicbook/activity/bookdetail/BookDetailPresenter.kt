@@ -32,6 +32,8 @@ class BookDetailPresenter : BasePresenter<Activity>(),BookDetailContract.OnPrese
         model!!.getChapters(bookDetail)
             .subscribe(object : Observer<String> {
             override fun onComplete() {
+                bookDetail.chapterUrls = localChapterUrls
+                bookDetail.chapterNames = localChapterNames
                 getView().loadView(bookDetail)
             }
 

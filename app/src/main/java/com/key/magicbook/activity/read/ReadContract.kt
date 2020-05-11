@@ -1,4 +1,4 @@
-package com.key.magicbook.activity.index.booksecond
+package com.key.magicbook.activity.read
 
 import com.key.magicbook.base.BaseContract
 import com.key.magicbook.bean.BookSearchHistory
@@ -8,14 +8,12 @@ import io.reactivex.Observable
 /**
  * created by key  on 2020/1/5
  */
-class BookSecondContract : BaseContract() {
+class ReadContract : BaseContract() {
   interface OnModel{
-    fun getBookUrls():List<String>
-    fun getBookUrlsName():List<String>
+
   }
 
   interface OnPresenter{
-    fun getBookUrls():List<String>
-    fun getBookUrlsName():List<String>
+
   }
 }
