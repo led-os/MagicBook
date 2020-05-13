@@ -3,7 +3,7 @@ package com.key.magicbook.activity.index.booktype
 import androidx.fragment.app.Fragment
 import com.key.keylibrary.base.BasePresenter
 import com.key.magicbook.base.CustomBaseObserver
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import org.jsoup.nodes.Document
 
 /**

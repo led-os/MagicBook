@@ -1,13 +1,14 @@
-package com.key.magicbook.bean;
+package com.key.magicbook.db;
 
 import org.jsoup.nodes.Element;
+import org.litepal.crud.LitePalSupport;
 
 import java.util.List;
 
 /**
  * created by key  on 2020/4/13
  */
-public class BookDetail {
+public class BookDetail extends LitePalSupport {
     private String bookName;
     private String bookAuthor;
     private String bookBackgroundUrl;
@@ -20,6 +21,35 @@ public class BookDetail {
     private List<String> chapterUrls;
     private List<String> chapterNames;
     private List<Element> chapterElements;
+
+    private String isLike;
+    private String isBookCase;
+    private String baseUrl;
+
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getIsLike() {
+        return isLike;
+    }
+
+    public void setIsLike(String isLike) {
+        this.isLike = isLike;
+    }
+
+    public String getIsBookCase() {
+        return isBookCase;
+    }
+
+    public void setIsBookCase(String isBookCase) {
+        this.isBookCase = isBookCase;
+    }
 
     public List<Element> getChapterElements() {
         return chapterElements;

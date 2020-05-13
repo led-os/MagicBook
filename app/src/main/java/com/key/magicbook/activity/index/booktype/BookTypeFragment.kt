@@ -18,7 +18,7 @@ import com.key.magicbook.R
 import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseFragment
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import kotlinx.android.synthetic.main.fragment_book_type.*

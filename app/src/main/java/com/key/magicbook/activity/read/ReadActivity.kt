@@ -1,4 +1,6 @@
 package com.key.magicbook.activity.read
+
+import android.content.ContentValues
 import android.graphics.Typeface
 import android.util.Log
 import android.view.View
@@ -9,10 +11,11 @@ import com.key.keylibrary.utils.FileUtils
 import com.key.magicbook.R
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseActivity
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import com.key.magicbook.bookpage.Config
 import com.key.magicbook.bookpage.PageFactory
 import com.key.magicbook.bookpage.PageWidget
+import com.key.magicbook.db.BookLike
 import com.key.magicbook.db.BookList
 import com.key.magicbook.db.BookReadChapter
 import com.key.magicbook.jsoup.JsoupUtils
@@ -27,10 +30,12 @@ import java.io.File
  * created by key  on 2020/3/29
  */
 class ReadActivity : MineBaseActivity<ReadPresenter>() {
-    private var book : BookDetail ?= null
+    private var book : BookDetail?= null
     private var pageFactory :PageFactory ?= null
     private var cacheName = ""
     private var currentChapterName = ""
+    private var currentChapterPosition = 0
+    private var config:Config ?= null
     override fun createPresenter(): ReadPresenter? {
         return ReadPresenter()
     }
@@ -42,10 +47,9 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             finish()
             overridePendingTransition(0,0)
         }
-        saveString("圣墟","test","test")
-        val config = Config.createConfig(this)
+        config = Config.createConfig(this)
         pageFactory = PageFactory.createPageFactory(this)
-        bookpage.setPageMode(config.pageMode)
+        bookpage.setPageMode(config!!.pageMode)
         bookpage.setTouchListener(object : PageWidget.TouchListener{
             override fun up(next: Boolean) {
                if(next && pageFactory!!.isLastPage){
@@ -81,16 +85,6 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             }
 
         })
-        if(book == null){
-            pageFactory!!.setPageWidget(bookpage)
-            val bookList = BookList()
-            bookList.bookname = "圣墟"
-            bookList.begin = 0
-            bookList.charset = ""
-            bookList.bookpath = ConstantValues.FILE_BOOK + File.separator + "test"+File.separator+"/圣墟.txt"
-            pageFactory!!.openBook(bookList)
-        }
-
 
 
         read_set.setOnClickListener {
@@ -99,7 +93,6 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             settingDialogFragment.setSettingListener(object :SettingDialogFragment.SettingListener{
                 override fun changeTypeFace(typeface: Typeface?) {
                     pageFactory!!.changeTypeface(typeface)
-
                 }
 
                 override fun changePageMode(pageMode: Int) {
@@ -135,56 +128,30 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         }
     }
 
-    private fun controlSettingShow() {
-        val b = toolbar.visibility == View.GONE
-        if(b){
-            showSystemUI()
-            toolbar.visibility  = View.VISIBLE
-            day.visibility = View.VISIBLE
-            set.visibility = View.VISIBLE
-        }else{
-            hideSystemUI()
-            toolbar.visibility  = View.GONE
-            day.visibility = View.GONE
-            set.visibility = View.GONE
-        }
-    }
+
 
     private fun getChapter(b: Boolean) {
-        var index = 0
-        if(book != null){
-            if(book!!.chapterNames != null){
-                if(book!!.chapterNames.size > 0){
-                    for(value in  book!!.chapterNames){
-                        if(value == currentChapterName){
-                            break
-                        }
-                        index++
-                    }
-                }
-            }
-        }
-
-
         if(b){
-            if(index -1 >= 0){
-                loadBook(book!!,false)
-            }else{
+            if(currentChapterPosition == 0){
                 Toast.makeText(this,"您已阅读完全部内容",Toast.LENGTH_SHORT).show()
+            }else{
+                currentChapterPosition--
+                loadBook()
             }
-
-
         }else{
-            if(book != null ){
-                if( book!!.chapterUrls != null){
-                    if(book!!.chapterUrls.size-1 >= index +1){
-                        loadBook(book!!,false)
-                    }else{
-                        Toast.makeText(this,"前面没有内容了喔",Toast.LENGTH_SHORT).show()
-                    }
-                }
 
+            val find = LitePal.where(
+                "bookChapterOnlyTag = ?",
+                book!!.bookName + book!!.bookAuthor + book!!.bookUrl
+            ).find(BookReadChapter::class.java)
+
+            if(find.size - 1 == currentChapterPosition){
+                Toast.makeText(this,"前面没有内容了喔",Toast.LENGTH_SHORT).show()
+            }else{
+                currentChapterPosition++
+                loadBook()
             }
+
 
         }
     }
@@ -195,52 +162,104 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
 
     override fun receiveMessage(busMessage: BusMessage<Any>) {
         super.receiveMessage(busMessage)
-        val bookDetail = busMessage.data as BookDetail
+        book = busMessage.data as BookDetail
+        loadSqlData(book!!)
         val message = busMessage.message
-        val chapter = busMessage.specialMessage
-        val filterSpecialSymbol =
-            filterSpecialSymbol(bookDetail.bookName + bookDetail.bookAuthor +bookDetail.bookUrl)
-        saveString(bookDetail.bookName,message,filterSpecialSymbol)
-        loadBook(bookDetail,true)
+        currentChapterPosition = busMessage.specialMessage.toInt()
+        cacheName =
+            filterSpecialSymbol(book!!.bookName + book!!.bookAuthor +book!!.bookUrl)
+        val contentValues = ContentValues()
+        contentValues.put("bookChapterContent", "\n\u3000第"+ (book!!.chapterNames.size - currentChapterPosition).toString()
+                +"章\n\u3000"+message)
+        LitePal.updateAll(BookReadChapter::class.java,contentValues,
+            "bookChapterOnlyTag = ? and chapterNum = ? ",
+            book!!.bookName + book!!.bookAuthor + book!!.bookUrl,
+            (book!!.chapterNames.size - currentChapterPosition).toString())
+        loadBook()
     }
 
-    private fun cacheBook(bookDetail: BookDetail, message: String?) {
-        var index :Int = 0
-        for(value in  bookDetail.chapterNames){
-            if(value == message){
-                break
+    private fun loadBook(){
+        val find = LitePal.where(
+            "bookChapterOnlyTag = ?",
+            book!!.bookName + book!!.bookAuthor + book!!.bookUrl
+        ).find(BookReadChapter::class.java)
+        if(!find[currentChapterPosition].bookChapterContent.isEmpty()){
+            saveString(book!!.bookName,find[currentChapterPosition].bookChapterContent,cacheName)
+            pageFactory!!.setPageWidget(bookpage)
+            val bookList = BookList()
+            bookList.bookname =  book!!.bookName
+            bookList.begin = find[currentChapterPosition].begin
+            toolbar.title = find[currentChapterPosition].chapterName
+            bookList.charset = ""
+            bookList.bookpath = ConstantValues.FILE_BOOK + File.separator+ cacheName +File.separator+"/${
+            book!!.bookName}.txt"
+            pageFactory!!.openBook(bookList)
+        }else{
+            getBookContent(find[currentChapterPosition].chapterUrl)
+        }
+
+    }
+
+
+    private fun saveString(name :String,content: String,fileName :String){
+        FileUtils.saveString(content,name,ConstantValues.FILE_BOOK+ File.separator+ fileName +File.separator)
+    }
+
+
+    private fun getBookContent(bookUrl :String){
+        val connectFreeUrl = JsoupUtils.connectFreeUrl(
+            com.key.magicbook.base.ConstantValues.BASE_URL + bookUrl, "#content")
+        connectFreeUrl.subscribe(object : CustomBaseObserver<Element>(){
+            override fun next(o: Element?) {
+                openBook(o!!.text())
             }
-            index++
-        }
-        if(index -1 >= 0){
-            getBookContent(book!!.chapterUrls[index-1],book!!.chapterNames[index-1])
-        }
+        })
+    }
+    fun loadBookContent(document:Document){
 
-        if(book!!.chapterUrls.size-1 >= index +1){
-            getBookContent(book!!.chapterUrls[index+1],book!!.chapterNames[index+1])
+    }
+
+    /**
+     * 隐藏菜单。沉浸式阅读
+     */
+    private fun hideSystemUI() {
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    }
+
+    private fun showSystemUI() {
+        window.decorView.systemUiVisibility =
+            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
+    }
+
+    private fun getChapterName(chapterPosition :Int,value :String) :String{
+        return if(value.contains("第") && value.contains("章")){
+            val start = value.indexOf("第")
+            val end = value.indexOf("章")
+            val substring = value.substring(start, end +1)
+            val replace = value.replace(substring, "")
+            if(replace.trim().replace(" ","").isEmpty()){
+                "第" +  chapterPosition + "章" + " " + value.
+                replace("第","").
+                replace("章","")
+            }else{
+                "第" +  chapterPosition + "章" + " " + replace
+            }
+
+        }else{
+            "第" +  chapterPosition + "章" + " " + value
         }
     }
 
 
-    private fun loadBook(book :BookDetail,isFirstLoad :Boolean){
-        cacheName = filterSpecialSymbol(book.bookName + book.bookAuthor + book.bookUrl)
-        this.book = book
-        loadSqlData(book)
-        pageFactory!!.setPageWidget(bookpage)
-        val bookList = BookList()
-        bookList.bookname =  book.bookName
-        bookList.begin = 0
-        toolbar.title = ""
-        bookList.charset = ""
-        bookList.bookpath = ConstantValues.FILE_BOOK + File.separator+ cacheName +File.separator+"/${
-           book.bookName}.txt"
-
-        pageFactory!!.openBook(bookList)
-
-
+    private fun filterSpecialSymbol(cacheName :String) :String{
+        return  cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
     }
-
-    
     private fun loadSqlData(book: BookDetail){
         val b = book.chapterNames.size == book.chapterUrls.size
         val find = LitePal.where("bookChapterOnlyTag = ?",
@@ -279,62 +298,44 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         }
     }
 
-    private fun filterSpecialSymbol(cacheName :String) :String{
-     return  cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
-    }
-
-    private fun getChapterName(chapterPosition :Int,value :String) :String{
-      return if(value.contains("第") && value.contains("章")){
-            val start = value.indexOf("第")
-            val end = value.indexOf("章")
-            val substring = value.substring(start, end +1)
-            val replace = value.replace(substring, "")
-            if(replace.trim().replace(" ","").isEmpty()){
-                "第" +  chapterPosition + "章" + " " + value.
-                                        replace("第","").
-                                         replace("章","")
-            }else{
-                "第" +  chapterPosition + "章" + " " + replace
-            }
-
+    private fun controlSettingShow() {
+        val b = toolbar.visibility == View.GONE
+        if(b){
+            showSystemUI()
+            toolbar.visibility  = View.VISIBLE
+            day.visibility = View.VISIBLE
+            set.visibility = View.VISIBLE
         }else{
-            "第" +  chapterPosition + "章" + " " + value
+            hideSystemUI()
+            toolbar.visibility  = View.GONE
+            day.visibility = View.GONE
+            set.visibility = View.GONE
         }
     }
-    private fun saveString(name :String,content: String,fileName :String){
-        FileUtils.saveString(content,name,ConstantValues.FILE_BOOK+ File.separator+ fileName +File.separator)
-    }
 
 
-    private fun getBookContent(bookUrl :String,chapter :String){
-        val connectFreeUrl = JsoupUtils.connectFreeUrl(
-            com.key.magicbook.base.ConstantValues.BASE_URL + bookUrl, "#content")
-        connectFreeUrl.subscribe(object : CustomBaseObserver<Element>(){
-            override fun next(o: Element?) {
-                val s = book!!.bookName
-                saveString(s,o!!.text(),cacheName)
-            }
-        })
-    }
-    fun loadBookContent(document:Document){
+    private fun openBook(content :String){
+        val find = LitePal.where(
+            "bookChapterOnlyTag = ?",
+            book!!.bookName + book!!.bookAuthor + book!!.bookUrl
+        ).find(BookReadChapter::class.java)
+        val contentValues = ContentValues()
+        contentValues.put("bookChapterContent", "\n\u3000第"+ (book!!.chapterNames.size - currentChapterPosition).toString()
+                +"章\n\u3000"+ content)
+        LitePal.updateAll(BookReadChapter::class.java,contentValues,
+            "bookChapterOnlyTag = ? and chapterNum = ? ",
+            book!!.bookName + book!!.bookAuthor + book!!.bookUrl,
+            (book!!.chapterNames.size - currentChapterPosition).toString())
+        saveString(book!!.bookName,find[currentChapterPosition].bookChapterContent,cacheName)
+        pageFactory!!.setPageWidget(bookpage)
+        val bookList = BookList()
+        bookList.bookname =  book!!.bookName
+        bookList.begin = find[currentChapterPosition].begin
+        toolbar.title = find[currentChapterPosition].chapterName
+        bookList.charset = ""
+        bookList.bookpath = ConstantValues.FILE_BOOK + File.separator+ cacheName +File.separator+"/${
+        book!!.bookName}.txt"
+        pageFactory!!.openBook(bookList)
 
-    }
-
-    /**
-     * 隐藏菜单。沉浸式阅读
-     */
-    private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-    }
-
-    private fun showSystemUI() {
-        window.decorView.systemUiVisibility =
-            (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
     }
 }

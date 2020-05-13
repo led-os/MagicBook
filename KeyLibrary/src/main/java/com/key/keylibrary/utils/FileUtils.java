@@ -591,7 +591,7 @@ public class FileUtils {
             if (!saveFile.exists()) {
                 saveFile.createNewFile();
             }
-            writeData(data, false, saveFile);
+            writeData(data, true, saveFile);
         } catch (Exception e) {
             Log.e("novelWrite"," write book :" + name +" have a error"+ e.toString());
         }

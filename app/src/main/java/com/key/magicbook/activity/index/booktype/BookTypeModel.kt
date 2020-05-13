@@ -3,7 +3,7 @@ package com.key.magicbook.activity.index.booktype
 
 import com.allen.library.interceptor.Transformer
 import com.key.magicbook.base.ConstantValues
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import com.key.magicbook.document.ParseDocumentCreator
 import com.key.magicbook.jsoup.JsoupUtils
 import io.reactivex.Observable

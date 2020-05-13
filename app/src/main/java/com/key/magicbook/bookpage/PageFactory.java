@@ -125,7 +125,6 @@ public class PageFactory {
     private boolean m_isLastPage;
     private int level = 0;
 
-
     /**
      * @params mBookPageWidget 书本widget
      * @params currentProgress 现在的进度
@@ -163,12 +162,10 @@ public class PageFactory {
     private PageEvent mPageEvent;
     ContentValues values = new ContentValues();
 
-
     /**
      * 书本状态
      */
     private static Status mStatus = Status.OPENING;
-
 
     /**
      * 书本打开状态
@@ -375,16 +372,16 @@ public class PageFactory {
             currentCharter = getCurrentCharter();
         }
         //更新数据库进度
-        if (currentPage != null && bookList != null){
-            new Thread() {
-                @Override
-                public void run() {
-                    super.run();
-                    values.put("begin",currentPage.getBegin());
-                    LitePal.update(BookList.class,values,bookList.getId());
-                }
-            }.start();
-        }
+//        if (currentPage != null && bookList != null){
+//            new Thread() {
+//                @Override
+//                public void run() {
+//                    super.run();
+//                    values.put("begin",currentPage.getBegin());
+//                    LitePal.update(BookList.class,values,bookList.getId());
+//                }
+//            }.start();
+//        }
 
         Canvas c = new Canvas(bitmap);
         c.drawBitmap(getBgBitmap(), 0, 0, null);
@@ -419,7 +416,7 @@ public class PageFactory {
         }
         String strPercent = df.format(fPercent * 100) + "%";//进度文字
         int nPercentWidth = (int) mBatteryPaint.measureText("999.9%") + 1;  //Paint.measureText直接返回參數字串所佔用的寬度
-        c.drawText(strPercent, mWidth - nPercentWidth, mHeight - statusMarginBottom, mBatteryPaint);//x y为坐标值
+   //     c.drawText(strPercent, mWidth - nPercentWidth, mHeight - statusMarginBottom, mBatteryPaint);//x y为坐标值
         c.drawText(date, marginWidth ,mHeight - statusMarginBottom, mBatteryPaint);
 
 
@@ -584,10 +581,12 @@ public class PageFactory {
                 /**
                  *  同步数据库更新页面状态
                  */
-                currentPage = getPageForBegin(begin);
+                long allNextLines = getAllNextLines();
+                currentPage = getPageForBegin(allNextLines);
                 if (mBookPageWidget != null) {
                     currentPage(true);
                 }
+
             }else{
                 /**
                  * 更新书本状态
@@ -1065,5 +1064,60 @@ public class PageFactory {
 
     public long getBookLength(){
         return mBookUtil.getBookLen();
+    }
+
+
+
+
+    public long getAllNextLines(){
+        List<String> lines = new ArrayList<>();
+        List<List<String>> pages = new ArrayList<>();
+        long lastPagePosition = 0;
+        float width = 0;
+        String line = "";
+        while (mBookUtil.next(true) != -1){
+            char word = (char) mBookUtil.next(false);
+            if ((word + "" ).equals("\r") || (((char) mBookUtil.next(true)) + "").equals("\n")){
+                mBookUtil.next(false);
+                if (!line.isEmpty()){
+                    lines.add(line);
+                    line = "";
+                    width = 0;
+                }
+            }else {
+                float widthChar = mPaint.measureText(word + "");
+                width += widthChar;
+                if (width > mVisibleWidth) {
+                    width = widthChar;
+                    lines.add(line);
+                    line = word + "";
+                } else {
+                    line += word;
+                }
+            }
+
+            if(lines.size() == mLineCount){
+                pages.add(lines);
+                lines.clear();
+                lastPagePosition = mBookUtil.getPosition();
+            }
+
+        }
+
+        if (!line.isEmpty() && lines.size() < mLineCount){
+            lines.add(line);
+        }
+
+        if(lines.size() > 0){
+            String s = lines.get(lines.size() - 1).trim();
+
+            boolean b = s.length() == 1;
+
+            if(b){
+                lines.remove(lines.size() - 1);
+            }
+
+        }
+        return lastPagePosition;
     }
 }

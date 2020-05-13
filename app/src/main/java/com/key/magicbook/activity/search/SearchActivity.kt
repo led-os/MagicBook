@@ -36,7 +36,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.litepal.LitePal
 
-
 /**
  * created by key  on 2020/4/1
  */
@@ -95,7 +94,9 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
             val arrayList = adapter.data as ArrayList<BookSearchResult>
             busMessage.specialMessage = arrayList[position].name
             busMessage.message = arrayList[position].bookUrl
-            busMessage.data = arrayList[position].data
+            if(arrayList[position].data != null){
+                busMessage.data = arrayList[position].data
+            }
             sendBusMessage(busMessage = busMessage)
             startActivity(Intent(this@SearchActivity, BookDetailActivity::class.java))
             overridePendingTransition(0, 0)
@@ -220,16 +221,15 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                         .subscribe(object : CustomBaseObserver<ResponseBody>() {
                             override fun next(o: ResponseBody?) {
                                 val parse = Jsoup.parse(o!!.string())
+                                val parseDocument = presenter!!.parseDocument(parse)
                                 item.data = parse
-                                item.img = ConstantValues.BASE_URL + parse.select("#fmimg > img")
-                                    .attr("src")
+                                item.img = parseDocument.baseUrl + parseDocument.bookCover
                                 GlideUtils.load(
                                     context,
-                                    ConstantValues.BASE_URL + parse.select("#fmimg > img")
-                                        .attr("src"),
+                                    parseDocument.baseUrl + parseDocument.bookCover,
                                     helper.getView<ImageView>(R.id.img)
                                 )
-                                item.updateTime = parse.select("#info > p:nth-child(4)").text()
+                                item.updateTime = parseDocument.lastUpdateTime
                                 helper.setText(R.id.time, item.updateTime)
                             }
 

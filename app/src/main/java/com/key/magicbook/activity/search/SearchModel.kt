@@ -1,8 +1,11 @@
 package com.key.magicbook.activity.search
 
 import android.util.Log
+import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.bean.BookSearchHistory
 import com.key.magicbook.bean.BookSearchResult
+import com.key.magicbook.db.BookDetail
+import com.key.magicbook.document.ParseDocumentCreator
 import com.key.magicbook.jsoup.JsoupUtils
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
@@ -40,5 +43,10 @@ class SearchModel :SearchContract.OnModel {
     override fun getLocalSearch() :List<BookSearchHistory>{
         return  LitePal.findAll(BookSearchHistory::class.java)
 
+    }
+
+    override fun parseDocument(document: Document): BookDetail {
+        val parseDocument = ParseDocumentCreator.getParseDocument(ConstantValues.BASE_URL)
+        return parseDocument.parseBookDetail(document)
     }
 }

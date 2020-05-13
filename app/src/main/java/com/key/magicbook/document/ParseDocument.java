@@ -1,6 +1,6 @@
 package com.key.magicbook.document;
 
-import com.key.magicbook.bean.BookDetail;
+import com.key.magicbook.db.BookDetail;
 
 import org.jsoup.nodes.Document;
 

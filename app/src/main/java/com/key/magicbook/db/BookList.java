@@ -12,6 +12,8 @@ public class BookList extends LitePalSupport implements Serializable{
     private String bookname;
     private String bookpath;
     private long begin;
+    private String chapterName;
+    private String bookOnlyTag;
     private String charset;
 
     public String getBookname() {
@@ -54,4 +56,20 @@ public class BookList extends LitePalSupport implements Serializable{
         this.charset = charset;
     }
 
+
+    public String getChapterName() {
+        return chapterName;
+    }
+
+    public void setChapterName(String chapterName) {
+        this.chapterName = chapterName;
+    }
+
+    public String getBookOnlyTag() {
+        return bookOnlyTag;
+    }
+
+    public void setBookOnlyTag(String bookOnlyTag) {
+        this.bookOnlyTag = bookOnlyTag;
+    }
 }

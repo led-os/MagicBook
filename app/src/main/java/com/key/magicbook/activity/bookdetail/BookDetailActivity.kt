@@ -15,8 +15,9 @@ import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.LoadingView
 import com.key.magicbook.base.MineBaseActivity
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import com.key.magicbook.db.BookLike
+import com.key.magicbook.db.BookReadChapter
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import com.wx.goodview.GoodView
@@ -33,7 +34,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     private var localChapterUrls: ArrayList<String>? = null
     private var bookName = ""
     private var adapter:Adapter ?= null
-    private var mBookDetail :BookDetail ?=null
+    private var mBookDetail : BookDetail?=null
     private var goodView:GoodView ?= null
     private var isLike = false
     private var bookUrl = ""
@@ -49,23 +50,20 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         }
         list.layoutManager = LinearLayoutManager(this)
         adapter = Adapter()
-        adapter!!.setOnItemClickListener { adapter,
-                                         view,
-                                         position ->
-            val bookUrl = ConstantValues.BASE_URL + localChapterUrls!![position]
-            val list = adapter.data as List<String>
-            getBookContent(bookUrl,list[position])
+        adapter!!.setOnItemClickListener { _,
+                                           _,
+                                           position ->
+            presenter!!.getBookContent( ConstantValues.BASE_URL + localChapterUrls!![position],position)
         }
         list.adapter = adapter
-
         cache.setOnClickListener {
 
         }
+        add.setOnClickListener {
 
-
+        }
         read.setOnClickListener {
-            val bookUrl = ConstantValues.BASE_URL + localChapterUrls!![3]
-            getBookContent(bookUrl,mBookDetail!!.chapterNames[3])
+            checkRead()
         }
         goodView= GoodView(this)
         like.setOnClickListener {
@@ -92,8 +90,6 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
                 contentValues.put("isLike", "false")
                 LitePal.updateAll(BookLike::class.java,contentValues,"bookOnlyTag = ?",bookLike.bookOnlyTag)
             }
-
-
         }
     }
 
@@ -105,8 +101,12 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         super.receiveMessage(busMessage)
         bookName = busMessage.specialMessage
         bookUrl = busMessage.message
-        runOnUiThread {
-            executeData(busMessage.data as Document)
+        if(busMessage.data != null){
+            runOnUiThread {
+                executeData(busMessage.data as Document)
+            }
+        }else{
+            Log.e("pile",bookUrl)
         }
     }
 
@@ -151,7 +151,6 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
            imgId =  R.mipmap.book_like
         }
         if(!isCheck){
-            Log.e("pile",(mBookDetail == null).toString())
             val bookLike = BookLike()
             bookLike.bookName = bookName
             bookLike.bookAuthor = mBookDetail!!.bookAuthor
@@ -177,21 +176,36 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
     }
 
 
-   private fun getBookContent(bookUrl :String,chapter :String) :String{
-       val connectFreeUrl = JsoupUtils.connectFreeUrl(bookUrl, "#content")
-       connectFreeUrl
-           .compose(Transformer.switchSchedulers())
-           .subscribe(object :CustomBaseObserver<Element>(LoadingView(this)){
-           override fun next(o: Element?) {
-               val busMessage = BusMessage<BookDetail>()
-               busMessage.data = mBookDetail
-               busMessage.message = o!!.text()
-               busMessage.target = ReadActivity::class.java.simpleName
-               busMessage.specialMessage = chapter
-               sendBusMessage(busMessage = busMessage)
-               startActivity(Intent(this@BookDetailActivity,ReadActivity::class.java))
-           }
-       })
-       return ""
+    fun bookContent(content :String,chapterPosition: Int){
+        val busMessage = BusMessage<BookDetail>()
+        busMessage.data = mBookDetail
+        busMessage.message = content
+        busMessage.target = ReadActivity::class.java.simpleName
+        busMessage.specialMessage = chapterPosition.toString()
+        sendBusMessage(busMessage = busMessage)
+        startActivity(Intent(this@BookDetailActivity, ReadActivity::class.java))
+    }
+
+    private fun checkRead(){
+        val find = LitePal.where(
+            "bookChapterOnlyTag = ? and isLook = ? ",
+            mBookDetail!!.bookName + mBookDetail!!.bookAuthor + mBookDetail!!.bookUrl, "true"
+        ).find(BookReadChapter::class.java)
+
+        if(find.size == 0){
+            if(localChapterUrls!!.size - 1 >= 0 ){
+                val bookUrl = ConstantValues.BASE_URL + localChapterUrls!![0]
+                presenter!!.getBookContent(bookUrl,0)
+            }
+        }else{
+            val bookReadChapter = find[0]
+            val busMessage = BusMessage<BookDetail>()
+            busMessage.data = mBookDetail
+            busMessage.message = bookReadChapter.bookChapterContent
+            busMessage.target = ReadActivity::class.java.simpleName
+            busMessage.specialMessage = bookReadChapter.chapterNum.toString()
+            sendBusMessage(busMessage = busMessage)
+            startActivity(Intent(this@BookDetailActivity,ReadActivity::class.java))
+        }
     }
 }

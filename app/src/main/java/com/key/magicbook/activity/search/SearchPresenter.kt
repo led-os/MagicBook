@@ -6,6 +6,8 @@ import com.key.keylibrary.base.BasePresenter
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.LoadingView
 import com.key.magicbook.bean.BookSearchResult
+import com.key.magicbook.db.BookDetail
+import org.jsoup.nodes.Document
 
 /**
  * created by key  on 2020/4/1
@@ -43,5 +45,9 @@ class SearchPresenter : BasePresenter<Activity>() ,SearchContract.OnPresenter{
     override fun getLocalSearchHistory() {
         getView().loadFlow( searchModel!!.getLocalSearch())
 
+    }
+
+    override fun parseDocument(documented: Document):BookDetail {
+       return  searchModel!!.parseDocument(documented)
     }
 }

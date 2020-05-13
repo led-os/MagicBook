@@ -23,7 +23,16 @@ public class BookLike  extends LitePalSupport {
     private List<String> chapterUrls;
     private List<String> chapterNames;
     private String isLike;
+    private String isBookCase;
 
+
+    public String getIsBookCase() {
+        return isBookCase;
+    }
+
+    public void setIsBookCase(String isBookCase) {
+        this.isBookCase = isBookCase;
+    }
 
     public String getBookOnlyTag() {
         return bookOnlyTag;

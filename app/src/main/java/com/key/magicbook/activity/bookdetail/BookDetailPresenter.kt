@@ -1,13 +1,19 @@
 package com.key.magicbook.activity.bookdetail
 
 import android.app.Activity
+import android.content.Intent
 import android.widget.Toast
+import com.allen.library.interceptor.Transformer
 import com.key.keylibrary.base.BasePresenter
-import com.key.magicbook.base.BaseContract
-import com.key.magicbook.bean.BookDetail
+import com.key.keylibrary.bean.BusMessage
+import com.key.magicbook.activity.read.ReadActivity
+import com.key.magicbook.base.CustomBaseObserver
+import com.key.magicbook.base.LoadingView
+import com.key.magicbook.db.BookDetail
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 
 /**
  * created by key  on 2020/2/27
@@ -53,4 +59,16 @@ class BookDetailPresenter : BasePresenter<Activity>(),BookDetailContract.OnPrese
 
         })
     }
+
+    override fun getBookContent(bookUrl: String, chapterPosition: Int) {
+        model!!.getBookContent(bookUrl, chapterPosition)
+            .compose(Transformer.switchSchedulers())
+            .subscribe(object : CustomBaseObserver<Element>(LoadingView(getView())){
+                override fun next(o: Element?) {
+                    getView().bookContent(o!!.text(),chapterPosition)
+                }
+            })
+    }
+
+
 }

@@ -2,8 +2,7 @@ package com.key.magicbook.document
 
 import android.text.TextUtils
 import com.key.magicbook.base.ConstantValues
-import com.key.magicbook.bean.BookDetail
-import com.key.magicbook.jsoup.JsoupUtils
+import com.key.magicbook.db.BookDetail
 import org.jsoup.nodes.Document
 
 /**
@@ -12,17 +11,23 @@ import org.jsoup.nodes.Document
 class TopPointParseDocument : ParseDocument() {
     override fun parseBookDetails(document: Document): List<BookDetail> {
         val new = document!!.select("#newscontent > div.r > ul > li")
-        var bookDetails :ArrayList<BookDetail> = ArrayList<BookDetail>()
+        val bookDetails :ArrayList<BookDetail> = ArrayList<BookDetail>()
         for (value in new) {
             val bookName = value.select("span.s2 > a").text()
             val attr = value.select("span.s2 > a")
                 .attr("href")
             val authorName = value.select("span.s5").text()
+            val lastUpdateTime = value.select("#info > p:nth-child(4)").text()
+
+
             val bookDetail = BookDetail()
             bookDetail.bookName = bookName
+            bookDetail.bookCover = ""
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
+            bookDetail.lastUpdateTime = lastUpdateTime
             bookDetail.bookType = ""
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(bookName)) {
                 bookDetails!!.add(bookDetail)
             }
@@ -46,6 +51,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookCover = img
             bookDetail.bookName = name
             bookDetail.bookUrl = url
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(intro)) {
                 headers!!.add(bookDetail)
             }
@@ -70,6 +76,7 @@ class TopPointParseDocument : ParseDocument() {
         bookDetail.lastChapter = lastChapter.text()
         bookDetail.bookIntro = intro.text()
         bookDetail.chapterElements = select
+        bookDetail.baseUrl = "https://www.dingdiann.com/"
         return bookDetail
     }
 
@@ -88,6 +95,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "历史军事"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetailNovel.add(bookDetail)
         }
         return bookDetailNovel
@@ -108,6 +116,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "玄幻奇幻"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetails.add(bookDetail)
         }
         return bookDetails
@@ -127,6 +136,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "经典推荐"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             scripturesDetails.add(bookDetail)
 
         }
@@ -148,6 +158,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "科幻灵异"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetailNovel.add(bookDetail)
         }
         return bookDetailNovel
@@ -172,6 +183,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "都市言情"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetails.add(bookDetail)
         }
         return bookDetails
@@ -196,6 +208,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookCover = img
             bookDetail.bookName = name
             bookDetail.bookUrl = url
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(intro)) {
                 books!!.add(bookDetail)
             }
@@ -213,7 +226,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookCover = img
             bookDetail.bookName = name
             bookDetail.bookUrl = url
-
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(intro)) {
                 books!!.add(bookDetail)
             }
@@ -231,6 +244,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookCover = img
             bookDetail.bookName = name
             bookDetail.bookUrl = url
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(intro)) {
                 books!!.add(bookDetail)
             }
@@ -264,6 +278,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "武侠仙侠"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetails.add(bookDetail)
         }
         return bookDetails
@@ -281,6 +296,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "新书"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetails.add(bookDetail)
         }
         return bookDetails
@@ -313,6 +329,7 @@ class TopPointParseDocument : ParseDocument() {
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
             bookDetail.bookType = "网游竞技"
+            bookDetail.baseUrl = "https://www.dingdiann.com/"
             bookDetailNovel.add(bookDetail)
         }
         return bookDetailNovel

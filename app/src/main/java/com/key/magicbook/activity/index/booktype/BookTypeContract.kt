@@ -1,7 +1,7 @@
 package com.key.magicbook.activity.index.booktype
 
 import com.key.magicbook.base.BaseContract
-import com.key.magicbook.bean.BookDetail
+import com.key.magicbook.db.BookDetail
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
 
