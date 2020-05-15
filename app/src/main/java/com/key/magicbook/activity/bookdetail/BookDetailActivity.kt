@@ -2,9 +2,8 @@ package com.key.magicbook.activity.bookdetail
 
 import android.content.ContentValues
 import android.content.Intent
-import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.allen.library.interceptor.Transformer
 import com.bumptech.glide.Glide
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
@@ -24,7 +23,6 @@ import com.wx.goodview.GoodView
 import kotlinx.android.synthetic.main.activity_book_detail.*
 import kotlinx.android.synthetic.main.fragment_index_mine.toolbar
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
 import org.litepal.LitePal
 
 /**
@@ -60,7 +58,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
 
         }
         add.setOnClickListener {
-
+            isBookCase()
         }
         read.setOnClickListener {
             checkRead()
@@ -81,6 +79,10 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             bookLike.bookAuthor = mBookDetail!!.bookAuthor
             bookLike.bookUrl = bookUrl
             bookLike.bookOnlyTag = mBookDetail!!.bookName +  mBookDetail!!.bookAuthor + bookUrl
+            bookLike.isBookCase = "false"
+            bookLike.isLooked = "false"
+
+
             if(isLike){
                 val contentValues = ContentValues()
                 contentValues.put("isLike", "true")
@@ -106,17 +108,24 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
                 executeData(busMessage.data as Document)
             }
         }else{
-            Log.e("pile",bookUrl)
+            JsoupUtils.getFreeDocument(ConstantValues.BASE_URL + bookUrl)
+                .subscribe(object :CustomBaseObserver<Document>(LoadingView(this)){
+                override fun next(o: Document?) {
+                   executeData(o!!)
+                }
+            })
         }
     }
 
     private fun executeData(document: Document) {
         mBookDetail = presenter!!.parseBookDetail(document, bookUrl)
         presenter!!.getChapters(mBookDetail!!)
+
     }
 
      fun loadView(bookDetail: BookDetail) {
         toolbar.title = bookDetail.bookName
+        presenter!!.loadBookReadChapters(bookDetail,getUserInfo().userName)
         localChapterUrls = bookDetail.chapterUrls as ArrayList<String>?
         var bookAuthor = bookDetail.bookAuthor
         if(bookAuthor.contains("：")){
@@ -136,11 +145,22 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             GlideUtils.loadBlur(this,bookDetail.bookCover,book_root)
         }.start()
 
+        checkBookLike(bookDetail)
+        checkBookCase()
+        updateIsLooked()
 
+    }
+
+
+
+    private fun checkBookLike(bookDetail: BookDetail){
         var isCheck = false
-        val findAll = LitePal.findAll(BookLike::class.java)
+        val find = LitePal.where(
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+            bookDetail.bookName, ConstantValues.BASE_URL, bookDetail.bookUrl, getUserInfo().userName
+        ).find(BookLike::class.java)
         val tag = bookName + bookDetail.bookAuthor + bookUrl
-        for(value in findAll){
+        for(value in find){
             if(tag == value.bookOnlyTag){
                 isCheck = true
                 isLike = value.isLike == "true"
@@ -148,7 +168,7 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
         }
         var imgId =  R.mipmap.book_un_like
         if(isLike){
-           imgId =  R.mipmap.book_like
+            imgId =  R.mipmap.book_like
         }
         if(!isCheck){
             val bookLike = BookLike()
@@ -156,14 +176,17 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             bookLike.bookAuthor = mBookDetail!!.bookAuthor
             bookLike.bookUrl = bookUrl
             bookLike.bookOnlyTag = bookName + mBookDetail!!.bookAuthor + bookUrl
+            bookLike.userName = getUserInfo().userName
             bookLike.isLike  = "false"
+            bookLike.isBookCase = "false"
+            bookLike.isLooked = "false"
+            bookLike.bookCover = mBookDetail!!.bookCover
+            bookLike.baseUrl = ConstantValues.BASE_URL
             bookLike.save()
         }
 
         Glide.with(this).load(imgId).into(like)
     }
-
-
     override fun onResume() {
         super.onResume()
         toolbar.title = bookName
@@ -188,8 +211,8 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
 
     private fun checkRead(){
         val find = LitePal.where(
-            "bookChapterOnlyTag = ? and isLook = ? ",
-            mBookDetail!!.bookName + mBookDetail!!.bookAuthor + mBookDetail!!.bookUrl, "true"
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+            mBookDetail!!.bookName,ConstantValues.BASE_URL, mBookDetail!!.bookUrl, getUserInfo().userName
         ).find(BookReadChapter::class.java)
 
         if(find.size == 0){
@@ -203,9 +226,59 @@ class BookDetailActivity : MineBaseActivity<BookDetailPresenter>() {
             busMessage.data = mBookDetail
             busMessage.message = bookReadChapter.bookChapterContent
             busMessage.target = ReadActivity::class.java.simpleName
-            busMessage.specialMessage = bookReadChapter.chapterNum.toString()
+            busMessage.specialMessage =( bookReadChapter.chapterNum - 1).toString()
             sendBusMessage(busMessage = busMessage)
             startActivity(Intent(this@BookDetailActivity,ReadActivity::class.java))
         }
+    }
+
+    private fun isBookCase(){
+        val find = LitePal.where(
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ? ",
+            mBookDetail!!.bookName, mBookDetail!!.baseUrl, mBookDetail!!.bookUrl,getUserInfo().userName
+        ).find(BookLike::class.java)
+        if(find.size > 0){
+            val b = find[0].isBookCase == "true"
+            var isBookCase  = if(b){
+                "false"
+            }else{
+                "true"
+            }
+            val bookCase = ContentValues()
+            bookCase.put("isBookCase", isBookCase)
+            LitePal.updateAll(BookLike::class.java,bookCase,
+                "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+                mBookDetail!!.bookName, mBookDetail!!.baseUrl, mBookDetail!!.bookUrl,getUserInfo().userName
+            )
+            checkBookCase()
+        }else{
+            Toast.makeText(this,"您还没有在数据库中添加此书籍",Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun checkBookCase(){
+        val find = LitePal.where(
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+            mBookDetail!!.bookName, ConstantValues.BASE_URL, mBookDetail!!.bookUrl,getUserInfo().userName
+        ).find(BookLike::class.java)
+        if(find.size > 0){
+            val b = find[0].isBookCase == "true"
+            if(b){
+                add_des.text = "从书架移除"
+            }else{
+                add_des.text = "加入书架"
+            }
+
+        }else{
+            Toast.makeText(this,"您还没有在数据库中添加此书籍",Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun updateIsLooked(){
+        val looked = ContentValues()
+        looked.put("isLooked", "true")
+        LitePal.updateAll(BookLike::class.java,looked,
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+            mBookDetail!!.bookName, ConstantValues.BASE_URL, mBookDetail!!.bookUrl,getUserInfo().userName
+        )
     }
 }

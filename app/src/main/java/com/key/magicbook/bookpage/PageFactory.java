@@ -40,6 +40,8 @@ import java.util.Locale;
  * Created by Administrator on 2016/7/20 0020.
  */
 public class PageFactory {
+
+    private boolean isEnd = false;
     private static final String TAG = "PageFactory";
     private static PageFactory pageFactory;
     private Context mContext;
@@ -48,6 +50,13 @@ public class PageFactory {
      */
     private Config config;
 
+    public boolean isEnd() {
+        return isEnd;
+    }
+
+    public void setEnd(boolean end) {
+        isEnd = end;
+    }
 
     /**
      * 页面宽高
@@ -547,8 +556,11 @@ public class PageFactory {
         this.bookList = bookList;
         bookPath = bookList.getBookpath();
 
+        isEnd = bookList.getIsEnd().equals("true");
         //根据文件名称决定书名
         bookName = FileUtils.getFileName(bookPath);
+
+
 
 //        mStatus = Status.OPENING;
 //        drawStatus(mBookPageWidget.getCurPage());
@@ -578,11 +590,13 @@ public class PageFactory {
             }
             if (result) {
                 PageFactory.mStatus = PageFactory.Status.FINISH;
-                /**
-                 *  同步数据库更新页面状态
-                 */
-                long allNextLines = getAllNextLines();
-                currentPage = getPageForBegin(allNextLines);
+                if(isEnd){
+                    long allNextLines = getAllNextLines();
+                    currentPage = getPageForBegin(allNextLines);
+                }else{
+                    currentPage = getPageForBegin(0);
+                }
+
                 if (mBookPageWidget != null) {
                     currentPage(true);
                 }
@@ -613,6 +627,7 @@ public class PageFactory {
         protected Boolean doInBackground(Long... params) {
             begin = params[0];
             try {
+                mBookUtil.setPosition(0);
                 mBookUtil.openBook(bookList);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1073,8 +1088,11 @@ public class PageFactory {
         List<String> lines = new ArrayList<>();
         List<List<String>> pages = new ArrayList<>();
         long lastPagePosition = 0;
+        long twoLastPagePosition = 0;
         float width = 0;
+        int lastPage = 0;
         String line = "";
+
         while (mBookUtil.next(true) != -1){
             char word = (char) mBookUtil.next(false);
             if ((word + "" ).equals("\r") || (((char) mBookUtil.next(true)) + "").equals("\n")){
@@ -1096,10 +1114,14 @@ public class PageFactory {
                 }
             }
 
+
+
             if(lines.size() == mLineCount){
                 pages.add(lines);
                 lines.clear();
+                twoLastPagePosition = lastPagePosition;
                 lastPagePosition = mBookUtil.getPosition();
+                lastPage++;
             }
 
         }
@@ -1117,6 +1139,10 @@ public class PageFactory {
                 lines.remove(lines.size() - 1);
             }
 
+        }
+
+        if(lines.size() == 0){
+            lastPagePosition = twoLastPagePosition;
         }
         return lastPagePosition;
     }

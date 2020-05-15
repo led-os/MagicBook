@@ -8,6 +8,7 @@ import com.key.magicbook.document.ParseDocumentCreator
 import com.key.magicbook.jsoup.JsoupUtils.getFreeDocument
 import io.reactivex.Observable
 import org.jsoup.nodes.Document
+import org.litepal.LitePal
 
 /**
  * created by key  on 2020/5/10
@@ -53,5 +54,22 @@ class BookCityModel:BookCityContract.OnModel {
 
     override fun loadTypeEight(document: Document): List<BookDetail> {
         return ParseDocumentCreator.getParseDocument(ConstantValues.BASE_URL).parseTypeEight(document)
+    }
+
+    override fun parseDocument(documented: Document): BookDetail {
+        val parseDocument = ParseDocumentCreator.getParseDocument(ConstantValues.BASE_URL)
+        return parseDocument.parseBookDetail(documented)
+    }
+
+    override fun getExitBookDetail(
+        bookName: String,
+        baseUrl: String,
+        bookUrl: String
+    ): List<BookDetail> {
+        return LitePal.where(
+            "bookName = ? and baseUrl = ? and bookUrl = ?",
+            bookName, baseUrl, bookUrl
+        )
+            .find(BookDetail::class.java)
     }
 }

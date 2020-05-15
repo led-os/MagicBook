@@ -15,6 +15,16 @@ public class BookList extends LitePalSupport implements Serializable{
     private String chapterName;
     private String bookOnlyTag;
     private String charset;
+    private String isEnd;
+
+
+    public String getIsEnd() {
+        return isEnd;
+    }
+
+    public void setIsEnd(String isEnd) {
+        this.isEnd = isEnd;
+    }
 
     public String getBookname() {
         return this.bookname;

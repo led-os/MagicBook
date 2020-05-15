@@ -5,23 +5,29 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.activity.bookdetail.BookDetailActivity
 import com.key.magicbook.activity.search.SearchActivity
 import com.key.magicbook.base.ConstantValues
+import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseFragment
+import com.key.magicbook.bean.BookSearchResult
 import com.key.magicbook.db.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import com.stone.pile.libs.PileLayout
 import kotlinx.android.synthetic.main.fragment_index_book_city.*
 import kotlinx.android.synthetic.main.fragment_index_book_city.list
+import org.greenrobot.eventbus.EventBus
 import org.jsoup.nodes.Document
 
 /**
@@ -61,6 +67,7 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
         list.layoutManager = LinearLayoutManager(activity)
         adapter = Adapter()
         list.adapter = adapter
+        adapter!!.setEmptyView(UiUtils.inflate(activity,R.layout.no_data))
         headerView = UiUtils.inflate(activity,R.layout.item_book_city_head)
         mPileLayout = headerView!!.findViewById(R.id.pile_layout)
         adapter!!.addHeaderView(headerView!!)
@@ -196,12 +203,12 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
                                 )
                             }
                         }
-
                     }
-
 
                     override fun onItemClick(view: View?, position: Int) {
                         super.onItemClick(view, position)
+
+                        goBookDetail(books[position])
                     }
 
                     override fun displaying(position: Int) {
@@ -230,10 +237,13 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
                 val linearLayoutManager = LinearLayoutManager(context)
                 linearLayoutManager.orientation =  RecyclerView.HORIZONTAL
                 view.layoutManager = linearLayoutManager
-                val itemAdapter =
-                    ItemAdapter()
+                val itemAdapter = ItemAdapter()
                 view.adapter = itemAdapter
                 itemAdapter!!.setNewData(item)
+                itemAdapter.setOnItemClickListener { adapter,
+                                                     view, position ->
+                    goBookDetail(adapter.data[position] as BookDetail)
+                }
             }
 
         }
@@ -242,25 +252,47 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
 
 
 
-     class ItemAdapter:BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_fragment_city_list){
+    inner class ItemAdapter:BaseQuickAdapter<BookDetail,BaseViewHolder>(R.layout.item_fragment_city_list){
         override fun convert(helper: BaseViewHolder, item: BookDetail) {
             helper.setText(R.id.name,item.bookName)
-            GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.image))
-            if( item.bookCover == null){
-                JsoupUtils.connectFreeUrl(ConstantValues.BASE_URL+item.bookUrl ,"#fmimg > img:nth-child(1)")
-                    .subscribe {
-                        item.bookCover =ConstantValues.BASE_URL +it.attr("src")
-                        GlideUtils.load(
-                            context,
-                            ConstantValues.BASE_URL +it.attr("src") ,
-                            helper.getView<ImageView>(R.id.image)
-                        )
-                    }
+            GlideUtils.loadGif(context, helper.getView(R.id.image))
+            if(item.bookCover == null){
+                val exitBookDetail1 = presenter!!.getExitBookDetail(
+                    item.bookName,
+                    ConstantValues.BASE_URL,
+                    item.bookUrl
+                )
+                if(exitBookDetail1.isEmpty()){
+                    JsoupUtils.getFreeDocument(ConstantValues.BASE_URL+item.bookUrl ).subscribe(object :CustomBaseObserver<Document>(){
+                        override fun next(o: Document?) {
+                            val parseDocument = presenter!!.parseDocument(o!!)
+                            GlideUtils.load(
+                                context,
+                                parseDocument.bookCover,
+                                helper.getView(R.id.image)
+                            )
+                            item.bookCover = parseDocument.bookCover
+                            item.bookIntro = parseDocument.bookIntro
+                            parseDocument.bookUrl = item.bookUrl
+                            parseDocument.isLooked = "false"
+                            parseDocument.isBookCase = "false"
+                            parseDocument.save()
+                        }
+
+                    })
+                }else{
+                    GlideUtils.load(
+                        context,
+                        exitBookDetail1[0].bookCover,
+                        helper.getView(R.id.image)
+                    )
+                }
+
             }else{
                 GlideUtils.load(
                     context,
                     item.bookCover ,
-                    helper.getView<ImageView>(R.id.image)
+                    helper.getView(R.id.image)
                 )
             }
         }
@@ -287,4 +319,14 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
         return BookCityPresenter()
     }
 
+
+
+    private fun goBookDetail(bookDetail: BookDetail){
+        val busMessage = BusMessage<Document>()
+        busMessage.target = BookDetailActivity::class.java.simpleName
+        busMessage.specialMessage = bookDetail.bookName
+        busMessage.message = bookDetail.bookUrl
+        EventBus.getDefault().postSticky(busMessage)
+        startActivity(Intent(activity, BookDetailActivity::class.java))
+    }
 }

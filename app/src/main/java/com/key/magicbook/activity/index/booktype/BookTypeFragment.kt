@@ -1,28 +1,35 @@
 package com.key.magicbook.activity.index.booktype
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bigkoo.convenientbanner.ConvenientBanner
-import com.bigkoo.convenientbanner.holder.CBViewHolderCreator
-import com.bigkoo.convenientbanner.holder.Holder
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.viewholder.BaseViewHolder
+import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.activity.bookdetail.BookDetailActivity
 import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
 import com.key.magicbook.base.MineBaseFragment
 import com.key.magicbook.db.BookDetail
 import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
-import kotlinx.android.synthetic.main.fragment_book_type.*
+import com.zhpan.bannerview.BannerViewPager
+import com.zhpan.bannerview.adapter.OnPageChangeListenerAdapter
+import com.zhpan.bannerview.constants.IndicatorGravity
+import com.zhpan.bannerview.constants.IndicatorSlideMode
+import com.zhpan.bannerview.constants.PageStyle
+import com.zhpan.bannerview.holder.ViewHolder
+import kotlinx.android.synthetic.main.activity_book_detail.*
 import okhttp3.ResponseBody
+import org.greenrobot.eventbus.EventBus
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -35,7 +42,7 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
     private var document: Document? = null
     private var bookDetails: ArrayList<BookDetail>? = null
     private var headers: ArrayList<BookDetail>? = null
-    private var convenientBanner: ConvenientBanner<BookDetail>? = null
+    private var convenientBanner: BannerViewPager<BookDetail,NetViewHolder>? = null
 
     override fun setLayoutId(): Int {
         return R.layout.fragment_book_type
@@ -63,39 +70,65 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
         list.layoutManager = LinearLayoutManager(context)
         adapter =
             Adapter()
+        adapter!!.setOnItemClickListener { adapter, view, position ->
+            goBookDetail(adapter.data[position] as BookDetail)
+        }
         list.adapter = adapter
+        adapter!!.setEmptyView(UiUtils.inflate(activity,R.layout.no_data))
     }
 
 
-    class Adapter() : BaseQuickAdapter<BookDetail, BaseViewHolder>(R.layout.item_book_type_list) {
+   inner  class Adapter() : BaseQuickAdapter<BookDetail, BaseViewHolder>(R.layout.item_book_type_list) {
         override fun convert(helper: BaseViewHolder, item: BookDetail) {
-            GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.image))
+            GlideUtils.loadGif(context, helper.getView(R.id.image))
             helper.setText(R.id.name, item.bookName)
             helper.setText(R.id.author, item.bookAuthor)
+            helper.setText(R.id.intro, "")
             if (item.bookCover == null && !item.isLoad) {
                     item.isLoad = true
                 try {
-                    JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
-                        .subscribe(object :CustomBaseObserver<ResponseBody>(){
-                            override fun next(o: ResponseBody?) {
-                                try {
-                                    val parse = Jsoup.parse(o!!.string())
-                                    item.bookCover =
-                                        ConstantValues.BASE_URL + parse.select("#fmimg > img").attr("src")
-                                    GlideUtils.load(
-                                        context,
-                                        ConstantValues.BASE_URL+ parse.select("#fmimg > img")
-                                            .attr("src"),
-                                        helper.getView<ImageView>(R.id.image)
-                                    )
-                                    item.bookIntro = parse.select("#intro").text()
-                                    helper.setText(R.id.intro, item.bookIntro)
-                                }catch (e :Exception){
-                                    item.isLoad = false
-                                }
-                            }
+                    val exitBookDetail = presenter!!.getExitBookDetail(
+                        item.bookName,
+                        ConstantValues.BASE_URL,
+                        item.bookUrl
+                    )
+                    if(exitBookDetail.isEmpty()){
+                        JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
+                            .subscribe(object :CustomBaseObserver<ResponseBody>(){
+                                override fun next(o: ResponseBody?) {
+                                    try {
+                                        val parse = Jsoup.parse(o!!.string())
+                                        val parseDocument = presenter!!.parseDocument(parse)
 
-                        })
+                                        parseDocument.bookUrl = item.bookUrl
+                                        parseDocument.isLooked = "false"
+                                        parseDocument.isBookCase = "false"
+                                        item.bookCover = parseDocument.bookCover
+                                        item.bookIntro = parseDocument.bookIntro
+                                        parseDocument.save()
+                                        GlideUtils.load(
+                                            context,
+                                            parseDocument.bookCover,
+                                            helper.getView(R.id.image)
+                                        )
+                                        helper.setText(R.id.intro, item.bookIntro)
+                                    }catch (e :Exception){
+                                        item.isLoad = false
+                                    }
+                                }
+
+                            })
+                    }else{
+                        item.bookCover = exitBookDetail[0].bookCover
+                        item.bookIntro = exitBookDetail[0].bookIntro
+                        GlideUtils.load(
+                            context,
+                            exitBookDetail[0].bookCover,
+                            helper.getView(R.id.image)
+                        )
+                        helper.setText(R.id.intro, item.bookIntro)
+                    }
+
                 }catch (e :Exception){
                     item.isLoad = false
                 }
@@ -103,7 +136,7 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
                 GlideUtils.load(
                     context,
                     item.bookCover,
-                    helper.getView<ImageView>(R.id.image)
+                    helper.getView(R.id.image)
                 )
                 helper.setText(R.id.intro, item.bookIntro)
             }
@@ -111,34 +144,6 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
     }
 
 
-    class TypeHolder(itemView: View?, var activity: FragmentActivity) :
-        Holder<BookDetail>(itemView) {
-        override fun updateUI(data: BookDetail?) {
-            itemView.findViewById<TextView>(R.id.name).text = data!!.bookName
-            itemView.findViewById<ConstraintLayout>(R.id.banner).layoutParams.width =
-                UiUtils.getScreenWidth(activity)  -UiUtils.dip2px(36f)
-
-
-            GlideUtils.load(
-                activity,
-                ConstantValues.BASE_URL + data!!.bookCover,
-                itemView.findViewById<ImageView>(R.id.image)
-            )
-
-            Thread {
-                GlideUtils.loadBlur(
-                    activity,
-                    ConstantValues.BASE_URL + data!!.bookCover,
-                    itemView.findViewById<ImageView>(R.id.bg)
-                )
-            }.start()
-
-        }
-
-        override fun initView(itemView: View?) {
-
-        }
-    }
 
     override fun onVisibleChanged(isVisible: Boolean) {
         super.onVisibleChanged(isVisible)
@@ -150,11 +155,7 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
     }
 
     private fun loadData(isRefresh: Boolean) {
-
-
         presenter!!.getTypeDocument(mBookUrl)
-
-
     }
 
     fun loadDocument(o :Document){
@@ -162,7 +163,6 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
         headers = presenter!!.parseHeaders(o)
         bookDetails =  presenter!!.parseBookDetails(o)
         setData()
-
     }
 
     private fun setData() {
@@ -172,22 +172,18 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT
         )
-        convenientBanner = headerView.findViewById(R.id.convenientBanner)
-        convenientBanner!!.setPages(
-            object : CBViewHolderCreator {
-                override fun createHolder(itemView: View?): Holder<BookDetail> {
-                    return TypeHolder(
-                        itemView,
-                        activity!!
-                    )
+        convenientBanner = headerView.findViewById(R.id.bv_top)
+        convenientBanner!!.setCanLoop(true)
+            .setHolderCreator { NetViewHolder() }
+            .setPageStyle(PageStyle.MULTI_PAGE_OVERLAP)
+            .setOnPageChangeListener(
+                object : OnPageChangeListenerAdapter() {
+                    override fun onPageSelected(position: Int) {
+                    }
                 }
-
-                override fun getLayoutId(): Int {
-                    return R.layout.item_book_type_banner
-                }
-
-            }, headers
-        )
+            )
+            .create(headers)
+        adapter!!.removeAllHeaderView()
         adapter!!.addHeaderView(headerView)
         adapter!!.setNewData(bookDetails!!)
 
@@ -195,5 +191,47 @@ class BookTypeFragment : MineBaseFragment<BookTypePresenter>() {
 
     override fun createPresenter(): BookTypePresenter {
         return BookTypePresenter()
+    }
+
+
+    private fun goBookDetail(bookDetail: BookDetail){
+        val busMessage = BusMessage<Document>()
+        busMessage.target = BookDetailActivity::class.java.simpleName
+        busMessage.specialMessage = bookDetail.bookName
+        busMessage.message = bookDetail.bookUrl
+        EventBus.getDefault().postSticky(busMessage)
+        startActivity(Intent(activity, BookDetailActivity::class.java))
+    }
+
+   inner class NetViewHolder : ViewHolder<BookDetail?> {
+
+
+        override fun getLayoutId(): Int {
+           return R.layout.item_book_type_banner
+        }
+
+        override fun onBind(itemView: View, data: BookDetail?, position: Int, size: Int) {
+            itemView.findViewById<TextView>(R.id.name).text = data!!.bookName
+            itemView.findViewById<ConstraintLayout>(R.id.banner).layoutParams.width =
+                UiUtils.getScreenWidth(activity)  -UiUtils.dip2px(36f)
+
+            GlideUtils.load(
+                activity,
+                ConstantValues.BASE_URL + data!!.bookCover,
+                itemView.findViewById(R.id.image)
+            )
+
+            Thread {
+                GlideUtils.loadBlur(
+                    activity,
+                    ConstantValues.BASE_URL + data!!.bookCover,
+                    itemView.findViewById<ImageView>(R.id.bg)
+                )
+            }.start()
+
+            itemView.findViewById<LinearLayout>(R.id.banner_root).setOnClickListener {
+                goBookDetail(data)
+            }
+        }
     }
 }

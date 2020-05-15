@@ -17,10 +17,12 @@
         android:minHeight="?attr/actionBarSize"
         app:navigationIcon="@mipmap/back_black"
         android:layout_width="match_parent"
+        android:visibility="invisible"
         android:layout_height="wrap_content" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/day"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/set"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginRight="10dp"
@@ -34,6 +36,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/set"
+        android:visibility="invisible"
         android:background="@drawable/shape_read_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"

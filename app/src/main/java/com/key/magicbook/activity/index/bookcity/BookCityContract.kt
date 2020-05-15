@@ -20,6 +20,9 @@ class BookCityContract : BaseContract() {
     fun loadTypeSix(document :Document): List<BookDetail>
     fun loadTypeSeven(document :Document): List<BookDetail>
     fun loadTypeEight(document :Document): List<BookDetail>
+
+    fun parseDocument(documented: Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
   }
 
   interface OnPresenter{
@@ -33,5 +36,9 @@ class BookCityContract : BaseContract() {
     fun loadTypeSix(document :Document): List<BookDetail>
     fun loadTypeSeven(document :Document): List<BookDetail>
     fun loadTypeEight(document :Document): List<BookDetail>
+
+
+    fun parseDocument(documented: Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
   }
 }

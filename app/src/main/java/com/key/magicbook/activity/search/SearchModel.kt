@@ -49,4 +49,13 @@ class SearchModel :SearchContract.OnModel {
         val parseDocument = ParseDocumentCreator.getParseDocument(ConstantValues.BASE_URL)
         return parseDocument.parseBookDetail(document)
     }
+
+    override fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String): List<BookDetail> {
+        return LitePal.where(
+            "bookName = ? and baseUrl = ? and bookUrl = ?",
+            bookName, baseUrl, bookUrl
+        )
+            .find(BookDetail::class.java)
+
+    }
 }

@@ -32,9 +32,8 @@ class BookDetailPresenter : BasePresenter<Activity>(),BookDetailContract.OnPrese
     }
 
     override fun getChapters(bookDetail: BookDetail) {
-
-        var localChapterUrls:ArrayList<String> = ArrayList()
-        var localChapterNames :ArrayList<String> = ArrayList()
+        val localChapterUrls:ArrayList<String> = ArrayList()
+        val localChapterNames :ArrayList<String> = ArrayList()
         model!!.getChapters(bookDetail)
             .subscribe(object : Observer<String> {
             override fun onComplete() {
@@ -43,21 +42,21 @@ class BookDetailPresenter : BasePresenter<Activity>(),BookDetailContract.OnPrese
                 getView().loadView(bookDetail)
             }
 
-            override fun onSubscribe(d: Disposable?) {
 
-            }
+                override fun onSubscribe(d: Disposable) {
+                }
 
-            override fun onNext(value: String?) {
-                val split = value!!.split("value")
-                localChapterNames!!.add(split[0])
-                localChapterUrls!!.add(split[1])
-            }
+                override fun onNext(t: String) {
+                    val split = t!!.split("value")
+                    localChapterNames!!.add(split[0])
+                    localChapterUrls!!.add(split[1])
+                }
 
-            override fun onError(e: Throwable?) {
-                Toast.makeText(getView(), "加载目录失败", Toast.LENGTH_SHORT).show()
-            }
+                override fun onError(e: Throwable) {
+                    Toast.makeText(getView(), "加载目录失败", Toast.LENGTH_SHORT).show()
+                }
 
-        })
+            })
     }
 
     override fun getBookContent(bookUrl: String, chapterPosition: Int) {
@@ -68,6 +67,10 @@ class BookDetailPresenter : BasePresenter<Activity>(),BookDetailContract.OnPrese
                     getView().bookContent(o!!.text(),chapterPosition)
                 }
             })
+    }
+
+    override fun loadBookReadChapters(bookDetail: BookDetail,userName :String) {
+        model!!.loadBookReadChapters(bookDetail,userName)
     }
 
 

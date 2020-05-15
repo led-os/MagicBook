@@ -6,6 +6,11 @@ import org.litepal.crud.LitePalSupport;
  * created by key  on 2020/5/10
  */
 public class BookReadChapter extends LitePalSupport {
+
+    private String bookName;
+    private String baseUrl;
+    private String userName;
+    private String bookUrl;
     private String bookChapterOnlyTag;
     private long begin;
     private String chapterName;
@@ -15,6 +20,38 @@ public class BookReadChapter extends LitePalSupport {
     private String isCache;
     private int chapterNum;
 
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getBookUrl() {
+        return bookUrl;
+    }
+
+    public void setBookUrl(String bookUrl) {
+        this.bookUrl = bookUrl;
+    }
 
     public int getChapterNum() {
         return chapterNum;

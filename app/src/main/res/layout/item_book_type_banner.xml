@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_240"
+    android:id="@+id/banner_root"
+    android:layout_gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
@@ -9,8 +11,6 @@
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:cardElevation="@dimen/dp_18"
         app:cardPreventCornerOverlap="true"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="10dp">
@@ -27,13 +27,15 @@
                 android:id="@+id/bg"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_180"/>
+
+
             <ImageView
-                android:layout_margin="@dimen/dp_5"
                 android:id="@+id/image"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginRight="@dimen/dp_20"
                 android:layout_width="@dimen/dp_110"
                 android:layout_height="@dimen/dp_130"
                 android:scaleType="centerCrop"/>
@@ -41,15 +43,17 @@
 
 
             <TextView
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/image"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/image"
+                app:layout_constraintRight_toRightOf="@id/image"
                 android:id="@+id/name"
                 android:text="@string/app_name"
                 android:textStyle="bold"
                 android:textSize="20sp"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_gravity="center"
-                android:textColor="@color/black"
+                android:textColor="@android:color/darker_gray"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />

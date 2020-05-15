@@ -41,6 +41,7 @@
                   android:theme="@style/TransTheme"/>
         <activity android:name="com.key.magicbook.activity.options.OptionsPickViewActivity"
                   android:theme="@style/TransTheme"/>
+        <activity android:name=".activity.history.HistoryActivity" />
     </application>
 
 </manifest>

@@ -2,7 +2,6 @@ package com.key.magicbook.activity.search
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -213,27 +212,46 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
         override fun convert(helper: BaseViewHolder, item: BookSearchResult) {
             helper.setText(R.id.name, item.name)
             helper.setText(R.id.author, item.author)
-            GlideUtils.loadGif(context, helper.getView<ImageView>(R.id.img))
+            GlideUtils.loadGif(context, helper.getView(R.id.img))
             if (item.img == null && !item.isLoad) {
                 try {
                     item.isLoad = true
-                    JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
-                        .subscribe(object : CustomBaseObserver<ResponseBody>() {
-                            override fun next(o: ResponseBody?) {
-                                val parse = Jsoup.parse(o!!.string())
-                                val parseDocument = presenter!!.parseDocument(parse)
-                                item.data = parse
-                                item.img = parseDocument.baseUrl + parseDocument.bookCover
-                                GlideUtils.load(
-                                    context,
-                                    parseDocument.baseUrl + parseDocument.bookCover,
-                                    helper.getView<ImageView>(R.id.img)
-                                )
-                                item.updateTime = parseDocument.lastUpdateTime
-                                helper.setText(R.id.time, item.updateTime)
-                            }
+                    val checkExitBookDetail = presenter!!.getExitBookDetail(
+                        item.name,
+                        ConstantValues.BASE_URL,
+                        item.bookUrl
+                    )
+                    if(checkExitBookDetail.isNotEmpty()){
+                        item.img = checkExitBookDetail[0].bookCover
+                        item.updateTime = checkExitBookDetail[0].bookIntro
+                        GlideUtils.load(
+                            context,
+                            checkExitBookDetail[0].bookCover,
+                            helper.getView(R.id.img)
+                        )
+                        helper.setText(R.id.time, item.updateTime)
+                    }else{
+                        JsoupUtils.getFreeDocumentForBody(ConstantValues.BASE_URL + item.bookUrl)
+                            .subscribe(object : CustomBaseObserver<ResponseBody>() {
+                                override fun next(o: ResponseBody?) {
+                                    val parse = Jsoup.parse(o!!.string())
+                                    val parseDocument = presenter!!.parseDocument(parse)
+                                    parseDocument.bookUrl = item.bookUrl
+                                    item.data = parse
+                                    item.img = parseDocument.bookCover
+                                    GlideUtils.load(
+                                        context,
+                                        parseDocument.bookCover,
+                                        helper.getView(R.id.img)
+                                    )
+                                    item.updateTime = parseDocument.bookIntro
+                                    helper.setText(R.id.time, item.updateTime)
+                                    parseDocument.isLooked = "false"
+                                    parseDocument.save()
+                                }
 
-                        })
+                            })
+                    }
                 } catch (e: Exception) {
                     item.isLoad = false
                 }
@@ -242,7 +260,7 @@ class SearchActivity : MineBaseActivity<SearchPresenter>() {
                 GlideUtils.load(
                     context,
                     item.img,
-                    helper.getView<ImageView>(R.id.img)
+                    helper.getView(R.id.img)
                 )
                 helper.setText(R.id.time, item.updateTime)
             }

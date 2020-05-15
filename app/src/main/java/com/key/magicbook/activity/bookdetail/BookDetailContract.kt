@@ -14,11 +14,13 @@ class BookDetailContract : BaseContract() {
     fun parseBookDetail(document: Document,url :String): BookDetail
     fun getChapters(bookDetail: BookDetail):Observable<String>
     fun getBookContent(bookUrl :String,chapterPosition :Int):Observable<Element>
+    fun loadBookReadChapters(bookDetail: BookDetail,userName :String)
   }
 
   interface OnPresenter{
     fun parseBookDetail(document: Document,url :String): BookDetail
     fun getChapters(bookDetail: BookDetail)
     fun getBookContent(bookUrl :String,chapterPosition :Int)
+    fun loadBookReadChapters(bookDetail: BookDetail,userName :String)
   }
 }

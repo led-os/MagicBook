@@ -12,6 +12,7 @@ import me.jessyan.autosize.internal.CustomAdapt
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.litepal.LitePal
 
 /**
  * created by key  on 2019/10/10
@@ -147,4 +148,6 @@ abstract class BaseFragment : Fragment(), CustomAdapt {
     abstract fun setLayoutId(): Int
     abstract fun initView()
     protected open fun onVisibleChanged(isVisible: Boolean) {}
+
+
 }

@@ -37,7 +37,10 @@ public  abstract class CustomBaseObserver<T> extends BaseObserver<T>{
 
     @Override
     public void doOnNext(T o) {
-           next(o);
+        if(iLoadingView != null){
+            iLoadingView.hideLoadingView();
+        }
+        next(o);
     }
 
     @Override

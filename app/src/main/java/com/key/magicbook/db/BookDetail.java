@@ -25,7 +25,15 @@ public class BookDetail extends LitePalSupport {
     private String isLike;
     private String isBookCase;
     private String baseUrl;
+    private String isLooked;
 
+    public String getIsLooked() {
+        return isLooked;
+    }
+
+    public void setIsLooked(String isLooked) {
+        this.isLooked = isLooked;
+    }
 
     public String getBaseUrl() {
         return baseUrl;

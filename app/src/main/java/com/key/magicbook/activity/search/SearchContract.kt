@@ -15,11 +15,14 @@ class SearchContract : BaseContract() {
     fun search(keyword: String): Observable<ArrayList<BookSearchResult>>
     fun getLocalSearch() :List<BookSearchHistory>
     fun parseDocument(document :Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
   }
 
   interface OnPresenter{
     fun search(keyword :String)
     fun getLocalSearchHistory()
     fun parseDocument(documented: Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
+
   }
 }

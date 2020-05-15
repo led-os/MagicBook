@@ -50,4 +50,14 @@ class SearchPresenter : BasePresenter<Activity>() ,SearchContract.OnPresenter{
     override fun parseDocument(documented: Document):BookDetail {
        return  searchModel!!.parseDocument(documented)
     }
+
+    override fun getExitBookDetail(
+        bookName: String,
+        baseUrl: String,
+        bookUrl: String
+    ): List<BookDetail> {
+        return searchModel!!.getExitBookDetail(bookName, baseUrl, bookUrl)
+    }
+
+
 }

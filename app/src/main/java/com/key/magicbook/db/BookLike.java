@@ -20,11 +20,36 @@ public class BookLike  extends LitePalSupport {
     private String bookUrl;
     private String bookType;
     private String bookOnlyTag;
-    private List<String> chapterUrls;
-    private List<String> chapterNames;
     private String isLike;
     private String isBookCase;
+    private String isLooked;
+    private String userName;
+    private String baseUrl;
 
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getIsLooked() {
+        return isLooked;
+    }
+
+    public void setIsLooked(String isLooked) {
+        this.isLooked = isLooked;
+    }
 
     public String getIsBookCase() {
         return isBookCase;
@@ -122,21 +147,5 @@ public class BookLike  extends LitePalSupport {
 
     public void setBookType(String bookType) {
         this.bookType = bookType;
-    }
-
-    public List<String> getChapterUrls() {
-        return chapterUrls;
-    }
-
-    public void setChapterUrls(List<String> chapterUrls) {
-        this.chapterUrls = chapterUrls;
-    }
-
-    public List<String> getChapterNames() {
-        return chapterNames;
-    }
-
-    public void setChapterNames(List<String> chapterNames) {
-        this.chapterNames = chapterNames;
     }
 }

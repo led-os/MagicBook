@@ -1,7 +1,8 @@
-package com.key.magicbook.activity.like
+package com.key.magicbook.activity.history
 
 import android.content.ContentValues
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -12,6 +13,7 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
 import com.key.magicbook.activity.read.ReadActivity
+import com.key.magicbook.activity.set.HistoryPresenter
 import com.key.magicbook.activity.set.LikePresenter
 import com.key.magicbook.base.ConstantValues
 import com.key.magicbook.base.CustomBaseObserver
@@ -32,24 +34,24 @@ import org.litepal.LitePal
 /**
  * created by key  on 2020/3/25
  */
-class LikeActivity : MineBaseActivity<LikePresenter>() {
+class HistoryActivity : MineBaseActivity<HistoryPresenter>() {
     private var adapter:Adapter ?= null
     private var likes :ArrayList<BookDetail> ?= null
-    override fun createPresenter(): LikePresenter {
-        return LikePresenter()
+    override fun createPresenter(): HistoryPresenter {
+        return HistoryPresenter()
     }
 
     override fun initView() {
         setTitle(toolbar)
         initToolbar(toolbar)
 
+        toolbar.title = "阅读历史"
 
         list.layoutManager = LinearLayoutManager(this)
         adapter = Adapter()
         list.adapter = adapter
 
         adapter!!.setEmptyView(UiUtils.inflate(this,R.layout.no_data))
-
         adapter!!.setOnItemClickListener { adapter,
                                            view, position ->
             val busMessage = BusMessage<BookDetail>()
@@ -58,7 +60,7 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
             busMessage.target = ReadActivity::class.java.simpleName
             busMessage.specialMessage = "0"
             sendBusMessage(busMessage = busMessage)
-            startActivity(Intent(this@LikeActivity, ReadActivity::class.java))
+            startActivity(Intent(this@HistoryActivity, ReadActivity::class.java))
 
         }
 
@@ -71,9 +73,6 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
         likes = ArrayList();
         val findAll = LitePal
             .where("userName = ?",getUserInfo().userName).find(BookLike::class.java)
-
-
-
 
         for(value in findAll){
             if(value.isLooked == "true" && value.bookOnlyTag != null && value.bookName != null){
@@ -89,7 +88,6 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
         }
 
 
-
         adapter!!.setNewData(likes)
     }
     override fun setLayoutId(): Int {
@@ -100,6 +98,7 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
     inner class Adapter :BaseQuickAdapter<BookDetail,LikeViewHolder>(R.layout.item_like){
 
         override fun convert(helper: LikeViewHolder, item: BookDetail) {
+
             helper.setText(R.id.name, item.bookName)
             helper.setText(R.id.author, item.bookAuthor)
             GlideUtils.loadGif(context, helper.getView(R.id.img))
@@ -109,10 +108,9 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
                 helper.getView(R.id.img)
             )
             helper.setText(R.id.time, item.lastChapter + "\n" +item.lastUpdateTime)
-            helper.setText(R.id.slide,"取消收藏")
             helper.getView<TextView>(R.id.slide).setOnClickListener {
                 val contentValues = ContentValues()
-                contentValues.put("isLike","false")
+                contentValues.put("isLooked","false")
                 LitePal.updateAll(BookLike::class.java,contentValues,
                     "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
                     item.bookName, item.baseUrl, item.bookUrl,getUserInfo().userName
@@ -130,34 +128,33 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
              contentView = view.findViewById(R.id.content)
              slide = view.findViewById(R.id.slide)
          }
-         override fun getSwipeWidth(): Float {
-             return if(slide != null){
-                 slide!!.width.toFloat()
-             }else{
-                 0f
-             }
+        override fun getSwipeWidth(): Float {
+            return if(slide != null){
+                slide!!.width.toFloat()
+            }else{
+                0f
+            }
 
-         }
+        }
 
-         override fun onScreenView(): View? {
-             return if(contentView != null){
-                 contentView!!
-             }else{
-                 null
-             }
+        override fun onScreenView(): View? {
+            return if(contentView != null){
+                contentView!!
+            }else{
+                null
+            }
 
-         }
+        }
 
-         override fun needSwipeLayout(): View ?{
-             return if(contentView != null){
-                 contentView!!
-             }else{
-                 null
-             }
-         }
+        override fun needSwipeLayout(): View ?{
+            return if(contentView != null){
+                contentView!!
+            }else{
+                null
+            }
+        }
 
-
-     }
+    }
 
     private fun getBookDetail(bookLike: BookLike):BookDetail{
         val find = LitePal.where(

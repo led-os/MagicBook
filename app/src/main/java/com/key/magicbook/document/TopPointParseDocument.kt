@@ -11,23 +11,17 @@ import org.jsoup.nodes.Document
 class TopPointParseDocument : ParseDocument() {
     override fun parseBookDetails(document: Document): List<BookDetail> {
         val new = document!!.select("#newscontent > div.r > ul > li")
-        val bookDetails :ArrayList<BookDetail> = ArrayList<BookDetail>()
+        var bookDetails :ArrayList<BookDetail> = ArrayList()
         for (value in new) {
             val bookName = value.select("span.s2 > a").text()
             val attr = value.select("span.s2 > a")
                 .attr("href")
             val authorName = value.select("span.s5").text()
-            val lastUpdateTime = value.select("#info > p:nth-child(4)").text()
-
-
             val bookDetail = BookDetail()
             bookDetail.bookName = bookName
-            bookDetail.bookCover = ""
             bookDetail.bookUrl = attr
             bookDetail.bookAuthor = authorName
-            bookDetail.lastUpdateTime = lastUpdateTime
             bookDetail.bookType = ""
-            bookDetail.baseUrl = "https://www.dingdiann.com/"
             if (!TextUtils.isEmpty(bookName)) {
                 bookDetails!!.add(bookDetail)
             }
@@ -67,16 +61,22 @@ class TopPointParseDocument : ParseDocument() {
         val lastChapter = document.select("#info > p:nth-child(5) > a")
         val intro = document.select("#intro")
         val select = document.select("#list > dl > dd")
+        val bookCover = img.attr("src")
 
         val bookDetail = BookDetail()
-        bookDetail.bookCover = ConstantValues.BASE_URL + img.attr("src")
+        bookDetail.baseUrl = "https://www.dingdiann.com/"
+        if(bookCover.contains("http")){
+            bookDetail.bookCover = bookCover
+        }else{
+            bookDetail.bookCover = bookDetail.baseUrl + bookCover
+        }
         bookDetail.bookName = name.text()
         bookDetail.bookAuthor = author.text()
         bookDetail.lastUpdateTime = update.text()
         bookDetail.lastChapter = lastChapter.text()
         bookDetail.bookIntro = intro.text()
         bookDetail.chapterElements = select
-        bookDetail.baseUrl = "https://www.dingdiann.com/"
+
         return bookDetail
     }
 

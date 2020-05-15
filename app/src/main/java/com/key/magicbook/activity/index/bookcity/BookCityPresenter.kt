@@ -62,5 +62,16 @@ class BookCityPresenter  : BasePresenter<Fragment>() ,BookCityContract.OnPresent
         return model!!.loadTypeEight(document)
     }
 
+    override fun parseDocument(documented: Document): BookDetail {
+        return model!!.parseDocument(documented)
+    }
+
+    override fun getExitBookDetail(
+        bookName: String,
+        baseUrl: String,
+        bookUrl: String
+    ): List<BookDetail> {
+        return model!!.getExitBookDetail(bookName, baseUrl, bookUrl)    }
+
 
 }

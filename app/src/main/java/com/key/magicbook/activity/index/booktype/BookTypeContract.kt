@@ -13,11 +13,18 @@ class BookTypeContract : BaseContract() {
     fun getTypeDocument(url :String) :Observable<Document>
     fun parseHeaders(document: Document):List<BookDetail>
     fun parseBookDetails(document :Document):List<BookDetail>
+    fun parseDocument(documented: Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
   }
 
   interface OnPresenter{
     fun getTypeDocument(url :String)
     fun parseHeaders(document :Document):List<BookDetail>
     fun parseBookDetails(document :Document):List<BookDetail>
+    fun parseDocument(documented: Document) :BookDetail
+    fun getExitBookDetail(bookName: String, baseUrl:String, bookUrl :String):List<BookDetail>
+
+
+
   }
 }
