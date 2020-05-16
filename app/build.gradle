@@ -46,21 +46,16 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation jarjar.repackage {
-        files('libs/htmlunit-2.14-OSGi.jar')
-        classRename 'org.apache.http.**', 'my.org.apache.http.@1'
-        classRename 'org.w3c.dom.**', 'my.org.w3c.dom.@1'
-        classRename 'com.gargoylesoftware.css.dom.**','my.com.gargoylesoftware.css.dom.@1'
-    }
     implementation 'com.wx.goodview:goodview:1.0.0'
-    implementation  'com.umeng.umsdk:analytics:8.0.0'
-    implementation  'com.umeng.umsdk:common:2.0.0'
-    implementation "com.andkulikov:transitionseverywhere:1.6.5"
+    implementation 'com.umeng.umsdk:analytics:8.0.0'
+    implementation 'com.umeng.umsdk:common:2.0.0'
+    implementation 'com.andkulikov:transitionseverywhere:1.6.5'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'com.contrarywind:Android-PickerView:4.1.7'
-
+    implementation 'com.just.agentweb:agentweb:4.0.2'
     implementation project(path: ':KeyLibrary')
     implementation project(path: ':FlycoTabLayout')
     implementation project(path: ':library')
     implementation project(path: ':pileLibrary')
+    compile files('libs/Msc.jar')
 }

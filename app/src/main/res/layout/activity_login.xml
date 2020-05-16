@@ -3,7 +3,28 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <ImageView
+        android:id="@+id/bg_1"
+        android:src="@mipmap/bg_1"
+        android:scaleType="fitXY"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/bg_2"
+        android:src="@mipmap/bg_2"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="fitXY"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/card_login"
         android:layout_marginLeft="@dimen/dp_26"
@@ -11,6 +32,9 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:background="@color/white_alpha"
         android:layout_height="wrap_content"
         app:cardElevation="8dp">
 
@@ -20,16 +44,21 @@
             android:paddingBottom="@dimen/dp_26"
             android:paddingLeft="@dimen/dp_13"
             android:paddingRight="@dimen/dp_13"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
 
 
             <LinearLayout
+
                 android:id="@+id/login_root"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:orientation="vertical">
 
 
@@ -52,6 +81,8 @@
                 android:visibility="gone"
                 android:id="@+id/register_root"
                 app:layout_constraintTop_toTopOf="parent"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -110,6 +141,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:id="@+id/login"
         android:text="登录"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:background="@drawable/shape_blue_bg_alpha"
         android:layout_marginBottom="@dimen/dp_50"
         android:textSize="16sp"
@@ -124,6 +157,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:id="@+id/register"
         android:text="注册"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:background="@drawable/shape_blue_bg_alpha"
         android:layout_marginBottom="@dimen/dp_50"
         android:textSize="16sp"

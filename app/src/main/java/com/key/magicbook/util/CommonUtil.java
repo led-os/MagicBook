@@ -12,6 +12,10 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2016/1/17.
@@ -212,5 +216,19 @@ public class CommonUtil {
             }
             Log.e(tag, "truncation out -- \n" + msg);
         }
+    }
+    public static String filterSpecialSymbol(String cacheName) {
+        return  cacheName.replace("[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……& amp;*（）——+|{}【】‘；：”“’。，、？|-]", "");
+    }
+
+
+    public  static ArrayList<Integer> getRandomSet(int max,int count){
+        Set<Integer> set = new LinkedHashSet<Integer>();
+        while (set.size() < count) {
+            int num = (int) (Math.random() * max);
+            set.add(num);
+        }
+        ArrayList<Integer> numRandom = new ArrayList<Integer>(set);
+        return numRandom;
     }
 }

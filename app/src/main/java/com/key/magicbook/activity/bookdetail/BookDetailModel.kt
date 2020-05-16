@@ -45,6 +45,8 @@ class BookDetailModel :BookDetailContract.OnModel {
             LitePal.updateAll(BookDetail::class.java,lastUpdateChapterTime,
                 "bookName = ? and baseUrl = ? and bookUrl = ?",
                 parseBookDetail.bookName, parseBookDetail.baseUrl, parseBookDetail.bookUrl)
+        }else{
+            parseBookDetail.save()
         }
         return parseBookDetail
     }
@@ -68,73 +70,19 @@ class BookDetailModel :BookDetailContract.OnModel {
        return JsoupUtils.connectFreeUrl(bookUrl, "#content")
     }
 
-    override fun loadBookReadChapters(book: BookDetail,userName :String) {
-        val find = LitePal.where(
-            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ? ",
-            book.bookName ,ConstantValues.BASE_URL, book.bookUrl,userName).find(BookReadChapter::class.java)
-        val b = book.chapterNames.size == book.chapterUrls.size
-        if(b && find.size == 0 ){
-            for((index,value) in book.chapterNames.withIndex()){
-                val bookReadChapter = BookReadChapter()
-                bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
-                bookReadChapter.chapterName =
-                    filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
-                bookReadChapter.chapterUrl = book.chapterUrls[index]
-                bookReadChapter.bookChapterContent = ""
-                bookReadChapter.begin = 0
-                bookReadChapter.chapterNum  = book.chapterNames.size - index
-                bookReadChapter.userName = userName
-                bookReadChapter.isLook = "false"
-                bookReadChapter.isCache = "false"
-                bookReadChapter.bookName = book.bookName
-                bookReadChapter.baseUrl = ConstantValues.BASE_URL
-                bookReadChapter.bookUrl = book.bookUrl
-                bookReadChapter.save()
-            }
-        }else if(b && find.size < book.chapterNames.size){
-            val i =  book.chapterNames.size -find.size
-            for(index in 0 until i){
-                val bookReadChapter = BookReadChapter()
-                bookReadChapter.bookChapterOnlyTag = book.bookName + book.bookAuthor + book.bookUrl
-                val value = book.chapterNames[index]
-                bookReadChapter.chapterName =
-                    filterSpecialSymbol(getChapterName(book.chapterNames.size - index,value))
-                bookReadChapter.chapterUrl = book.chapterUrls[index]
-                bookReadChapter.bookChapterContent = ""
-                bookReadChapter.begin = 0
-                bookReadChapter.chapterNum  = book.chapterNames.size - index
-                bookReadChapter.userName = userName
-                bookReadChapter.isLook = "false"
-                bookReadChapter.isCache = "false"
-                bookReadChapter.baseUrl = ConstantValues.BASE_URL
-                bookReadChapter.bookName = book.bookName
-                bookReadChapter.bookUrl = book.bookUrl
-                bookReadChapter.save()
-            }
-        }
+    override fun loadBookReadChapters(book: BookDetail,userName :String):Observable<Element>? {
         val find1 = LitePal.where(
-            "bookChapterOnlyTag = ?",
-            book.bookName + book.bookAuthor + book.bookUrl
+            "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ?",
+            book.bookName ,ConstantValues.BASE_URL , book.bookUrl, userName
         ).find(BookReadChapter::class.java)
         if(find1.size > 0){
             val bookReadChapter = find1[find1.size - 1]
             if(bookReadChapter.bookChapterContent.isEmpty()){
-                JsoupUtils.connectFreeUrl(bookReadChapter.chapterUrl, "#content")
-                    .subscribe(object :CustomBaseObserver<Element>(){
-                        override fun next(o: Element?) {
-                            val contentValues = ContentValues()
-                            contentValues.put("bookChapterContent","\n\u3000第"+ (find1.size - 1).toString()
-                                    +"章\n\u3000" + o!!.text())
-                            LitePal.updateAll(BookReadChapter::class.java,
-                                contentValues,
-                                "bookChapterOnlyTag = ? and chapterUrl = ?",
-                                book.bookName + book.bookAuthor + book.bookUrl,
-                                bookReadChapter.chapterUrl)
-                        }
-                    })
-           }
-        }
+               return  JsoupUtils.connectFreeUrl(bookReadChapter.chapterUrl, "#content")
+            }
+         }
 
+        return null
     }
 
     private fun filterSpecialSymbol(cacheName :String) :String{

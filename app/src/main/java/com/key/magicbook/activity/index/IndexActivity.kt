@@ -1,5 +1,9 @@
 package com.key.magicbook.activity.index
 
+import android.animation.Animator
+import android.animation.ObjectAnimator
+import android.view.View
+import android.view.animation.DecelerateInterpolator
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -7,11 +11,12 @@ import androidx.viewpager.widget.ViewPager
 import com.flyco.tablayout.listener.CustomTabEntity
 import com.flyco.tablayout.listener.OnTabSelectListener
 import com.key.magicbook.R
+import com.key.magicbook.activity.index.bookrack.BookRackFragment
 import com.key.magicbook.activity.index.booksecond.SecondFragment
 import com.key.magicbook.base.MineBaseActivity
 import com.key.magicbook.bean.TabEntity
 import kotlinx.android.synthetic.main.activity_index.*
-import java.util.ArrayList
+import java.util.*
 
 /**
  * created by key  on 2020/2/27
@@ -32,7 +37,6 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
         R.mipmap.index_book_city_gray,
         R.mipmap.index_book_mine_gray
     )
-
 
     //mFragments.add(BookVideoFragment())
     override fun initView() {
@@ -117,5 +121,67 @@ class IndexActivity : MineBaseActivity<IndexPresenter>() {
         override fun getCount(): Int {
             return mFragments.size
         }
+    }
+
+    /**
+     * 隐藏底部导航栏
+     */
+    fun hide() {
+        val va: ObjectAnimator = ObjectAnimator.ofFloat(
+            tabLayout_root,
+            "translationY",
+            0f,
+            resources.getDimension(R.dimen.bottom_tab)
+        )
+        va.interpolator = DecelerateInterpolator()
+        va.duration = 500
+        va.addListener(object :Animator.AnimatorListener{
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                tabLayout_root.visibility = View.GONE
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        va.start()
+    }
+
+    /**
+     * 显示底部导航栏
+     */
+    fun show() {
+        val va: ObjectAnimator = ObjectAnimator.ofFloat(
+            tabLayout_root,
+            "translationY",
+            resources.getDimension(R.dimen.bottom_tab),
+            0f
+        )
+        va.interpolator = DecelerateInterpolator()
+        va.duration = 500
+        va.addListener(object :Animator.AnimatorListener{
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                tabLayout_root.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        va.start()
     }
 }

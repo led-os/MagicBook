@@ -19,7 +19,7 @@ class ReadContract : BaseContract() {
 
   interface OnPresenter{
 
-    fun getChapter(bookDetail : BookDetail)
+    fun getChapter(bookDetail : BookDetail,userName :String)
     fun parseBookDetail(document: Document, url :String): BookDetail
     fun getBookContent(bookUrl :String,chapterPosition :Int)
   }

@@ -61,7 +61,6 @@ class HistoryActivity : MineBaseActivity<HistoryPresenter>() {
             busMessage.specialMessage = "0"
             sendBusMessage(busMessage = busMessage)
             startActivity(Intent(this@HistoryActivity, ReadActivity::class.java))
-
         }
 
         reloadData()
@@ -74,12 +73,15 @@ class HistoryActivity : MineBaseActivity<HistoryPresenter>() {
         val findAll = LitePal
             .where("userName = ?",getUserInfo().userName).find(BookLike::class.java)
 
+        Log.e("pile","history :" + findAll.size)
         for(value in findAll){
-            if(value.isLooked == "true" && value.bookOnlyTag != null && value.bookName != null){
+            Log.e("pile","history isLiked:" + value.isLooked + "baseUrl :" + value.baseUrl)
+            if(value.isLooked == "true" && value.bookName != null){
                 if(value.bookName.isNotEmpty()){
                     val bookDetail = getBookDetail(value)
                     if(bookDetail.bookName !=null){
                         if(bookDetail.bookName.isNotEmpty()){
+                            Log.e("pile","history :" + bookDetail.bookName)
                             likes!!.add(bookDetail)
                         }
                     }
@@ -158,7 +160,7 @@ class HistoryActivity : MineBaseActivity<HistoryPresenter>() {
 
     private fun getBookDetail(bookLike: BookLike):BookDetail{
         val find = LitePal.where(
-            "bookName = ? and baseUrl = ? and bookUrl = ?",
+            "bookName = ? and baseUrl = ? and bookUrl = ? ",
             bookLike.bookName, bookLike.baseUrl, bookLike.bookUrl
         ).find(BookDetail::class.java)
         return if(find.size > 0){

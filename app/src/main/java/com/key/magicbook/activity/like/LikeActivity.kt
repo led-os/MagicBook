@@ -72,11 +72,8 @@ class LikeActivity : MineBaseActivity<LikePresenter>() {
         val findAll = LitePal
             .where("userName = ?",getUserInfo().userName).find(BookLike::class.java)
 
-
-
-
         for(value in findAll){
-            if(value.isLooked == "true" && value.bookOnlyTag != null && value.bookName != null){
+            if(value.isLike == "true"  && value.bookName != null){
                 if(value.bookName.isNotEmpty()){
                     val bookDetail = getBookDetail(value)
                     if(bookDetail.bookName !=null){

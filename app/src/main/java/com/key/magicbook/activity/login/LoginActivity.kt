@@ -1,6 +1,7 @@
 package com.key.magicbook.activity.login
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.ContentValues
 import android.content.Intent
@@ -45,6 +46,10 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
         changeBaseWidth = (UiUtils.getScreenWidth(this@LoginActivity) - UiUtils.dip2px(54f)) / 4
         login.layoutParams.width = changeBaseWidth * 3
         register.layoutParams.width = changeBaseWidth
+        register_account.setInputTypeNum()
+        register_password.setInputTypePass()
+        register_confirm_password.setInputTypePass()
+        register_name.setInputTypeChineseAndEnglish(true)
         initRegister()
         register.setOnClickListener {
             hintKeyBoard()
@@ -101,6 +106,7 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
             }
         }
 
+        changeBg()
     }
 
     override fun setLayoutId(): Int {
@@ -192,38 +198,40 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
     }
 
     private fun initRegister() {
-        register_account.setInputTypeNum()
-        register_password.setInputTypePass()
-        register_confirm_password.setInputTypePass()
         register_account.setMineFocusChangeListener {
-            if (lastAccount != register_account.editTextString) {
-                val empty: Boolean = register_account.editTextString.isEmpty()
-                if (!empty) {
-                    if (isRepetitionAccount(register_account.editTextString)) {
-                        hintKeyBoard()
-                        DialogUtil.getWarm(
-                            this@LoginActivity, "此账号已经注册过了"
-                        ) { }.show()
+            if(!it){
+                if (lastAccount != register_account.editTextString) {
+                    val empty: Boolean = register_account.editTextString.isEmpty()
+                    if (!empty) {
+                        if (isRepetitionAccount(register_account.editTextString)) {
+                            hintKeyBoard()
+                            DialogUtil.getWarm(
+                                this@LoginActivity, "此账号已经注册过了"
+                            ) { }.show()
+                        }
                     }
+                    lastAccount = register_account.editTextString
                 }
-                lastAccount = register_account.editTextString
             }
         }
 
 
         register_name.setMineFocusChangeListener {
-            if (lastName != register_name.editTextString) {
-                val empty: Boolean = register_name.editTextString.isEmpty()
-                if (!empty) {
-                    if (isRepetitionAccount(register_name.editTextString)) {
-                        hintKeyBoard()
-                        DialogUtil.getWarm(
-                            this@LoginActivity, "此昵称已被其他人使用"
-                        ) { }.show()
+            if(!it){
+                if (lastName != register_name.editTextString) {
+                    val empty: Boolean = register_name.editTextString.isEmpty()
+                    if (!empty) {
+                        if (isRepetitionAccount(register_name.editTextString)) {
+                            hintKeyBoard()
+                            DialogUtil.getWarm(
+                                this@LoginActivity, "此昵称已被其他人使用"
+                            ) { }.show()
+                        }
                     }
+                    lastName = register_name.editTextString
                 }
-                lastName = register_name.editTextString
             }
+
         }
     }
 
@@ -258,40 +266,40 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
             ToastUtils.showToast("请输入正确的账号")
             check = true
         } else {
-            if (isRepetitionAccount(register_account.getEditTextString())) {
+            if (isRepetitionAccount(register_account.editTextString)) {
                 ToastUtils.showToast("此账号已经注册过了")
                 check = true
             }
         }
-        if (register_password.getEditTextString().isEmpty() && !check) {
+        if (register_password.editTextString.isEmpty() && !check) {
             ToastUtils.showToast("请输入密码")
             check = true
         }
 
-        if (register_confirm_password.getEditTextString().isEmpty() && !check) {
+        if (register_confirm_password.editTextString.isEmpty() && !check) {
             ToastUtils.showToast("请输入确认密码")
             check = true
         }
-        if (register_confirm_password.getEditTextString() != register_password.getEditTextString() && !check) {
+        if (register_confirm_password.editTextString != register_password.getEditTextString() && !check) {
             ToastUtils.showToast("两次密码输入不一致")
             check = true
         }
 
-        if (register_name.getEditTextString().isEmpty() && !check) {
+        if (register_name.editTextString.isEmpty() && !check) {
             ToastUtils.showToast("请输入昵称")
             check = true
         } else {
-            if (isRepetitionName(register_name.getEditTextString())) {
+            if (isRepetitionName(register_name.editTextString)) {
                 ToastUtils.showToast("此昵称已被其他人使用")
                 check = true
             }
         }
         if (!check) {
             val userInfo = UserInfo()
-            userInfo.account = register_account.getEditTextString()
-            userInfo.password = Md5Crypt.apr1Crypt(register_password.getEditTextString(), "key")
-            userInfo.userName = register_name.getEditTextString()
-            userInfo.realPassword = register_password.getEditTextString()
+            userInfo.account = register_account.editTextString
+            userInfo.password = Md5Crypt.apr1Crypt(register_password.editTextString, "key")
+            userInfo.userName = register_name.editTextString
+            userInfo.realPassword = register_password.editTextString
             userInfo.save()
             ToastUtils.showToast("注册成功")
 
@@ -355,92 +363,77 @@ class LoginActivity : MineBaseActivity<LoginPresenter>(), KeyboardHeightObserver
             override fun onAnimationRepeat(animation: Animator) {}
         })
     }
-//
-//    ObjectAnimator animator1 = ObjectAnimator.ofFloat(binding.loginBgImage1, "alpha", 1.0f, 0f);
-//    ObjectAnimator animator2 = ObjectAnimator.ofFloat(binding.loginBgImage2, "alpha", 0f, 1.0f);
-//    ObjectAnimator animatorScale1 = ObjectAnimator.ofFloat(binding.loginBgImage1, "scaleX", 1.0f, 1.3f);
-//    ObjectAnimator animatorScale2 = ObjectAnimator.ofFloat(binding.loginBgImage1, "scaleY", 1.0f, 1.3f);
-//    AnimatorSet  animatorSet1 = new AnimatorSet();
-//    animatorSet1.setDuration(5000);
-//    animatorSet1.play(animator1).with(animator2).with(animatorScale1).with(animatorScale2);
-//    animatorSet1.addListener(new Animator.AnimatorListener() {
-//        @Override
-//        public void onAnimationStart(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationEnd(Animator animation) {
-//            // 放大的View复位
-//            binding.loginBgImage1.setScaleX(1.0f);
-//            binding.loginBgImage1.setScaleY(1.0f);
-//        }
-//
-//        @Override
-//        public void onAnimationCancel(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationRepeat(Animator animation) {
-//
-//        }
-//    });
-//    ObjectAnimator animator3 = ObjectAnimator.ofFloat(binding.loginBgImage2, "alpha", 1.0f, 0f);
-//    ObjectAnimator animator4 = ObjectAnimator.ofFloat(binding.loginBgImage1, "alpha", 0f, 1.0f);
-//    ObjectAnimator animatorScale3 = ObjectAnimator.ofFloat(binding.loginBgImage2, "scaleX", 1.0f, 1.3f);
-//    ObjectAnimator animatorScale4 = ObjectAnimator.ofFloat(binding.loginBgImage2, "scaleY", 1.0f, 1.3f);
-//    AnimatorSet animatorSet2 = new AnimatorSet();
-//    animatorSet2.setDuration(5000);
-//    animatorSet2.play(animator3).with(animator4).with(animatorScale3).with(animatorScale4);
-//    animatorSet2.addListener(new Animator.AnimatorListener() {
-//        @Override
-//        public void onAnimationStart(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationEnd(Animator animation) {
-//            // 放大的View复位
-//            binding.loginBgImage2.setScaleX(1.0f);
-//            binding.loginBgImage2.setScaleY(1.0f);
-//        }
-//
-//        @Override
-//        public void onAnimationCancel(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationRepeat(Animator animation) {
-//
-//        }
-//    });
-//
-//    animatorSet = new AnimatorSet();
-//    animatorSet.playSequentially(animatorSet1, animatorSet2);
-//    animatorSet.addListener(new Animator.AnimatorListener() {
-//        @Override
-//        public void onAnimationStart(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationEnd(Animator animation) {
-//            // 循环播放
-//            animation.start();
-//        }
-//
-//        @Override
-//        public void onAnimationCancel(Animator animation) {
-//
-//        }
-//
-//        @Override
-//        public void onAnimationRepeat(Animator animation) {
-//
-//        }
-//    });
-//    animatorSet.start();
+
+    private fun changeBg() {
+        val animator1 = ObjectAnimator.ofFloat(bg_1, "alpha", 1.0f, 0f);
+        val animator2 = ObjectAnimator.ofFloat(bg_2, "alpha", 0f, 1.0f);
+        val animatorScale1 = ObjectAnimator.ofFloat(bg_1, "scaleX", 1.0f, 1.3f);
+        val animatorScale2 = ObjectAnimator.ofFloat(bg_1, "scaleY", 1.0f, 1.3f);
+        val animatorSet1 = AnimatorSet()
+        animatorSet1.duration = 5000;
+        animatorSet1.play(animator1).with(animator2).with(animatorScale1).with(animatorScale2)
+        animatorSet1.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                // 放大的View复位
+                bg_1.scaleX = 1.0f;
+                bg_1.scaleY = 1.0f;
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        val animator3 = ObjectAnimator.ofFloat(bg_2, "alpha", 1.0f, 0f);
+        val animator4 = ObjectAnimator.ofFloat(bg_1, "alpha", 0f, 1.0f);
+        val animatorScale3 = ObjectAnimator.ofFloat(bg_2, "scaleX", 1.0f, 1.3f);
+        val animatorScale4 = ObjectAnimator.ofFloat(bg_2, "scaleY", 1.0f, 1.3f);
+        val animatorSet2 = AnimatorSet();
+        animatorSet2.duration = 5000;
+        animatorSet2.play(animator3).with(animator4).with(animatorScale3).with(animatorScale4);
+
+        animator2.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                //            // 放大的View复位
+                bg_2.scaleX = 1.0f;
+                bg_2.scaleY = 1.0f;
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        val animatorSet = AnimatorSet()
+        animatorSet.playSequentially(animatorSet1, animatorSet2)
+        animatorSet.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {
+            }
+
+            override fun onAnimationEnd(animation: Animator?) {
+                animation!!.start();
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {
+            }
+
+            override fun onAnimationStart(animation: Animator?) {
+            }
+
+        })
+        animatorSet.start()
+    }
+
 
 }

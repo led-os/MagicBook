@@ -314,6 +314,123 @@ class TopPointParseDocument : ParseDocument() {
 
     }
 
+    override fun parseRankUrls(document: Document): ArrayList<HashMap<String,String>> {
+        val arrayList = ArrayList<HashMap<String,String>>()
+
+        val mapOne = HashMap<String, String>()
+        mapOne["name"] = "玄幻奇幻"
+        val selectOne = document.select("#con_o1g_1 > ul > li")
+        mapOne["size"] = selectOne.size.toString()
+        for((index,value) in selectOne.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapOne[name] = value.select("a").text()
+            mapOne[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapOne)
+
+
+
+        val mapTwo = HashMap<String, String>()
+        mapTwo["name"] = "武侠仙侠"
+        val selectTwo = document.select("#con_o2g_1 > ul > li")
+        mapTwo["size"] = selectTwo.size.toString()
+        for((index,value) in selectTwo.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapTwo[name] = value.select("a").text()
+            mapTwo[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapTwo)
+
+
+
+        val mapThree = HashMap<String, String>()
+        mapThree["name"] = "都市言情"
+        val selectThree = document.select("#con_o3g_1 > ul > li")
+        mapThree["size"] = selectThree.size.toString()
+        for((index,value) in selectThree.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapThree[name] = value.select("a").text()
+            mapThree[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapThree)
+
+
+
+        val mapFour = HashMap<String, String>()
+        mapFour["name"] = "历史军事"
+        val selectFour = document.select("#con_o4g_1 > ul > li")
+        mapFour["size"] = selectFour.size.toString()
+        for((index,value) in selectFour.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapFour[name] = value.select("a").text()
+            mapFour[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapFour)
+
+
+
+
+        val mapFive = HashMap<String, String>()
+        mapFive["name"] = "科幻灵异"
+        val selectFive = document.select("#con_o5g_1 > ul > li")
+        mapFive["size"] = selectFive.size.toString()
+        for((index,value) in selectFive.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapFive[name] = value.select("a").text()
+            mapFive[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapFive)
+
+
+
+        val mapSix = HashMap<String, String>()
+        mapSix["name"] = "网游竞技"
+        val selectSix = document.select("#con_o6g_1 > ul > li")
+        mapSix["size"] = selectSix.size.toString()
+        for((index,value) in selectSix.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapSix[name] = value.select("a").text()
+            mapSix[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapSix)
+
+
+
+        val mapSeven = HashMap<String, String>()
+        mapSeven["name"] = "女生频道"
+        val selectSeven = document.select("#con_o7g_1 > ul > li")
+        mapSeven["size"] = selectSeven.size.toString()
+        for((index,value) in selectSeven.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapSeven[name] = value.select("a").text()
+            mapSeven[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapSeven)
+
+
+
+        val mapEight = HashMap<String, String>()
+        mapEight["name"] = "排行总榜"
+        val selectEight = document.select("#con_hng_1 > ul > li")
+        mapEight["size"] = selectEight.size.toString()
+        for((index,value) in selectEight.withIndex()){
+            val name = index.toString() + "name"
+            val url = index.toString() + "url"
+            mapEight[name] = value.select("a").text()
+            mapEight[url] = value.select("a").attr("href")
+        }
+        arrayList.add(mapEight)
+
+        return arrayList
+    }
+
     override fun parseTypeSeven(document: Document?): MutableList<BookDetail> {
         val select2 = document!!.select("#novelslist2 > div")
         val select1 = select2[2].select("ul > li")

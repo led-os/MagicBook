@@ -42,6 +42,8 @@ import java.util.Locale;
 public class PageFactory {
 
     private boolean isEnd = false;
+    private boolean isWorkEnd = true;
+    private Long outSideBegin = 0l;
     private static final String TAG = "PageFactory";
     private static PageFactory pageFactory;
     private Context mContext;
@@ -557,6 +559,8 @@ public class PageFactory {
         bookPath = bookList.getBookpath();
 
         isEnd = bookList.getIsEnd().equals("true");
+        isWorkEnd = bookList.getIsWorkEnd().equals("true");
+        outSideBegin = bookList.getBegin();
         //根据文件名称决定书名
         bookName = FileUtils.getFileName(bookPath);
 
@@ -590,12 +594,17 @@ public class PageFactory {
             }
             if (result) {
                 PageFactory.mStatus = PageFactory.Status.FINISH;
-                if(isEnd){
-                    long allNextLines = getAllNextLines();
-                    currentPage = getPageForBegin(allNextLines);
+                if(isWorkEnd){
+                    if(isEnd){
+                        long allNextLines = getAllNextLines();
+                        currentPage = getPageForBegin(allNextLines);
+                    }else{
+                        currentPage = getPageForBegin(0);
+                    }
                 }else{
-                    currentPage = getPageForBegin(0);
+                    currentPage = getPageForBegin(outSideBegin);
                 }
+
 
                 if (mBookPageWidget != null) {
                     currentPage(true);

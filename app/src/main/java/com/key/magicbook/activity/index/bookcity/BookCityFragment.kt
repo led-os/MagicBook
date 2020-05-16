@@ -207,7 +207,6 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
 
                     override fun onItemClick(view: View?, position: Int) {
                         super.onItemClick(view, position)
-
                         goBookDetail(books[position])
                     }
 
@@ -295,6 +294,9 @@ class BookCityFragment : MineBaseFragment<BookCityPresenter>() {
                     helper.getView(R.id.image)
                 )
             }
+
+
+
         }
     }
 

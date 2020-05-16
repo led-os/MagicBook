@@ -15,6 +15,7 @@ import android.text.method.HideReturnsTransformationMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -90,7 +91,13 @@ public class CustomEditTextView extends ConstraintLayout {
         mEd.setOnTouchListener((v, event) -> {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_UP:
-                    disableShowInput(mEd);
+                    getHandler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            disableShowInput(mEd);
+                        }
+                    },200);
+
                     break;
             }
             return false;
@@ -176,6 +183,7 @@ public class CustomEditTextView extends ConstraintLayout {
             }
         }
         mEd.setOnFocusChangeListener((v, hasFocus) -> {
+
             if (mineFocusChangeListener != null) {
                 mineFocusChangeListener.onFocus(hasFocus);
             }

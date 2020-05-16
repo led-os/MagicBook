@@ -23,11 +23,9 @@ import com.key.magicbook.jsoup.JsoupUtils
 import com.key.magicbook.util.GlideUtils
 import com.zhpan.bannerview.BannerViewPager
 import com.zhpan.bannerview.adapter.OnPageChangeListenerAdapter
-import com.zhpan.bannerview.constants.IndicatorGravity
-import com.zhpan.bannerview.constants.IndicatorSlideMode
 import com.zhpan.bannerview.constants.PageStyle
 import com.zhpan.bannerview.holder.ViewHolder
-import kotlinx.android.synthetic.main.activity_book_detail.*
+import kotlinx.android.synthetic.main.fragment_index_mine_book.*
 import okhttp3.ResponseBody
 import org.greenrobot.eventbus.EventBus
 import org.jsoup.Jsoup

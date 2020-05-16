@@ -35,13 +35,13 @@
         <activity android:name="com.key.magicbook.activity.read.ReadActivity"/>
         <activity android:name="com.key.magicbook.activity.search.SearchActivity"/>
         <activity android:name="com.key.keylibrary.activity.CustomTakePhotoActivity"/>
-        <activity android:name=".activity.ranking.RankingListActivity"/>
         <activity android:name=".activity.bookdetail.BookDetailActivity"/>
         <activity android:name="com.key.keylibrary.base.ShowImageActivity"
                   android:theme="@style/TransTheme"/>
         <activity android:name="com.key.magicbook.activity.options.OptionsPickViewActivity"
                   android:theme="@style/TransTheme"/>
         <activity android:name=".activity.history.HistoryActivity" />
+        <activity android:name=".activity.aboutus.AboutUsActivity" />
     </application>
 
 </manifest>

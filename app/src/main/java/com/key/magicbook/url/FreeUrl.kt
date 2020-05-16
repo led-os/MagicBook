@@ -7,7 +7,7 @@ import com.key.magicbook.base.ConstantValues
  */
 object FreeUrl {
     var FREE_KEY = "free"
-    var FREE_URL = "https://blog.csdn.net/"
+    var FREE_URL = "https://www.dingdiann.com/"
 
     var DINGDIANN_KEY = "dingdainn"
     var DINGDIANN_URL = ConstantValues.BASE_URL

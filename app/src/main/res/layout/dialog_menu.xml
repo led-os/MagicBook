@@ -11,10 +11,10 @@
         app:layout_constraintTop_toTopOf="parent"
         android:id="@+id/menu"
         android:text="目录"
-        android:padding="@dimen/dp_13"
+        android:padding="@dimen/dp_8"
         android:textStyle="bold"
         android:textSize="22sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
@@ -24,7 +24,7 @@
         app:layout_constraintTop_toBottomOf="@id/menu"
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_500"/>
+        android:layout_height="@dimen/dp_550"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

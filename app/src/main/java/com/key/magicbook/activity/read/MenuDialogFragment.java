@@ -32,6 +32,7 @@ public class MenuDialogFragment extends BottomSheetDialogFragment {
     private Adapter adapter;
     private ArrayList<BookReadChapter> chapters;
     private String mBookOnlyTag = "";
+    private OnMenuClickListener onMenuClickListener;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,11 @@ public class MenuDialogFragment extends BottomSheetDialogFragment {
         mList.setAdapter(adapter);
         adapter.setOnItemClickListener((adapter, view1, position) -> {
 
+            if(onMenuClickListener != null){
+                BookReadChapter o = (BookReadChapter) adapter.getData().get(position);
+                onMenuClickListener.onMenuClick(o.getChapterNum());
+                dismiss();
+            }
         });
         adapter.setNewData(bookReadChapters);
     }
@@ -102,5 +108,13 @@ public class MenuDialogFragment extends BottomSheetDialogFragment {
         protected void convert(@NotNull BaseViewHolder baseViewHolder, BookReadChapter bookReadChapter) {
             baseViewHolder.setText(R.id.chapter_name,bookReadChapter.getChapterName());
         }
+    }
+
+    public void setOnMenuClickListener(OnMenuClickListener onMenuClickListener) {
+        this.onMenuClickListener = onMenuClickListener;
+    }
+
+    interface  OnMenuClickListener{
+        public void onMenuClick(int currentPosition);
     }
 }

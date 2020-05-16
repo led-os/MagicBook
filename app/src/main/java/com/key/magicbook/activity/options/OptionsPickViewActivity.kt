@@ -56,7 +56,8 @@ class OptionsPickViewActivity : MineBaseActivity<BasePresenter<Activity>>() {
             sendBusMessage(busMessage)
             finish()
         }
-            .setTitleBgColor(resources.getColor(R.color.blue))
+            .setTitleBgColor(resources.getColor(R.color.read_bg))
+            .setBgColor(resources.getColor(R.color.white))
             .setTitleColor(resources.getColor(R.color.white))
             .setCancelColor(resources.getColor(R.color.white))
             .setSubmitColor(resources.getColor(R.color.white))
@@ -79,7 +80,8 @@ class OptionsPickViewActivity : MineBaseActivity<BasePresenter<Activity>>() {
             sendBusMessage(busMessage)
             finish()
         }
-            .setTitleBgColor(resources.getColor(R.color.blue))
+            .setTitleBgColor(resources.getColor(R.color.read_bg))
+            .setBgColor(resources.getColor(R.color.white))
             .setTitleColor(resources.getColor(R.color.white))
             .setCancelColor(resources.getColor(R.color.white))
             .setSubmitColor(resources.getColor(R.color.white))

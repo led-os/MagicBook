@@ -104,9 +104,10 @@ public class SettingDialogFragment extends BottomSheetDialogFragment implements 
         mSeekBarLight.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                if (progress > 10) {
+                if (progress > 10 && fromUser) {
                     changeBright(false, progress);
                     isSystem = false;
+                    mSystemLight.setText("跟随系统");
                     mSystemLight.setBackground(getActivity().getResources().getDrawable(R.drawable.shape_text_un_select));
                 }
             }
@@ -158,6 +159,7 @@ public class SettingDialogFragment extends BottomSheetDialogFragment implements 
 
 
         isSystem = config.isSystemLight();
+
         float light = config.getLight();
         setBrightness(light);
 
@@ -359,14 +361,16 @@ public class SettingDialogFragment extends BottomSheetDialogFragment implements 
                 break;
 
             case R.id.system_light:
-                if (isSystem) {
-                    changeBright(false, mSeekBarLight.getProgress());
-                    mSystemLight.setBackground(getActivity().getResources().getDrawable(R.drawable.shape_text_un_select));
-                } else {
-                    changeBright(true, getSystemBrightness());
-                    mSystemLight.setBackground(getActivity().getResources().getDrawable(R.drawable.shape_text_select));
-                }
                 isSystem = !isSystem;
+                if (isSystem) {
+                    changeBright(true, getSystemBrightness());
+                    mSystemLight.setText("手动选择");
+//                    mSystemLight.setBackground(getActivity().getResources().getDrawable(R.drawable.shape_text_un_select));
+                } else {
+                    changeBright(false, mSeekBarLight.getProgress());
+                    mSystemLight.setText("跟随系统");
+//                    mSystemLight.setBackground(getActivity().getResources().getDrawable(R.drawable.shape_text_select));
+                }
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + v.getId());
@@ -467,7 +471,12 @@ public class SettingDialogFragment extends BottomSheetDialogFragment implements 
 
     //设置亮度
     public void setBrightness(float brightness) {
-        mSeekBarLight.setProgress((int) (brightness * 100));
+        if(isSystem){
+            mSystemLight.setText("手动选择");
+        }else{
+            mSeekBarLight.setProgress((int) (brightness * 100));
+            mSystemLight.setText("跟随系统");
+        }
     }
 
 

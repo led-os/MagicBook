@@ -32,15 +32,12 @@ public class LoadingView implements ILoadingView {
     @Override
     public void hideLoadingView() {
         if(loadingDialog != null){
-            loadingDialog.hide();
+            loadingDialog.dismiss();
             if(cubeGrid != null){
                 cubeGrid.stop();
             }
         }
     }
-
-
-
 
 
     public LoadingView(Context context){

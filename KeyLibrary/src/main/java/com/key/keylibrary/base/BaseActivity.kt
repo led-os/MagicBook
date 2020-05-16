@@ -9,6 +9,7 @@ import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.ThreadMode
  */
 abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
     private var unBinder: Unbinder? = null
+    private var isOnPause = false
     open var handler = Handler()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +48,6 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
         },100)
         initView()
         initAuto()
-
     }
 
 
@@ -98,6 +99,8 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
     }
     override fun onResume() {
         super.onResume()
+        isOnPause = false
+        Log.e("pile", "resume :$isOnPause")
         registerEventBus(this)
     }
 
@@ -131,10 +134,18 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
     }
 
 
+    override fun onRestart() {
+        super.onRestart()
+        isOnPause = false
+        Log.e("pile", "restart :$isOnPause")
+    }
+
     override fun onPause() {
         if(isEventBusRegister(this)){
            unregisterEventBus(this)
         }
+        isOnPause = true
+        Log.e("pile", "pause :$isOnPause")
         super.onPause()
     }
 
@@ -160,22 +171,26 @@ abstract class BaseActivity : AppCompatActivity(),CustomAdapt {
 
     @Subscribe(threadMode = ThreadMode.ASYNC, sticky = true)
     fun onMessageReceive(busMessage: BusMessage<Any>) {
-        if(busMessage.target != null){
-            if (busMessage.target == javaClass.simpleName) {
-                handler.post {
-                    receiveMessage(busMessage)
-                    removeEventBusMessage(busMessage)
-                }
-            }
-        }else{
-            handler.post {
-                val receiveAllMessage = receiveAllMessage(busMessage)
-                if(receiveAllMessage){
-                    removeEventBusMessage(busMessage)
-                }
 
+        if(!isOnPause){
+            if(busMessage.target != null){
+                if (busMessage.target == javaClass.simpleName) {
+                    handler.post {
+                        receiveMessage(busMessage)
+                        removeEventBusMessage(busMessage)
+                    }
+                }
+            }else{
+                handler.post {
+                    val receiveAllMessage = receiveAllMessage(busMessage)
+                    if(receiveAllMessage){
+                        removeEventBusMessage(busMessage)
+                    }
+
+                }
             }
         }
+
     }
 
     open fun receiveMessage(busMessage: BusMessage<Any>){

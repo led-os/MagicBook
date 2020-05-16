@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/background_white_f2"
+    android:background="@color/gray"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
 
   <com.scwang.smartrefresh.layout.SmartRefreshLayout
       android:id="@+id/refresh"
-      android:layout_marginTop="@dimen/dp_8"
       android:paddingBottom="@dimen/dp_15"
       android:layout_width="match_parent"
       android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"
+        android:background="@color/background_white_f2"
         android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
@@ -23,4 +23,70 @@
   </com.scwang.smartrefresh.layout.SmartRefreshLayout>
 
 
-</LinearLayout>
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/list_rank"
+      android:layout_marginTop="@dimen/dp_24"
+      android:layout_marginBottom="@dimen/dp_64"
+      android:layout_marginLeft="@dimen/dp_13"
+      android:layout_marginRight="@dimen/dp_13"
+      android:visibility="gone"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_list"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/content_root"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/content_root"
+        android:layout_width="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintLeft_toRightOf="@+id/recycler_list"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+      <TextView
+          android:id="@+id/choose_type"
+          android:textColor="@color/black"
+          android:textSize="22sp"
+          android:textStyle="bold"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"/>
+
+
+      <androidx.recyclerview.widget.RecyclerView
+          android:id="@+id/rank_list_content"
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"/>
+    </LinearLayout>
+
+
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+  <LinearLayout
+      android:orientation="vertical"
+      android:visibility="gone"
+      android:id="@+id/back"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_width="match_parent"
+      android:background="@color/white"
+      android:gravity="center"
+      android:layout_height="@dimen/dp_56">
+
+
+    <ImageView
+        android:src="@mipmap/next_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -67,6 +67,10 @@ class TopPointTwoParesDocument : ParseDocument() {
         return ArrayList<String>()
     }
 
+    override fun parseRankUrls(document: Document): ArrayList<HashMap<String,String>> {
+        return ArrayList<HashMap<String,String>>()
+    }
+
     override fun parseTypeSeven(document: Document?): MutableList<BookDetail> {
         return ArrayList<BookDetail>()
     }

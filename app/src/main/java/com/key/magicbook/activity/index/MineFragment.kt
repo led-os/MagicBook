@@ -25,6 +25,7 @@ import com.key.keylibrary.bean.BusMessage
 import com.key.keylibrary.utils.AppBarStateChangeListener
 import com.key.keylibrary.utils.UiUtils
 import com.key.magicbook.R
+import com.key.magicbook.activity.aboutus.AboutUsActivity
 import com.key.magicbook.activity.history.HistoryActivity
 import com.key.magicbook.activity.like.LikeActivity
 import com.key.magicbook.activity.set.SetActivity
@@ -46,12 +47,11 @@ class MineFragment :BaseFragment(){
     private var functions = arrayOf(
         "阅读历史",
         "我的收藏",
-        "书单",
         "关于我们",
         "设置")
     //R.mipmap.chat,
     // R.mipmap.data,
-    private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,R.mipmap.book_list,
+    private var icons = arrayOf(R.mipmap.history,R.mipmap.collection,
        R.mipmap.us,R.mipmap.setting)
     override fun setLayoutId(): Int {
         return R.layout.fragment_index_mine
@@ -146,7 +146,14 @@ class MineFragment :BaseFragment(){
                         activity!!.overridePendingTransition(0,0)
                     }
                 }
-                4->{
+                2 ->{
+                    fun_root.getChildAt(value).setOnClickListener {
+                        startActivity( Intent(activity, AboutUsActivity::class.java))
+                        activity!!.overridePendingTransition(0,0)
+                    }
+
+                }
+                3->{
                     fun_root.getChildAt(value).setOnClickListener {
                         startActivity( Intent(activity, SetActivity::class.java))
                         activity!!.overridePendingTransition(0,0)

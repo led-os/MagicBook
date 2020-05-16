@@ -32,7 +32,7 @@ class App : GlobalApplication() {
                 val hashMap: HashMap<String, String> = HashMap()
                 hashMap
             }
-            .setCache(true)
+            .setCache(false)
             .setHasNetCacheTime(10)
             .setNoNetCacheTime(3600)
             .setReadTimeout(30)

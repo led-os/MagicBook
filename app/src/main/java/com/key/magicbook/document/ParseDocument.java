@@ -4,6 +4,7 @@ import com.key.magicbook.db.BookDetail;
 
 import org.jsoup.nodes.Document;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -34,4 +35,9 @@ public abstract class ParseDocument {
 
     public abstract List<BookDetail> parseBookDetails(Document document);
     public abstract List<BookDetail> parseBookHeaders(Document document);
+
+
+
+    public abstract List<HashMap<String,String>> parseRankUrls(Document document);
+
 }

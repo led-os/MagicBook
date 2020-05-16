@@ -16,15 +16,24 @@
 
 
 
-    <com.flyco.tablayout.CommonTabLayout
-        android:id="@+id/tabLayout"
+    <LinearLayout
+        android:id="@+id/tabLayout_root"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
-        app:tl_indicator_height="0dp"
-        android:background="@color/white"
-        app:tl_indicator_color="@color/white"
-        app:tl_indicator_gravity="TOP"
-        app:tl_textSelectColor="@color/main"
-        app:tl_textUnselectColor="@color/gray" />
+        android:orientation="vertical"
+        android:layout_height="56dp">
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom"
+            app:tl_indicator_height="0dp"
+            android:background="@color/white"
+            app:tl_indicator_color="@color/white"
+            app:tl_indicator_gravity="TOP"
+            app:tl_textSelectColor="@color/main"
+            app:tl_textUnselectColor="@color/gray" />
+    </LinearLayout>
+
+
+
 </LinearLayout>
