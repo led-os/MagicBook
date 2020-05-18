@@ -22,6 +22,9 @@
         
  
 项目截图 ： 
+
+
+
 1.书架    
 
 ![书架](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)
@@ -51,7 +54,7 @@
 
 6.书籍详情
 
-![书籍详情](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_detail.jpg)
+![书籍详情](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_deatail.jpg)
 
 
 7.我的
