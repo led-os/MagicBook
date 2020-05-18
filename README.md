@@ -22,4 +22,4 @@
         
     
     项目截图：
-          ![书架](/pic/bookCase.jpg)      
+          ![bookCase](/pic/bookCase.jpg)      
