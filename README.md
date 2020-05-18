@@ -24,7 +24,22 @@
 项目截图 ： 
 1.书架    
 
-![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)     
+![书架](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)
 2.书籍阅读界面
 
-![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg) 
+![书籍阅读](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)
+
+2.书籍阅读设置界面
+
+![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)
+![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)
+![设置字体](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookFontSet.jpg)
+
+
+3.书城界面
+
+![首页](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCity.jpg)
+![类型1](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_1.jpg)
+![类型2](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_2.jpg)
+
+
