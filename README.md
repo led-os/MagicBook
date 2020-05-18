@@ -23,6 +23,6 @@
      
      项目实现图片
         1.书架
-         ![书架](https://github.com/pressureKai/MagicBook/blob/master/pic/bookCase.jpg)      
+         ![书架](/pic/bookCase.jpg)
    
    
