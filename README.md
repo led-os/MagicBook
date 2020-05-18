@@ -20,9 +20,6 @@
         7.屏幕适配使用了今日头条适配方案
         8.RecyclerView的适配器使用BasequickAdapter
         
-     
-     项目实现图片
-        1.书架
-         ![书架](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)      
-   
-   
+    
+    项目截图：
+           ![书架](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg) 
