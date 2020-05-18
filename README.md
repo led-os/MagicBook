@@ -22,4 +22,4 @@
         
     
     项目截图：
-          ![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)      
+          ![bookCase](https://img-blog.csdn.net/20161010103305404)      
