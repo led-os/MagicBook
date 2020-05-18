@@ -23,6 +23,6 @@
      
      项目实现图片
         1.书架
-         ![小说阅读模块](https://github.com/pressureKai/SimpleNovel/blob/master/readPage.png)      
+         ![书架](https://github.com/pressureKai/MagicBook/blob/master/pic/bookCase.jpg)      
    
    
