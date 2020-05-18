@@ -32,11 +32,41 @@
 
 2.书籍阅读设置界面
 
-![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)  ![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)
+![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)       ![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)
 
 3.书城界面
 
-![首页](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCity.jpg)   ![类型1](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_1.jpg)   ![类型2](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_2.jpg)
+![首页](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCity.jpg)       ![类型1](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_1.jpg)       ![类型2](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_2.jpg)
+
+
+4.排行榜
+仿微信下拉进入小程序页面 ->> 书架下拉进入排行榜界面
+
+![书架下拉](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_drag_down.jpg)   ![排行榜](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_rank.jpg)
+
+5.搜索界面
+
+![搜索界面](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_search.jpg)   ![搜索结果](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_search_result.jpg)
+
+
+6.书籍详情
+
+
+![书籍详情](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_detail.jpg)
+
+7.收藏界面
+
+![收藏界面](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_like.jpg)
+
+
+8.阅读历史
+
+![阅读历史](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_history.jpg)
+
+
+9.登录注册界面
+
+![登录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_login.jpg)    ![注册](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_regist.jpg)
 
 
 
