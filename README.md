@@ -22,4 +22,4 @@
         
     
     项目截图：
-           ![书架](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg) 
+          ![Image text](https://raw.github.com/yourName/repositpry/master/yourprojectName/img-folder/test.jpg)
