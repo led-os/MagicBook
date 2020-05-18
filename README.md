@@ -32,7 +32,7 @@
 
 2.书籍阅读设置界面
 
-![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)  ![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)   ![设置字体](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookFontSet.jpg)
+![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)  ![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)
 
 3.书城界面
 
