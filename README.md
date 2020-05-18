@@ -51,20 +51,24 @@
 
 6.书籍详情
 
-
 ![书籍详情](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_detail.jpg)
 
-7.收藏界面
+
+7.我的
+
+![书籍详情](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/mine.jpg)
+
+8.收藏界面
 
 ![收藏界面](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_like.jpg)
 
 
-8.阅读历史
+9.阅读历史
 
 ![阅读历史](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_history.jpg)
 
 
-9.登录注册界面
+10.登录注册界面
 
 ![登录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_login.jpg)    ![注册](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/book_regist.jpg)
 
