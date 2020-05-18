@@ -22,4 +22,7 @@
         
     
     项目截图：
-![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)      
+1.书架    
+![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg)     
+2.书籍阅读界面
+![bookCase](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCase.jpg) 
