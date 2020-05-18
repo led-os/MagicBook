@@ -9,6 +9,9 @@ import org.jsoup.nodes.Document
  * created by key  on 2020/5/11
  */
 class TopPointParseDocument : ParseDocument() {
+    /**
+     *获取BookTypeFragment中的书籍列表
+     */
     override fun parseBookDetails(document: Document): List<BookDetail> {
         val new = document!!.select("#newscontent > div.r > ul > li")
         var bookDetails :ArrayList<BookDetail> = ArrayList()

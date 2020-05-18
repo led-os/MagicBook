@@ -7,7 +7,11 @@ import org.jsoup.nodes.Document
  * created by key  on 2020/5/11
  */
 class TopPointTwoParesDocument : ParseDocument() {
+    /**
+     *  获取BookTypeFragment中的书籍列表
+     */
     override fun parseBookDetails(document: Document): List<BookDetail> {
+
         return ArrayList<BookDetail>()
     }
 

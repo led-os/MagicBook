@@ -261,8 +261,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             val find = LitePal.where(
                 "bookName = ? and baseUrl = ? and bookUrl = ? and userName = ? ",
                 book!!.bookName, ConstantValues.BASE_URL, book!!.bookUrl, getUserInfo().userName
-            )
-                .find(BookReadChapter::class.java)
+            ).find(BookReadChapter::class.java)
             if (find.size == 0) {
                 JsoupUtils.getFreeDocument(ConstantValues.BASE_URL + book!!.bookUrl)
                     .subscribe(object : CustomBaseObserver<Document>() {
@@ -310,6 +309,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
             if(looking != null){
                 if(looking!!.chapterNum == currentChapterPosition){
                     bookList.isWorkEnd = "false"
+                    looking = null
                 }else{
                     bookList.isWorkEnd = "true"
                 }
@@ -450,6 +450,7 @@ class ReadActivity : MineBaseActivity<ReadPresenter>() {
         if(looking != null){
             if(looking!!.chapterNum == currentChapterPosition){
                 bookList.isWorkEnd = "false"
+                looking = null
             }else{
                 bookList.isWorkEnd = "true"
             }
