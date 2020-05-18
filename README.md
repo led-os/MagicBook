@@ -32,11 +32,11 @@
 
 2.书籍阅读设置界面
 
-![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg) ![设置字体](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookFontSet.jpg)
+![设置目录](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookMenu.jpg)  ![设置](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookSet.jpg)   ![设置字体](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookFontSet.jpg)
 
 3.书城界面
 
-![首页](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCity.jpg) ![类型1](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_1.jpg) ![类型2](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_2.jpg)
+![首页](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookCity.jpg)   ![类型1](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_1.jpg)   ![类型2](https://raw.githubusercontent.com/pressureKai/MagicBook/master/pic/bookType_2.jpg)
 
 
 
